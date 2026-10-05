@@ -183,8 +183,8 @@ $("#login-token").addEventListener("keydown", e => { if (e.key === "Enter") doLo
 const CHAIN_STEPS = [
   { key: "so", label: "接单", doctype: "Sales Order", name: "销售订单" },
   { key: "pp", label: "计划", doctype: "Production Plan", name: "生产计划" },
-  { key: "wo", label: "工单", doctype: "Work Order", name: "生产工单" },
   { key: "mr", label: "MRP", doctype: "Material Request", name: "物料申请" },
+  { key: "wo", label: "工单", doctype: "Work Order", name: "生产工单" },
   { key: "po", label: "采购", doctype: "Purchase Order", name: "采购订单", multi: true },
   { key: "pr", label: "收料", doctype: "Purchase Receipt", name: "采购收货", multi: true },
   { key: "sco", label: "委外", doctype: "Subcontracting Order", name: "委外订单" },
@@ -426,7 +426,7 @@ PAGES.orders = async function (box) {
         <thead><tr><th>指令单号</th><th>销售订单</th><th>客户</th><th>款号明细</th><th>订单金额</th><th>日期</th><th>状态</th><th></th></tr></thead>
         <tbody>${rows.map(so => `
           <tr style="cursor:pointer" onclick="openChainDrawer('${esc(so.custom_factory_order_no || so.name)}')">
-            <td><b class="mono" style="color:var(--navy-600)">${esc(so.custom_factory_order_no || "—")}</b></td>
+            <td><b class="mono" style="color:#0069DB">${esc(so.custom_factory_order_no || "—")}</b></td>
             <td class="mono">${esc(so.name)}</td>
             <td>${esc(so.customer)}</td>
             <td style="font-size:12.5px;color:var(--sub)">${so.items}</td>
@@ -543,10 +543,10 @@ PAGES.production = async function (box) {
             <span>成品：<b style="color:var(--ink)">${esc(w.production_item)}</b></span>
             <span class="mono">指令单 ${esc(w.custom_factory_order_no || "—")}</span></div>
           <div style="height:10px;background:#EDF1F7;border-radius:5px;overflow:hidden;margin-bottom:6px">
-            <div style="width:${pct}%;height:100%;background:${done ? "var(--green-600)" : "var(--amber-500)"};border-radius:5px;transition:width .6s"></div></div>
+            <div style="width:${pct}%;height:100%;background:${done ? "linear-gradient(180deg,#4BE37D,#1FA848)" : "linear-gradient(180deg,#FFC24A,#F07F00)"};border-radius:5px;transition:width .6s;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)"></div></div>
           <div style="display:flex;justify-content:space-between;font-size:12.5px">
             <span style="color:var(--sub)">计划 <b class="num" style="color:var(--ink)">${fmtNum(w.qty)}</b> 双</span>
-            <span style="color:var(--sub)">已入库 <b class="num" style="color:${done ? "var(--green-600)" : "var(--amber-500)"}">${fmtNum(w.produced_qty || 0)}</b> 双（${pct}%）</span>
+            <span style="color:var(--sub)">已入库 <b class="num" style="color:${done ? "#1D8A3E" : "#C24F00"}">${fmtNum(w.produced_qty || 0)}</b> 双（${pct}%）</span>
           </div>
           <div style="margin-top:10px;display:flex;gap:8px">
             <button class="btn-sm" onclick="openERP('Work Order','${esc(w.name)}')">工单详情</button>
@@ -675,7 +675,7 @@ function renderScanForm(item, code) {
         <input id="scan-fo" type="text" placeholder="工厂指令单号（可选）" style="border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-family:inherit;outline:none;min-width:150px">
         <button id="scan-submit" class="btn-amber">提交出入库</button>
       </div>
-      <p style="font-size:12px;color:var(--sub);margin-top:8px">示例：材料入库选「材料仓 → 材料仓」请改为「材料仓→委外仓」为发料，「半成品仓→在制品」为车间领料。</p>
+      <p style="font-size:12px;color:var(--sub);margin-top:8px">常用方向：材料入库选「材料仓→材料仓」以外的组合 — 发料给委外厂选「材料仓→委外仓」，车间领料选「半成品仓→在制品」，成品移仓选「在制品→成品仓」。</p>
     </div>`;
   $("#scan-to").selectedIndex = 1;
   $("#scan-submit").addEventListener("click", async () => {

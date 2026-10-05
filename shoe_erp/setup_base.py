@@ -151,6 +151,9 @@ custom_fields = [
     # 采购订单
     {"dt": "Purchase Order", "fieldname": "custom_factory_order_no", "label": "工厂指令单号",
      "fieldtype": "Data", "insert_after": "transaction_date", "in_standard_filter": 1, "no_copy": 1},
+    # 物料申请（MRP）
+    {"dt": "Material Request", "fieldname": "custom_factory_order_no", "label": "工厂指令单号",
+     "fieldtype": "Data", "insert_after": "transaction_date", "in_standard_filter": 1, "no_copy": 1},
     # 库存录入单（扫描出入库）
     {"dt": "Stock Entry", "fieldname": "custom_factory_order_no", "label": "工厂指令单号",
      "fieldtype": "Data", "insert_after": "stock_entry_type", "in_standard_filter": 1, "no_copy": 1},

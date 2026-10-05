@@ -8,6 +8,13 @@
 </head>
 <body>
 
+<!-- 壁纸光斑层（iOS 26 Liquid Glass 背景） -->
+<div class="aurora">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+</div>
+
 <!-- SVG 图标库 -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-dash" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/></symbol>
@@ -30,7 +37,7 @@
   <div class="login-bg"></div>
   <div class="login-panel">
     <div class="login-brand">
-      <svg class="login-logo"><use href="#i-shoe"/></svg>
+      <span class="nav-ic big" style="--g:linear-gradient(135deg,#FF9F0A,#FF453A)"><svg><use href="#i-shoe"/></svg></span>
       <div>
         <h1>奥登科 · 鞋业智造</h1>
         <p>外贸代加工协同平台 · ERPNext 驱动</p>
@@ -41,7 +48,7 @@
       <input id="login-base" type="text" value="" placeholder="ERPNext 地址">
       <label>API 令牌</label>
       <input id="login-token" type="password" placeholder="格式: api_key:api_secret">
-      <button id="login-btn" class="btn-primary btn-block">登 录</button>
+      <button id="login-btn" class="btn-amber btn-block">登 录</button>
       <p class="login-tip">提示：令牌在 ERPNext「用户 › API 密钥与密文」中生成，格式 <code>api_key:api_secret</code></p>
       <p id="login-err" class="login-err"></p>
     </div>
@@ -55,28 +62,28 @@
   <!-- 侧栏 -->
   <aside class="sidebar">
     <div class="brand">
-      <svg class="brand-logo"><use href="#i-shoe"/></svg>
+      <span class="nav-ic big" style="--g:linear-gradient(135deg,#FF9F0A,#FF453A)"><svg><use href="#i-shoe"/></svg></span>
       <div class="brand-txt">
         <b>奥登科鞋业</b>
         <span>智造协同平台</span>
       </div>
     </div>
     <nav id="nav" class="nav">
-      <a href="#/dashboard" data-page="dashboard"><svg><use href="#i-dash"/></svg>工作台</a>
-      <a href="#/orders" data-page="orders"><svg><use href="#i-order"/></svg>指令单中心</a>
+      <a href="#/dashboard" data-page="dashboard" title="工作台"><span class="nav-ic" style="--g:linear-gradient(135deg,#FF9F0A,#FFD60A)"><svg><use href="#i-dash"/></svg></span><span class="nav-t">工作台</span></a>
+      <a href="#/orders" data-page="orders" title="指令单中心"><span class="nav-ic" style="--g:linear-gradient(135deg,#0A84FF,#5E5CE6)"><svg><use href="#i-order"/></svg></span><span class="nav-t">指令单中心</span></a>
       <div class="nav-sec">业务流转</div>
-      <a href="#/purchase" data-page="purchase"><svg><use href="#i-buy"/></svg>采购管理</a>
-      <a href="#/subcontract" data-page="subcontract"><svg><use href="#i-sub"/></svg>委外加工</a>
-      <a href="#/production" data-page="production"><svg><use href="#i-mfg"/></svg>生产制造</a>
-      <a href="#/warehouse" data-page="warehouse"><svg><use href="#i-wh"/></svg>仓库管理</a>
-      <a href="#/scan" data-page="scan"><svg><use href="#i-scan"/></svg>扫码出入库</a>
+      <a href="#/purchase" data-page="purchase" title="采购管理"><span class="nav-ic" style="--g:linear-gradient(135deg,#30D158,#64D2FF)"><svg><use href="#i-buy"/></svg></span><span class="nav-t">采购管理</span></a>
+      <a href="#/subcontract" data-page="subcontract" title="委外加工"><span class="nav-ic" style="--g:linear-gradient(135deg,#BF5AF2,#5E5CE6)"><svg><use href="#i-sub"/></svg></span><span class="nav-t">委外加工</span></a>
+      <a href="#/production" data-page="production" title="生产制造"><span class="nav-ic" style="--g:linear-gradient(135deg,#FF453A,#FF9F0A)"><svg><use href="#i-mfg"/></svg></span><span class="nav-t">生产制造</span></a>
+      <a href="#/warehouse" data-page="warehouse" title="仓库管理"><span class="nav-ic" style="--g:linear-gradient(135deg,#64D2FF,#0A84FF)"><svg><use href="#i-wh"/></svg></span><span class="nav-t">仓库管理</span></a>
+      <a href="#/scan" data-page="scan" title="扫码出入库"><span class="nav-ic" style="--g:linear-gradient(135deg,#FFD60A,#FF9F0A)"><svg><use href="#i-scan"/></svg></span><span class="nav-t">扫码出入库</span></a>
       <div class="nav-sec">财务结算</div>
-      <a href="#/finance" data-page="finance"><svg><use href="#i-fin"/></svg>应付对账</a>
-      <a href="#/flow" data-page="flow"><svg><use href="#i-link"/></svg>流程链路图</a>
+      <a href="#/finance" data-page="finance" title="应付对账"><span class="nav-ic" style="--g:linear-gradient(135deg,#30D158,#A7F3D0)"><svg><use href="#i-fin"/></svg></span><span class="nav-t">应付对账</span></a>
+      <a href="#/flow" data-page="flow" title="流程链路图"><span class="nav-ic" style="--g:linear-gradient(135deg,#5E5CE6,#BF5AF2)"><svg><use href="#i-link"/></svg></span><span class="nav-t">流程链路图</span></a>
     </nav>
     <div class="side-foot">
       <div class="side-user">
-        <svg><use href="#i-user"/></svg>
+        <span class="nav-ic" style="--g:linear-gradient(135deg,#0A84FF,#64D2FF)"><svg><use href="#i-user"/></svg></span>
         <div><b id="side-user-name">系统管理员</b><span id="side-user-role">Administrator</span></div>
       </div>
       <button id="btn-logout" class="btn-ghost">退出登录</button>

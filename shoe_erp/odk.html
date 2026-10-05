@@ -375,6 +375,15 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
 .fd-actions { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
   padding-top: 16px; border-top: 1px dashed var(--line-2); }
 @media (max-width: 640px) { .nd-form { grid-template-columns: 1fr; } }
+.bom-row { display: grid; grid-template-columns: 1fr 110px 34px; gap: 8px; margin-bottom: 8px; align-items: center; }
+.bom-row .br-item, .bom-row .br-qty { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 9px;
+  padding: 9px 11px; color: var(--ink); font: inherit; font-size: 13px; outline: none; width: 100%; box-sizing: border-box; }
+.bom-row .br-item:focus, .bom-row .br-qty:focus { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+.bom-row .br-del { border: 1px solid var(--line-2); background: transparent; border-radius: 9px; height: 36px;
+  cursor: pointer; color: var(--sub); transition: all .15s; }
+.bom-row .br-del:hover { color: var(--red); border-color: rgba(255,107,107,.5); background: rgba(255,107,107,.08); }
+#mrp-run { margin: 4px 0 12px; }
+#mrp-result .tbl { margin-top: 4px; }
 
 .chain { position: relative; padding-left: 30px; }
 .chain::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px;
@@ -589,6 +598,7 @@ table.tbl td.bal-open { color: var(--red); font-weight: 700; }
     <nav id="nav" class="tnav">
       <a href="#/dashboard" data-page="dashboard" title="工作台"><svg><use href="#i-dash"/></svg><span class="tn-l">工作台</span></a>
       <a href="#/orders" data-page="orders" title="指令单中心"><svg><use href="#i-order"/></svg><span class="tn-l">指令单中心</span></a>
+      <a href="#/material" data-page="material" title="物料管理"><svg><use href="#i-chip"/></svg><span class="tn-l">物料管理</span></a>
       <a href="#/purchase" data-page="purchase" title="采购管理"><svg><use href="#i-buy"/></svg><span class="tn-l">采购管理</span></a>
       <a href="#/subcontract" data-page="subcontract" title="委外加工"><svg><use href="#i-sub"/></svg><span class="tn-l">委外加工</span></a>
       <a href="#/production" data-page="production" title="生产制造"><svg><use href="#i-mfg"/></svg><span class="tn-l">生产制造</span></a>
@@ -803,7 +813,7 @@ function enterApp() {
 
 /* ---------------- 路由 ---------------- */
 const TITLES = {
-  dashboard: "工作台", orders: "指令单中心", purchase: "采购管理", subcontract: "委外加工",
+  dashboard: "工作台", orders: "指令单中心", material: "物料管理", purchase: "采购管理", subcontract: "委外加工",
   production: "生产制造", warehouse: "仓库管理", scan: "扫码出入库", finance: "应付对账", flow: "流程图中心",
 };
 const PAGES = {};
@@ -1025,6 +1035,13 @@ const pickServices = () => pick("svc", "Item", ["item_code", "item_name", "stock
   [["item_code", "like", "SVC-%"]], r => `${r.item_code} ${r.item_name || ""}`);
 const pickSemiFG = () => pick("sfg", "Item", ["item_code", "item_name", "stock_uom"],
   [["item_code", "like", "SF-%"]], r => `${r.item_code} ${r.item_name || ""}`);
+const pickAllItems = () => pick("all_items", "Item", ["item_code", "item_name", "stock_uom"],
+  [["has_variants", "=", 0]], r => `${r.item_code} ${r.item_name || ""}`);
+const pickItemGroups = () => pick("igroup", "Item Group", ["name"], [["is_group", "=", 0]], r => r.name);
+const pickUoms = () => pick("uom", "UOM", ["name"], [], r => r.name);
+const pickSubmittedSO = () => pick("so_sub", "Sales Order",
+  ["name", "customer", "custom_factory_order_no"], [["docstatus", "=", 1]],
+  r => `${r.custom_factory_order_no || r.name} · ${r.customer}`);
 
 /* 表单字段定义：{key,label,type,required,def,full,ph} */
 const NEW_DOC_FIELDS = {
@@ -1057,12 +1074,31 @@ const NEW_DOC_FIELDS = {
     { key: "paid_amount", label: "付款金额（元）", type: "number", required: 1 },
     { key: "reference_no", label: "付款摘要 / 流水号", type: "text", required: 1, ph: "如 10 月针车加工费", full: 1 },
   ],
+  item: [
+    { key: "item_code", label: "物料编码", type: "text", required: 1, ph: "如 M-FAB-002（大类-品名-序号）" },
+    { key: "item_name", label: "物料名称", type: "text", required: 1, ph: "如 涤纶网布(白色)" },
+    { key: "item_group", label: "物料分组", type: "select", required: 1, src: pickItemGroups },
+    { key: "stock_uom", label: "计量单位", type: "select", required: 1, src: pickUoms },
+    { key: "barcode", label: "条形码（扫码出入库用）", type: "text", ph: "可选，13 位数字" },
+    { key: "is_stock", label: "是否库存物料", type: "select", required: 1, def: "1", options: [["1", "是（参与出入库）"], ["0", "否（服务/虚拟件）"]] },
+  ],
+  bom: [
+    { key: "item", label: "成品 / 半成品款号", type: "select", required: 1, src: pickAllItems },
+    { key: "quantity", label: "用量基数（X 双）", type: "number", required: 1, def: 1, ph: "下方组件数量 = 每 X 双成品的用量" },
+  ],
+  mrp: [
+    { key: "so", label: "选择指令单（销售订单）", type: "select", required: 1, src: pickSubmittedSO, full: 1 },
+    { key: "schedule_date", label: "需求到货日期", type: "date", def: plusDays(10) },
+  ],
 };
 const NEW_DOC_META = {
   so: { icon: "i-order", title: "新建指令单", sub: "客户接单 → 生成销售订单并提交生效" },
   po: { icon: "i-buy", title: "新建采购单", sub: "向材料供应商下达采购订单并提交生效" },
   sub: { icon: "i-sub", title: "新建委外单", sub: "一步完成：委外采购单 + 委外加工单，均自动提交" },
   pay: { icon: "i-fin", title: "登记付款", sub: "现金账户向供应商付款，提交后自动生成财务分录" },
+  item: { icon: "i-chip", title: "新建物料", sub: "新增物料档案（编码 / 名称 / 分组 / 单位 / 条码）" },
+  bom: { icon: "i-chip", title: "新建 BOM", sub: "成品配方表：列出每款鞋的组件物料与用量" },
+  mrp: { icon: "i-chip", title: "MRP 采购申请", sub: "选指令单 → 自动展开 BOM 并扣减库存 → 生成净需求采购申请" },
 };
 
 /* 各类型单据的创建实现，返回 [类型名, 单号, ...] */
@@ -1128,7 +1164,79 @@ const NEW_DOC_BUILDERS = {
     await API.submitDoc("Payment Entry", d.name);
     return ["付款单", d.name];
   },
+  async item(v) {
+    const d = await API.post("Item", {
+      item_code: v.item_code, item_name: v.item_name,
+      item_group: v.item_group, stock_uom: v.stock_uom,
+      is_stock_item: v.is_stock === "1" ? 1 : 0,
+      barcodes: v.barcode ? [{ barcode: v.barcode }] : undefined,
+    });
+    return ["物料", d.name];
+  },
+  async bom(v, extra) {
+    const rows = (extra && extra.bomRows || []).filter(r => r.item_code && Number(r.qty) > 0);
+    if (!rows.length) throw new Error("请至少添加一个组件");
+    const d = await API.post("BOM", {
+      company: COMPANY, item: v.item, quantity: Number(v.quantity) || 1,
+      items: rows.map(r => ({ item_code: r.item_code, qty: Number(r.qty),
+                               uom: "Nos", stock_uom: "Nos", conversion_factor: 1 })),
+    });
+    await API.submitDoc("BOM", d.name);
+    return ["BOM", d.name];
+  },
+  async mrp(v, extra) {
+    const rows = (extra && extra.mrpRows || []);
+    if (!rows.length) throw new Error("请先点击「计算净需求」");
+    const d = await API.post("Material Request", {
+      company: COMPANY, material_request_type: "Purchase",
+      transaction_date: today(), schedule_date: v.schedule_date,
+      items: rows.map(r => ({ item_code: r.item_code, qty: r.net, schedule_date: v.schedule_date,
+                               warehouse: WAREHOUSES["材料仓"] })),
+    });
+    await API.submitDoc("Material Request", d.name);
+    return ["采购申请", d.name];
+  },
 };
+
+/* MRP：按指令单展开 BOM 计算净需求（毛需求 - 现有库存） */
+const MRPCache = { rows: null };
+async function mrpExplode(itemCode, qty, demand, depth) {
+  if (depth > 4) return;
+  let bomName = null;
+  const boms = await API.list("BOM", ["name", "quantity", "is_default"],
+    [["item", "=", itemCode], ["is_active", "=", 1]], 5);
+  if (boms.length) bomName = (boms.find(b => b.is_default) || boms[0]).name;
+  const full = bomName ? await API.getDoc("BOM", bomName) : null;
+  if (!full || !(full.items || []).length) {
+    /* 无下层 BOM → 视为需采购的物料 */
+    demand.set(itemCode, (demand.get(itemCode) || 0) + qty);
+    return;
+  }
+  const scale = qty / (full.quantity || 1);
+  for (const it of full.items) {
+    await mrpExplode(it.item_code, (it.qty || 0) * scale, demand, depth + 1);
+  }
+}
+async function mrpCompute(soName) {
+  const so = await API.getDoc("Sales Order", soName);
+  const demand = new Map();
+  for (const it of (so.items || [])) {
+    await mrpExplode(it.item_code, it.qty || 0, demand, 0);
+  }
+  const bins = await API.list("Bin", ["item_code", "warehouse", "actual_qty"], [["actual_qty", ">", 0]], 500);
+  const names = [...demand.keys()];
+  const itemDocs = names.length ? await API.list("Item", ["item_code", "item_name", "stock_uom"],
+    [["item_code", "in", names]], 200) : [];
+  const rows = names.map(code => {
+    const stock = bins.filter(b => b.item_code === code)
+                      .filter(b => Object.values(WAREHOUSES).includes(b.warehouse) && b.warehouse !== WAREHOUSES["成品仓"])
+                      .reduce((a, b) => a + b.actual_qty, 0);
+    const gross = demand.get(code);
+    return { item_code: code, name: (itemDocs.find(i => i.item_code === code) || {}).item_name || "",
+             gross, stock, net: Math.max(0, Math.ceil(gross - stock)) };
+  }).filter(r => r.net > 0);
+  return rows;
+}
 
 /* 开单抽屉 */
 function openNewDoc(type) {
@@ -1150,21 +1258,30 @@ function openNewDoc(type) {
   document.body.appendChild(d);
   $(".drawer-x", d).addEventListener("click", closeDrawer);
 
-  Promise.all(fields.map(f => f.type === "select" ? f.src() : null)).then(srcs => {
+  Promise.all(fields.map(f => f.type === "select" && f.src ? f.src() : null)).then(async srcs => {
     const bd = $(".drawer-bd", d);
+    const selHTML = (f, i) => f.options
+      ? f.options.map(([v, t]) => `<option value="${esc(v)}" ${f.def === v ? "selected" : ""}>${esc(t)}</option>`).join("")
+      : (srcs[i] || []).map(o => `<option value="${esc(o.v)}">${esc(o.t)}</option>`).join("");
     bd.innerHTML = `<div class="nd-form">
       ${fields.map((f, i) => `
         <div class="fd-field ${f.full ? "full" : ""}">
           <label>${f.label}${f.required ? ' <i class="req">*</i>' : ""}</label>
           ${f.type === "select"
-            ? `<select id="nf-${f.key}">${(srcs[i] || []).map(o => `<option value="${esc(o.v)}">${esc(o.t)}</option>`).join("")}</select>`
+            ? `<select id="nf-${f.key}">${selHTML(f, i)}</select>`
             : `<input id="nf-${f.key}" type="${f.type}" value="${f.def || ""}" placeholder="${f.ph || ""}" ${f.type === "number" ? 'min="0" step="0.01"' : ""}>`}
         </div>`).join("")}
+      <div id="nf-custom" class="full"></div>
       <div class="fd-actions full">
         <button class="btn-sm ghost" id="nf-cancel">取 消</button>
         <button class="btn-amber" id="nf-submit">${meta.title}</button>
       </div>
     </div>`;
+
+    const extra = {}; /* 自定义区块数据（BOM 组件行 / MRP 净需求） */
+    if (type === "bom") await bomFormCustom(d, extra);
+    if (type === "mrp") await mrpFormCustom(d, extra);
+
     $("#nf-cancel", d).addEventListener("click", closeDrawer);
     $("#nf-submit", d).addEventListener("click", async () => {
       const btn = $("#nf-submit", d);
@@ -1176,7 +1293,7 @@ function openNewDoc(type) {
       }
       btn.disabled = true; btn.textContent = "创建中…";
       try {
-        const parts = await NEW_DOC_BUILDERS[type](v);
+        const parts = await NEW_DOC_BUILDERS[type](v, extra);
         closeDrawer();
         let msg = parts[0] + " " + parts[1] + " 已创建并提交 ✓";
         if (parts.length > 2) msg += "（同时生成 " + parts[2] + " " + parts[3] + "）";
@@ -1191,6 +1308,68 @@ function openNewDoc(type) {
     if (firstInput) firstInput.focus();
   }).catch(e => {
     $(".drawer-bd", d).innerHTML = `<div class="empty">数据加载失败：${esc(e.message)}</div>`;
+  });
+}
+
+/* BOM 表单：动态组件行（物料 + 用量，可增删） */
+async function bomFormCustom(d, extra) {
+  extra.bomRows = [{ item_code: "", qty: "" }, { item_code: "", qty: "" }];
+  const opts = await pickAllItems();
+  const box = $("#nf-custom", d);
+  const render = () => {
+    box.innerHTML = `
+      <div class="fd-field full" style="margin-top:2px">
+        <label>组件清单 <i class="req">*</i> <small style="font-weight:400">（每 X 双成品所需的物料与数量）</small></label>
+        <div id="bom-rows">
+          ${extra.bomRows.map((r, i) => `
+            <div class="bom-row">
+              <select data-i="${i}" class="br-item">${`<option value="">选择物料</option>` + opts.map(o => `<option value="${esc(o.v)}" ${o.v === r.item_code ? "selected" : ""}>${esc(o.t)}</option>`).join("")}</select>
+              <input data-i="${i}" class="br-qty" type="number" min="0.01" step="0.01" placeholder="用量" value="${r.qty}">
+              <button data-i="${i}" class="br-del" title="删除">✕</button>
+            </div>`).join("")}
+        </div>
+        <button id="bom-add" class="btn-sm ghost">＋ 添加组件</button>
+      </div>`;
+    $$(".br-item", box).forEach(s => s.addEventListener("change", () => extra.bomRows[+s.dataset.i].item_code = s.value));
+    $$(".br-qty", box).forEach(s => s.addEventListener("input", () => extra.bomRows[+s.dataset.i].qty = s.value));
+    $$(".br-del", box).forEach(b => b.addEventListener("click", () => { extra.bomRows.splice(+b.dataset.i, 1); render(); }));
+    $("#bom-add", box).addEventListener("click", () => { extra.bomRows.push({ item_code: "", qty: "" }); render(); });
+  };
+  render();
+}
+
+/* MRP 表单：计算净需求并展示结果 */
+async function mrpFormCustom(d, extra) {
+  extra.mrpRows = [];
+  const box = $("#nf-custom", d);
+  box.innerHTML = `
+    <div class="fd-field full" style="margin-top:2px">
+      <label>MRP 运算 <i class="req">*</i> <small style="font-weight:400">（按 BOM 展开 × 订单数量 − 现有库存）</small></label>
+      <button id="mrp-run" class="btn-amber">⚙ 计算净需求</button>
+      <div id="mrp-result"></div>
+    </div>`;
+  $("#mrp-run", box).addEventListener("click", async () => {
+    const btn = $("#mrp-run", box);
+    const soName = $("#nf-so", d).value;
+    if (!soName) { toast("请先选择指令单", true); return; }
+    btn.disabled = true; btn.textContent = "运算中…";
+    try {
+      extra.mrpRows = await mrpCompute(soName);
+      const res = $("#mrp-result", box);
+      if (!extra.mrpRows.length) {
+        res.innerHTML = `<div class="empty" style="padding:16px">库存充足，无净需求 — 无需采购</div>`;
+      } else {
+        res.innerHTML = `<table class="tbl"><thead><tr><th>物料</th><th>毛需求</th><th>现有库存</th><th>净需求</th></tr></thead>
+          <tbody>${extra.mrpRows.map(r => `<tr><td><b>${esc(r.item_code)}</b> <small style="color:var(--sub)">${esc(r.name)}</small></td>
+            <td class="num">${fmtNum(r.gross, 1)}</td><td class="num">${fmtNum(r.stock, 1)}</td>
+            <td class="num" style="color:var(--amber);font-weight:700">${fmtNum(r.net)}</td></tr>`).join("")}</tbody></table>`;
+      }
+      toast(`MRP 完成：${extra.mrpRows.length} 项净需求`);
+    } catch (e) {
+      toast("MRP 运算失败：" + e.message, true);
+    } finally {
+      btn.disabled = false; btn.textContent = "⚙ 计算净需求";
+    }
   });
 }
 
@@ -1354,6 +1533,80 @@ PAGES.orders = async function (box) {
           </tr>`).join("") || `<tr><td colspan="8" class="empty">暂无订单，点右上角「＋ 新建指令单」开始接单</td></tr>`}
         </tbody>
       </table>
+    </div>`;
+};
+
+/* ---------------- 物料管理（物料 / BOM / MRP 采购申请） ---------------- */
+PAGES.material = async function (box) {
+  const [items, boms, mrs, bins, groups] = await Promise.all([
+    API.list("Item", ["item_code", "item_name", "item_group", "stock_uom", "is_stock_item", "has_variants", "disabled"], [["disabled", "=", 0]], 500),
+    API.list("BOM", ["name", "item", "quantity", "docstatus", "is_active", "is_default"], [["docstatus", "!=", 2]], 100),
+    API.list("Material Request", ["name", "transaction_date", "status", "docstatus", "material_request_type"], [["docstatus", "!=", 2]], 100),
+    API.list("Bin", ["item_code", "warehouse", "actual_qty"], [["actual_qty", ">", 0]], 500),
+    API.list("Item Group", ["name"], [["is_group", "=", 0]], 50),
+  ]);
+  const stockOf = (code) => bins.filter(b => b.item_code === code).reduce((a, b) => a + b.actual_qty, 0);
+  /* BOM 组件明细（BOM 量少，逐个取全量） */
+  const bomDocs = await Promise.all(boms.map(b => API.getDoc("BOM", b.name)));
+
+  const groupRows = groups.map(g => {
+    const list = items.filter(i => i.item_group === g.name);
+    return { g, list };
+  }).filter(x => x.list.length);
+
+  box.innerHTML = `
+    ${pageHeader("i-chip", "物料管理", "物料档案 · BOM 配方 · MRP 采购申请（按 BOM 算料，自动扣减库存）",
+      `<button class="btn-amber" onclick="openNewDoc('item')">＋ 新建物料</button>
+       <button class="btn-amber" onclick="openNewDoc('bom')">＋ 新建 BOM</button>
+       <button class="btn-amber" onclick="openNewDoc('mrp')">⚙ MRP 采购申请</button>
+       <span class="pill run">${items.length} 种物料</span>`)}
+    <div class="grid g3" style="margin-bottom:14px">
+      <div class="card stat-card"><span class="stat-ic blue"><svg><use href="#i-chip"/></svg></span>
+        <div class="stat-body"><div class="stat-label">物料档案</div><div class="stat-value">${items.length}<small>种</small></div></div></div>
+      <div class="card stat-card"><span class="stat-ic cyan"><svg><use href="#i-mfg"/></svg></span>
+        <div class="stat-body"><div class="stat-label">BOM 配方</div><div class="stat-value">${boms.length}<small>张</small></div></div></div>
+      <div class="card stat-card"><span class="stat-ic amber"><svg><use href="#i-buy"/></svg></span>
+        <div class="stat-body"><div class="stat-label">采购申请（MRP）</div><div class="stat-value">${mrs.length}<small>张</small></div></div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h3>BOM 配方清单</h3><span style="font-size:12.5px;color:var(--sub)">每款鞋的物料构成，MRP 算料的依据</span></div>
+      <table class="tbl"><thead><tr><th>BOM 单号</th><th>成品款号</th><th>用量基数</th><th>组件构成</th><th>状态</th><th></th></tr></thead>
+        <tbody>${boms.map((b, i) => {
+          const doc = bomDocs[i] || {};
+          const comps = (doc.items || []).map(c => `${esc(c.item_code)} ×${fmtNum(c.qty)}`).join("<br>");
+          return `<tr><td class="mono">${esc(b.name)}</td>
+            <td><b>${esc(b.item)}</b>${b.is_default ? ' <span class="pill ok">默认</span>' : ""}</td>
+            <td class="num">${fmtNum(b.quantity)}</td>
+            <td style="font-size:12.5px;color:var(--sub)">${comps || "—"}</td>
+            <td>${b.is_active ? '<span class="pill ok">启用</span>' : '<span class="pill wait">停用</span>'}</td>
+            <td><button class="btn-sm ghost" onclick="openERP('BOM','${esc(b.name)}')">原单</button></td></tr>`;
+        }).join("") || `<tr><td colspan="6" class="empty">暂无 BOM，点右上角「＋ 新建 BOM」创建</td></tr>`}
+      </tbody></table>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hd"><h3>采购申请（MRP / Material Request）</h3><span style="font-size:12.5px;color:var(--sub)">MRP 算料产生的净需求申请，转采购单的依据</span></div>
+      <table class="tbl"><thead><tr><th>申请单号</th><th>类型</th><th>日期</th><th>状态</th><th></th></tr></thead>
+        <tbody>${mrs.map(m => `<tr><td class="mono">${esc(m.name)}</td>
+          <td>${m.material_request_type === "Purchase" ? "采购" : esc(m.material_request_type)}</td>
+          <td class="num">${fmtDate(m.transaction_date)}</td>
+          <td>${statusPill(m.status, m.docstatus)}</td>
+          <td>${m.docstatus === 0
+            ? `<button class="btn-sm amber" onclick="doSubmitDoc('Material Request','${esc(m.name)}')">提交</button>`
+            : `<button class="btn-sm ghost" onclick="openERP('Material Request','${esc(m.name)}')">原单</button>`}</td></tr>`).join("")
+          || `<tr><td colspan="5" class="empty">暂无申请，点右上角「⚙ MRP 采购申请」按指令单算料</td></tr>`}
+      </tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-hd"><h3>物料档案（按分组）</h3><span style="font-size:12.5px;color:var(--sub)">编码 · 名称 · 单位 · 现有库存</span></div>
+      ${groupRows.map(({ g, list }) => `
+        <div style="padding:10px 18px 2px"><b style="color:var(--amber)">${esc(g.name)}</b>
+          <small style="color:var(--sub);margin-left:8px">${list.length} 种</small></div>
+        <table class="tbl"><thead><tr><th>编码</th><th>名称</th><th>单位</th><th>库存件</th><th>属性</th></tr></thead>
+          <tbody>${list.map(i => `<tr><td class="mono">${esc(i.item_code)}</td>
+            <td>${esc(i.item_name)}</td><td>${esc(i.stock_uom)}</td>
+            <td class="num">${fmtNum(stockOf(i.item_code))}</td>
+            <td>${i.has_variants ? '<span class="pill run">多规格模板</span>' : i.is_stock_item ? '<span class="pill ok">库存件</span>' : '<span class="pill wait">服务/虚拟</span>'}</td></tr>`).join("")}
+          </tbody></table>`).join("")}
     </div>`;
 };
 

@@ -1,0 +1,64 @@
+{
+ "checks": [
+  {
+   "name": "物料管理页 3 张统计卡",
+   "ok": true,
+   "detail": "{'stats': 3, 'bomRows': 2, 'pills': ['14 种物料']}"
+  },
+  {
+   "name": "导航含「物料管理」",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "新建物料 toast",
+   "ok": true,
+   "detail": "物料 TEST-UI-MAT-01 已创建并提交 ✓"
+  },
+  {
+   "name": "物料档案表出现新物料",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "新建 BOM toast",
+   "ok": true,
+   "detail": "BOM BOM-FG-A001-42-BK-001 已创建并提交 ✓"
+  },
+  {
+   "name": "MRP 净需求计算结果有行",
+   "ok": true,
+   "detail": "rows=7"
+  },
+  {
+   "name": "MRP 采购申请 toast",
+   "ok": true,
+   "detail": "采购申请 MAT-MR-2026-00002 已创建并提交 ✓"
+  },
+  {
+   "name": "采购申请列表含新单",
+   "ok": true,
+   "detail": "MAT-MR-2026-00002"
+  },
+  {
+   "name": "无页面 JS 异常",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "created": [
+  [
+   "Item",
+   "TEST-UI-MAT-01"
+  ],
+  [
+   "BOM",
+   "BOM-FG-A001-42-BK-001"
+  ],
+  [
+   "Material Request",
+   "MAT-MR-2026-00002"
+  ]
+ ],
+ "page_errors": []
+}

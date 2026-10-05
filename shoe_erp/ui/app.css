@@ -368,6 +368,15 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
 .fd-actions { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
   padding-top: 16px; border-top: 1px dashed var(--line-2); }
 @media (max-width: 640px) { .nd-form { grid-template-columns: 1fr; } }
+.bom-row { display: grid; grid-template-columns: 1fr 110px 34px; gap: 8px; margin-bottom: 8px; align-items: center; }
+.bom-row .br-item, .bom-row .br-qty { background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 9px;
+  padding: 9px 11px; color: var(--ink); font: inherit; font-size: 13px; outline: none; width: 100%; box-sizing: border-box; }
+.bom-row .br-item:focus, .bom-row .br-qty:focus { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft); }
+.bom-row .br-del { border: 1px solid var(--line-2); background: transparent; border-radius: 9px; height: 36px;
+  cursor: pointer; color: var(--sub); transition: all .15s; }
+.bom-row .br-del:hover { color: var(--red); border-color: rgba(255,107,107,.5); background: rgba(255,107,107,.08); }
+#mrp-run { margin: 4px 0 12px; }
+#mrp-result .tbl { margin-top: 4px; }
 
 .chain { position: relative; padding-left: 30px; }
 .chain::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px;

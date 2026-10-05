@@ -609,6 +609,19 @@ nav.navbar, .navbar, .page-breadcrumbs, footer, .web-footer,
    仅导出内联 onclick 依赖的少量函数 */
 (function() {
 
+/* 站点外壳（Frappe Web Page 容器）就绪后调用 frappe.highlight_code_blocks()，
+   其内部经由已弃用的 hljs.initHighlighting() 输出控制台告警。
+   时序：本脚本先执行，但后加载的 frappe-web.bundle 会把该方法赋回原实现，
+   而 page-change（真正调用点）在 bundle 内 jQuery 的 ready 之后才触发——
+   原生 DOMContentLoaded 监听按注册顺序先于 jQuery ready 执行，
+   因此在此刻覆写为空操作必然落在「bundle 赋值之后、page-change 调用之前」。
+   本门户无任何 <pre>/<code> 代码块，空操作不影响功能 */
+document.addEventListener("DOMContentLoaded", function () {
+  if (window.frappe && typeof frappe.highlight_code_blocks === "function") {
+    frappe.highlight_code_blocks = function () {};
+  }
+});
+
 const COMPANY = "奥登科鞋业有限公司";
 /* 预览环境演示令牌（上线部署前请移除） */
 const DEMO_TOKEN = "77455c7d4b3a8fe:f36c1a4b10e8b5e";

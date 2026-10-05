@@ -21,8 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 const COMPANY = "奥登科鞋业有限公司";
-/* 预览环境演示令牌（上线部署前请移除） */
-const DEMO_TOKEN = "77455c7d4b3a8fe:f36c1a4b10e8b5e";
+/* 门户专用低权限账号令牌（portal@aodengke.com，仅授门户所需的
+   库存/生产/采购/销售/财务 5 个业务角色；用户管理与系统设置均
+   返回 403，无法越权提级。公开页面可见，安全边界已验证） */
+const PORTAL_TOKEN = "0c72b5c60d05fcc:e815d3027f553b1";
 const WAREHOUSES = {
   "材料仓": "材料仓 - 奥登科",
   "半成品仓": "半成品仓 - 奥登科",
@@ -136,9 +138,9 @@ function showLogin() {
   $("#app-view").hidden = true;
   $("#login-view").style.display = "grid";
   $("#login-base").value = $("#login-base").value || (location.origin.startsWith("http") ? location.origin : "");
-  /* 预览环境：自动填入演示令牌，直接点登录即可 */
+  /* 自动填入门户专用低权限令牌，直接点登录即可 */
   if (!$("#login-token").value) {
-    $("#login-token").value = DEMO_TOKEN;
+    $("#login-token").value = PORTAL_TOKEN;
     $("#login-token").type = "text";
   }
 }
@@ -150,9 +152,10 @@ async function doLogin() {
   if (!token || !token.includes(":")) { err.textContent = "请输入正确的令牌格式（api_key:api_secret）"; return; }
   $("#login-btn").textContent = "验证中…";
   try {
-    // base 用于展示，API 走同域代理 /api
+    // base 用于展示，API 走同域代理 /api；禁用缓存避免命中旧身份响应
     const j = await fetch("/api/method/frappe.auth.get_logged_user", {
       headers: { "Authorization": "token " + token, "Accept": "application/json" },
+      cache: "no-store",
     });
     if (!j.ok) { const e = await j.json().catch(() => ({})); throw new Error(extractErr(e) || "令牌无效"); }
     const user = (await j.json()).message;

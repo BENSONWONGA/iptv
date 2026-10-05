@@ -1031,7 +1031,455 @@ const FLOW_MASTER = {
   ],
 };
 
-/* ---------------- 流程图中心（三 Tab） ---------------- */
+/* ============ 补充流程图（十张） ============ */
+/* 图三：生产制造 MES（计划→派工→品检报工→入出库，四条产线） */
+const FLOW_MES = {
+  w: 1440, h: 960,
+  nodes: [
+    { id: "p1", x: 40,  y: 60, w: 130, h: 42, t: "型体产品库", c: "blue" },
+    { id: "p2", x: 210, y: 60, w: 120, h: 42, t: "订单资料", c: "white" },
+    { id: "p3", x: 360, y: 60, w: 130, h: 42, t: "生产主计划", c: "orange" },
+    { id: "p4", x: 520, y: 60, w: 140, h: 42, t: "部门生产计划", c: "orange" },
+    { id: "p5", x: 700, y: 60, w: 120, h: 42, t: "生管派工", c: "orange" },
+    { id: "s1", x: 40,  y: 150, w: 110, h: 40, t: "装备 SOP", c: "cyan", small: 1 },
+    { id: "s2", x: 210, y: 150, w: 110, h: 40, t: "针车 SOP", c: "cyan", small: 1 },
+    { id: "s3", x: 360, y: 150, w: 110, h: 40, t: "成型 SOP", c: "cyan", small: 1 },
+    { id: "s4", x: 520, y: 150, w: 130, h: 40, t: "其它工段 SOP", c: "cyan", small: 1 },
+    { id: "L1a", x: 180, y: 240, w: 120, h: 42, t: "裁备派工", c: "orange" },
+    { id: "L1b", x: 180, y: 330, w: 120, h: 42, t: "裁备检验", c: "peach" },
+    { id: "L1c", x: 180, y: 420, w: 120, h: 42, t: "裁备报工", c: "orange" },
+    { id: "L1d", x: 180, y: 510, w: 120, h: 42, t: "裁备入库", c: "green" },
+    { id: "L2a", x: 340, y: 240, w: 120, h: 42, t: "针车派工", c: "orange" },
+    { id: "L2b", x: 340, y: 330, w: 120, h: 42, t: "针车检验", c: "peach" },
+    { id: "L2c", x: 340, y: 420, w: 120, h: 42, t: "针车报工", c: "orange" },
+    { id: "L2d", x: 340, y: 510, w: 120, h: 42, t: "针车入库", c: "green" },
+    { id: "L3a", x: 500, y: 240, w: 130, h: 42, t: "成型派工", c: "orange" },
+    { id: "L3b", x: 500, y: 330, w: 130, h: 42, t: "成型检验", c: "peach" },
+    { id: "L3c", x: 500, y: 420, w: 130, h: 42, t: "成型报工", c: "orange" },
+    { id: "L3d", x: 500, y: 510, w: 140, h: 42, t: "成品扫描入库", c: "green" },
+    { id: "L4a", x: 680, y: 240, w: 120, h: 42, t: "其它派工", c: "orange" },
+    { id: "L4b", x: 680, y: 330, w: 120, h: 42, t: "其它检验", c: "peach" },
+    { id: "L4c", x: 680, y: 420, w: 120, h: 42, t: "其它报工", c: "orange" },
+    { id: "L4d", x: 680, y: 510, w: 120, h: 42, t: "其它入库", c: "green" },
+    { id: "q1", x: 880, y: 640, w: 130, h: 42, t: "大屏看板", c: "cyan" },
+    { id: "q2", x: 880, y: 700, w: 150, h: 42, t: "生产日报 / 月报", c: "cyan" },
+    { id: "q3", x: 880, y: 760, w: 150, h: 42, t: "移动 APP 查询", c: "cyan" },
+    { id: "q4", x: 1080, y: 700, w: 150, h: 42, t: "条码查询中心", c: "cyan" },
+    { id: "note", x: 880, y: 240, w: 160, h: 42, t: "PDA / 平板作业", c: "purple", small: 1 },
+    { id: "note2", x: 1080, y: 240, w: 170, h: 42, t: "线上工艺标签打印", c: "purple", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 34, t: "计划与派工" },
+    { x: 40, y: 124, t: "工段SOP" },
+    { x: 180, y: 214, t: "裁备线" },
+    { x: 340, y: 214, t: "针车线" },
+    { x: 500, y: 214, t: "成型线" },
+    { x: 680, y: 214, t: "其它工段" },
+    { x: 880, y: 614, t: "综合查询" },
+  ],
+  edges: [
+    { f: "p1", t: "p2", key: 1 }, { f: "p2", t: "p3", key: 1 }, { f: "p3", t: "p4", key: 1 }, { f: "p4", t: "p5", key: 1 },
+    { f: "p5", t: "L1a" }, { f: "p5", t: "L2a" }, { f: "p5", t: "L3a", key: 1 }, { f: "p5", t: "L4a" },
+    { f: "L1a", t: "L1b", key: 1 }, { f: "L1b", t: "L1c", key: 1 }, { f: "L1c", t: "L1d", key: 1 },
+    { f: "L2a", t: "L2b", key: 1 }, { f: "L2b", t: "L2c", key: 1 }, { f: "L2c", t: "L2d", key: 1 },
+    { f: "L3a", t: "L3b", key: 1 }, { f: "L3b", t: "L3c", key: 1 }, { f: "L3c", t: "L3d", key: 1 },
+    { f: "L4a", t: "L4b", key: 1 }, { f: "L4b", t: "L4c", key: 1 }, { f: "L4c", t: "L4d", key: 1 },
+    { f: "L3d", t: "q1" },
+  ],
+};
+
+/* 图四：品质检验管理 */
+const FLOW_QC = {
+  w: 1440, h: 800,
+  nodes: [
+    { id: "i1", x: 40,  y: 60,  w: 120, h: 42, t: "订单资料", c: "white" },
+    { id: "i2", x: 200, y: 60,  w: 120, h: 42, t: "生产派工", c: "white" },
+    { id: "i3", x: 40,  y: 160, w: 130, h: 42, t: "品检基础资料", c: "cyan" },
+    { id: "i4", x: 40,  y: 240, w: 130, h: 42, t: "工段检验项目", c: "cyan" },
+    { id: "i5", x: 40,  y: 560, w: 120, h: 42, t: "测试项目", c: "cyan" },
+    { id: "c1", x: 360, y: 100, w: 130, h: 42, t: "裁断车间检验", c: "orange" },
+    { id: "c2", x: 360, y: 190, w: 130, h: 42, t: "针车车间检验", c: "orange" },
+    { id: "c3", x: 360, y: 280, w: 130, h: 42, t: "成型车间检验", c: "orange" },
+    { id: "c4", x: 360, y: 370, w: 130, h: 42, t: "手工车间检验", c: "orange" },
+    { id: "c5", x: 360, y: 460, w: 130, h: 42, t: "成品验货报告", c: "orange" },
+    { id: "c6", x: 360, y: 550, w: 120, h: 42, t: "翻箱报告", c: "orange" },
+    { id: "c7", x: 200, y: 640, w: 120, h: 42, t: "送测登记", c: "orange" },
+    { id: "c8", x: 360, y: 640, w: 120, h: 42, t: "测试结果", c: "orange" },
+    { id: "on", x: 600, y: 190, w: 130, h: 42, t: "针车线上检验", c: "purple" },
+    { id: "r1", x: 820, y: 100, w: 140, h: 42, t: "检验不良率表", c: "yellow", small: 1 },
+    { id: "r2", x: 820, y: 190, w: 150, h: 42, t: "生产检验日报表", c: "yellow", small: 1 },
+    { id: "r3", x: 820, y: 280, w: 130, h: 42, t: "RFT 月统计表", c: "yellow", small: 1 },
+    { id: "r4", x: 820, y: 370, w: 130, h: 42, t: "品质日报表", c: "yellow", small: 1 },
+    { id: "r5", x: 820, y: 460, w: 150, h: 42, t: "品质状况月报表", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 360, y: 74, t: "检验执行" },
+    { x: 820, y: 74, t: "品质报表" },
+  ],
+  edges: [
+    { f: "i1", t: "i2", key: 1 }, { f: "i2", t: "c1" },
+    { f: "i3", t: "c1" }, { f: "i4", t: "c2" },
+    { f: "c1", t: "c2", key: 1 }, { f: "c2", t: "c3", key: 1 }, { f: "c3", t: "c4", key: 1 },
+    { f: "c4", t: "c5", key: 1 }, { f: "c5", t: "c6", key: 1 },
+    { f: "i5", t: "c7" }, { f: "c7", t: "c8", key: 1 },
+    { f: "c2", t: "on", dash: 1 },
+    { f: "c1", t: "r1" }, { f: "c2", t: "r2" }, { f: "c3", t: "r3" }, { f: "c4", t: "r4" }, { f: "c5", t: "r5" },
+  ],
+};
+
+/* 图五：半成品库存管理 */
+const FLOW_SFC = {
+  w: 1440, h: 820,
+  nodes: [
+    { id: "i1", x: 40,  y: 80,  w: 120, h: 42, t: "仓库资料", c: "cyan" },
+    { id: "i2", x: 40,  y: 180, w: 120, h: 42, t: "订单资料", c: "white" },
+    { id: "i3", x: 200, y: 180, w: 120, h: 42, t: "针车派工", c: "white" },
+    { id: "i4", x: 40,  y: 280, w: 130, h: 42, t: "生产产量录入", c: "orange" },
+    { id: "i5", x: 40,  y: 380, w: 130, h: 42, t: "出入库类别", c: "cyan" },
+    { id: "i6", x: 40,  y: 480, w: 130, h: 42, t: "半库存初始化", c: "cyan" },
+    { id: "a1", x: 400, y: 180, w: 130, h: 44, t: "半成品入库", c: "orange" },
+    { id: "hub", x: 600, y: 380, w: 140, h: 48, t: "半成品库存", c: "green" },
+    { id: "a2", x: 820, y: 380, w: 130, h: 44, t: "半成品出库", c: "orange" },
+    { id: "u1", x: 820, y: 80,  w: 120, h: 42, t: "生产补单", c: "orange" },
+    { id: "u2", x: 820, y: 160, w: 130, h: 42, t: "申购管理 3.0", c: "orange" },
+    { id: "u3", x: 820, y: 240, w: 150, h: 42, t: "非生产领料申请", c: "orange", small: 1 },
+    { id: "v1", x: 820, y: 480, w: 140, h: 42, t: "半成品库存盘点", c: "orange", small: 1 },
+    { id: "v2", x: 1010, y: 480, w: 140, h: 42, t: "半成品库存调整", c: "orange", small: 1 },
+    { id: "v3", x: 1010, y: 560, w: 140, h: 42, t: "半成品库存结转", c: "orange", small: 1 },
+    { id: "r1", x: 1220, y: 80,  w: 140, h: 42, t: "订单用量 3.0", c: "yellow", small: 1 },
+    { id: "r2", x: 1220, y: 160, w: 150, h: 42, t: "半成品进销存报表", c: "yellow", small: 1 },
+    { id: "r3", x: 1220, y: 240, w: 150, h: 42, t: "半成品日进出明细", c: "yellow", small: 1 },
+    { id: "r4", x: 1220, y: 320, w: 150, h: 42, t: "半成品进出统计表", c: "yellow", small: 1 },
+    { id: "r5", x: 1220, y: 400, w: 140, h: 42, t: "半成品配套表", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 54, t: "基础与输入" },
+    { x: 1220, y: 54, t: "库存报表" },
+  ],
+  edges: [
+    { f: "i2", t: "i3", key: 1 }, { f: "i3", t: "a1", key: 1 },
+    { f: "i4", t: "a1" }, { f: "i1", t: "a1" }, { f: "i5", t: "a1" },
+    { f: "a1", t: "hub", key: 1 }, { f: "i6", t: "hub" },
+    { f: "hub", t: "a2", key: 1 },
+    { f: "u1", t: "hub", dash: 1 }, { f: "u2", t: "hub", dash: 1 }, { f: "u3", t: "a2" },
+    { f: "hub", t: "v1", key: 1 }, { f: "v1", t: "v2", key: 1 }, { f: "hub", t: "v3", dash: 1 },
+    { f: "hub", t: "r1" }, { f: "hub", t: "r2" }, { f: "hub", t: "r3" },
+  ],
+};
+
+/* 图六：成品库存与条码（双轨） */
+const FLOW_FG = {
+  w: 1440, h: 900,
+  nodes: [
+    { id: "l1", x: 40,  y: 60,  w: 120, h: 42, t: "仓库资料", c: "cyan" },
+    { id: "l2", x: 40,  y: 150, w: 120, h: 42, t: "订单资料", c: "white" },
+    { id: "l3", x: 200, y: 150, w: 130, h: 42, t: "生产派工单", c: "white" },
+    { id: "l4", x: 400, y: 150, w: 120, h: 42, t: "成品入库", c: "orange" },
+    { id: "l5", x: 40,  y: 430, w: 120, h: 42, t: "出货通知", c: "white" },
+    { id: "l6", x: 400, y: 430, w: 120, h: 42, t: "成品出库", c: "orange" },
+    { id: "l7", x: 600, y: 430, w: 140, h: 42, t: "出货应收明细", c: "yellow", small: 1 },
+    { id: "hub", x: 260, y: 290, w: 150, h: 50, t: "成品库存信息", c: "green" },
+    { id: "o1", x: 620, y: 560, w: 130, h: 42, t: "成品库存盘点", c: "orange", small: 1 },
+    { id: "o2", x: 620, y: 640, w: 130, h: 42, t: "成品库存调整", c: "orange", small: 1 },
+    { id: "o3", x: 620, y: 720, w: 130, h: 42, t: "成品库存结转", c: "orange", small: 1 },
+    { id: "b1", x: 840, y: 60,  w: 120, h: 42, t: "订单装箱", c: "orange" },
+    { id: "b2", x: 840, y: 150, w: 140, h: 42, t: "订单条码管理", c: "orange", small: 1 },
+    { id: "b3", x: 840, y: 240, w: 130, h: 42, t: "成型装盒扫描", c: "purple", small: 1 },
+    { id: "b4", x: 840, y: 330, w: 150, h: 42, t: "订单装箱扫描检测", c: "purple", small: 1 },
+    { id: "b5", x: 840, y: 430, w: 140, h: 42, t: "成品扫描入库", c: "orange", small: 1 },
+    { id: "b6", x: 840, y: 560, w: 140, h: 42, t: "成品扫描出库", c: "orange", small: 1 },
+    { id: "b7", x: 840, y: 700, w: 140, h: 42, t: "条码查询中心", c: "cyan", small: 1 },
+    { id: "r1", x: 1120, y: 60,  w: 150, h: 42, t: "成品进销存报表", c: "yellow", small: 1 },
+    { id: "r2", x: 1120, y: 140, w: 150, h: 42, t: "成品日进出明细表", c: "yellow", small: 1 },
+    { id: "r3", x: 1120, y: 220, w: 150, h: 42, t: "成品进出统计表", c: "yellow", small: 1 },
+    { id: "r4", x: 1120, y: 300, w: 150, h: 42, t: "成品入库欠数明细", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 34, t: "传统账务流" },
+    { x: 840, y: 34, t: "条码实物流" },
+    { x: 1120, y: 34, t: "成品报表" },
+  ],
+  edges: [
+    { f: "l2", t: "l3", key: 1 }, { f: "l3", t: "l4", key: 1 },
+    { f: "l1", t: "hub" }, { f: "l4", t: "hub", key: 1 },
+    { f: "hub", t: "l6", key: 1 }, { f: "l5", t: "l6" }, { f: "l6", t: "l7", key: 1 },
+    { f: "hub", t: "o1" }, { f: "hub", t: "o2" }, { f: "hub", t: "o3" },
+    { f: "b1", t: "b2", key: 1 }, { f: "b2", t: "b4", key: 1 }, { f: "b3", t: "b2", dash: 1 },
+    { f: "b4", t: "b5", key: 1 }, { f: "b5", t: "hub", key: 1 },
+    { f: "b5", t: "b6", dash: 1 }, { f: "l5", t: "b6" }, { f: "b6", t: "b7" },
+    { f: "hub", t: "r1" }, { f: "hub", t: "r2" }, { f: "hub", t: "r3" }, { f: "hub", t: "r4" },
+  ],
+};
+
+/* 图七：应收账款 */
+const FLOW_AR = {
+  w: 1440, h: 800,
+  nodes: [
+    { id: "s1", x: 40,  y: 60,  w: 120, h: 42, t: "成品出货", c: "white" },
+    { id: "s2", x: 40,  y: 140, w: 120, h: 42, t: "样品出货", c: "white" },
+    { id: "s3", x: 40,  y: 220, w: 120, h: 42, t: "外卖材料", c: "white" },
+    { id: "s4", x: 40,  y: 300, w: 140, h: 42, t: "成品退货入库", c: "white", small: 1 },
+    { id: "s5", x: 40,  y: 380, w: 140, h: 42, t: "SKU 单价管理", c: "cyan", small: 1 },
+    { id: "e0", x: 240, y: 60,  w: 120, h: 42, t: "应收项目", c: "cyan" },
+    { id: "e1", x: 240, y: 150, w: 140, h: 42, t: "订单预收申请", c: "orange", small: 1 },
+    { id: "e2", x: 440, y: 190, w: 140, h: 44, t: "出货应收明细", c: "orange" },
+    { id: "e3", x: 660, y: 190, w: 130, h: 44, t: "应收对账单", c: "orange" },
+    { id: "e4", x: 860, y: 190, w: 120, h: 44, t: "收款单", c: "orange" },
+    { id: "e5", x: 1060, y: 190, w: 120, h: 44, t: "收支管理", c: "green" },
+    { id: "e6", x: 440, y: 320, w: 120, h: 42, t: "其他应收", c: "orange" },
+    { id: "e7", x: 660, y: 320, w: 130, h: 42, t: "应收扣款单", c: "orange" },
+    { id: "e8", x: 860, y: 320, w: 130, h: 42, t: "客户发票管理", c: "cyan", small: 1 },
+    { id: "e9", x: 860, y: 400, w: 120, h: 42, t: "应收初始化", c: "blue", small: 1 },
+    { id: "r1", x: 1240, y: 60,  w: 130, h: 42, t: "收款明细表", c: "yellow", small: 1 },
+    { id: "r2", x: 1240, y: 140, w: 130, h: 42, t: "未收统计表", c: "yellow", small: 1 },
+    { id: "r3", x: 1240, y: 220, w: 130, h: 42, t: "收款汇总表", c: "yellow", small: 1 },
+    { id: "r4", x: 1240, y: 300, w: 130, h: 42, t: "应收对账表", c: "yellow", small: 1 },
+    { id: "r5", x: 1240, y: 380, w: 130, h: 42, t: "扣款明细表", c: "yellow", small: 1 },
+    { id: "r6", x: 1240, y: 460, w: 140, h: 42, t: "其他应收明细表", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 34, t: "业务来源" },
+    { x: 240, y: 34, t: "应收流程" },
+    { x: 1240, y: 34, t: "应收报表" },
+  ],
+  edges: [
+    { f: "s1", t: "e2", key: 1 }, { f: "s2", t: "e2" }, { f: "s3", t: "e2" }, { f: "s4", t: "e2", dash: 1 }, { f: "s5", t: "e2" },
+    { f: "e0", t: "e1", key: 1 }, { f: "e0", t: "e6" },
+    { f: "e2", t: "e3", key: 1 }, { f: "e6", t: "e3" }, { f: "e7", t: "e3" },
+    { f: "e3", t: "e4", key: 1 }, { f: "e8", t: "e4" }, { f: "e9", t: "e4" },
+    { f: "e4", t: "e5", key: 1 },
+    { f: "e4", t: "r1" }, { f: "e3", t: "r4" }, { f: "e7", t: "r5" }, { f: "e6", t: "r6" },
+  ],
+};
+
+/* 图八：应付账款 */
+const FLOW_AP = {
+  w: 1440, h: 820,
+  nodes: [
+    { id: "s1", x: 40,  y: 80,  w: 120, h: 42, t: "委外入库", c: "white" },
+    { id: "s2", x: 40,  y: 160, w: 120, h: 42, t: "验收入库", c: "white" },
+    { id: "s3", x: 40,  y: 240, w: 120, h: 42, t: "采购退货", c: "white" },
+    { id: "s4", x: 40,  y: 320, w: 120, h: 42, t: "材料报价", c: "cyan" },
+    { id: "e0", x: 240, y: 80,  w: 120, h: 42, t: "应付项目", c: "cyan" },
+    { id: "e1", x: 240, y: 180, w: 140, h: 44, t: "验收应付明细", c: "orange" },
+    { id: "e2", x: 460, y: 180, w: 140, h: 44, t: "工厂应付确认", c: "orange" },
+    { id: "e3", x: 680, y: 180, w: 130, h: 44, t: "应付对账单", c: "orange" },
+    { id: "e4", x: 880, y: 180, w: 120, h: 44, t: "付款单", c: "orange" },
+    { id: "e5", x: 1080, y: 180, w: 120, h: 44, t: "收支管理", c: "green" },
+    { id: "e6", x: 460, y: 320, w: 120, h: 42, t: "其他应付", c: "orange" },
+    { id: "e7", x: 680, y: 320, w: 130, h: 42, t: "应付扣款单", c: "orange" },
+    { id: "e8", x: 880, y: 320, w: 120, h: 42, t: "应付初始化", c: "blue", small: 1 },
+    { id: "e9", x: 880, y: 400, w: 120, h: 42, t: "发票登记", c: "cyan", small: 1 },
+    { id: "r1", x: 1260, y: 60,  w: 130, h: 42, t: "应付账龄分析", c: "yellow", small: 1 },
+    { id: "r2", x: 1260, y: 140, w: 130, h: 42, t: "应付明细表", c: "yellow", small: 1 },
+    { id: "r3", x: 1260, y: 220, w: 140, h: 42, t: "对账明细表", c: "yellow", small: 1 },
+    { id: "r4", x: 1260, y: 300, w: 130, h: 42, t: "未付统计表", c: "yellow", small: 1 },
+    { id: "r5", x: 1260, y: 380, w: 130, h: 42, t: "付款汇总表", c: "yellow", small: 1 },
+    { id: "r6", x: 1260, y: 460, w: 140, h: 42, t: "采购差异分析", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 54, t: "业务来源" },
+    { x: 240, y: 54, t: "应付流程" },
+    { x: 1260, y: 54, t: "应付报表" },
+  ],
+  edges: [
+    { f: "s1", t: "e1", key: 1 }, { f: "s2", t: "e1", key: 1 }, { f: "s3", t: "e1", dash: 1 }, { f: "s4", t: "e1" },
+    { f: "e0", t: "e6" },
+    { f: "e1", t: "e2", key: 1 }, { f: "e2", t: "e3", key: 1 },
+    { f: "e6", t: "e3" }, { f: "e7", t: "e3" },
+    { f: "e3", t: "e4", key: 1 }, { f: "e8", t: "e4" }, { f: "e9", t: "e4" },
+    { f: "e4", t: "e5", key: 1 },
+    { f: "e3", t: "r3" }, { f: "e4", t: "r5" }, { f: "e7", t: "r4", dash: 1 },
+  ],
+};
+
+/* 图九：成本核算 */
+const FLOW_COST = {
+  w: 1440, h: 860,
+  nodes: [
+    { id: "s1", x: 40,  y: 80,  w: 120, h: 42, t: "材料加工", c: "white" },
+    { id: "s2", x: 40,  y: 160, w: 120, h: 42, t: "成品入库", c: "white" },
+    { id: "s3", x: 40,  y: 240, w: 120, h: 42, t: "仓库发料", c: "white" },
+    { id: "s4", x: 40,  y: 320, w: 120, h: 42, t: "委外入库", c: "white" },
+    { id: "c1", x: 220, y: 80,  w: 130, h: 42, t: "加工料核销", c: "orange" },
+    { id: "c2", x: 400, y: 80,  w: 140, h: 42, t: "物料存货核算", c: "orange", small: 1 },
+    { id: "c3", x: 220, y: 240, w: 120, h: 44, t: "成本项目", c: "orange" },
+    { id: "c4", x: 420, y: 240, w: 120, h: 44, t: "成本计算", c: "orange" },
+    { id: "c5", x: 600, y: 240, w: 120, h: 44, t: "成本结转", c: "orange" },
+    { id: "c6", x: 780, y: 240, w: 140, h: 44, t: "成品存货核算", c: "orange", small: 1 },
+    { id: "c7", x: 980, y: 240, w: 140, h: 44, t: "销售成本计算", c: "orange", small: 1 },
+    { id: "c8", x: 1180, y: 240, w: 140, h: 44, t: "自动生成凭证", c: "green", small: 1 },
+    { id: "std1", x: 620, y: 80,  w: 140, h: 42, t: "订单标准成本", c: "orange", small: 1 },
+    { id: "std2", x: 820, y: 80,  w: 150, h: 42, t: "订单标准成本表", c: "yellow", small: 1 },
+    { id: "p1", x: 220, y: 420, w: 120, h: 42, t: "分摊方式", c: "cyan" },
+    { id: "p2", x: 420, y: 420, w: 120, h: 42, t: "成控中心", c: "cyan" },
+    { id: "x1", x: 1180, y: 80, w: 160, h: 42, t: "完工订单异常追踪表", c: "purple", small: 1 },
+    { id: "r1", x: 100, y: 640, w: 130, h: 42, t: "进销存报表", c: "yellow", small: 1 },
+    { id: "r2", x: 280, y: 640, w: 150, h: 42, t: "领料金额汇总表", c: "yellow", small: 1 },
+    { id: "r3", x: 480, y: 640, w: 130, h: 42, t: "订单成本汇总", c: "yellow", small: 1 },
+    { id: "r4", x: 660, y: 640, w: 160, h: 42, t: "标准成本汇总(CBD)", c: "yellow", small: 1 },
+    { id: "r5", x: 880, y: 640, w: 120, h: 42, t: "财务锁账", c: "green", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 54, t: "业务触发" },
+    { x: 100, y: 614, t: "成本报表与锁账" },
+  ],
+  edges: [
+    { f: "s1", t: "c1", key: 1 },
+    { f: "c1", t: "c2", key: 1 },
+    { f: "c2", t: "std1", key: 1 }, { f: "std1", t: "std2", key: 1 },
+    { f: "s2", t: "c3" }, { f: "s3", t: "c3" }, { f: "s4", t: "c3" },
+    { f: "c3", t: "c4", key: 1 }, { f: "p1", t: "c4" },
+    { f: "c4", t: "c5", key: 1 }, { f: "p2", t: "c5" },
+    { f: "c5", t: "c6", key: 1 }, { f: "c6", t: "c7", key: 1 },
+    { f: "c7", t: "c8", key: 1 },
+    { f: "c8", t: "r5", key: 1 },
+  ],
+};
+
+/* 图十：固定资产 */
+const FLOW_ASSET = {
+  w: 1440, h: 760,
+  nodes: [
+    { id: "i1", x: 40,  y: 80,  w: 120, h: 42, t: "资产类别", c: "cyan" },
+    { id: "i2", x: 40,  y: 160, w: 120, h: 42, t: "使用情况", c: "cyan" },
+    { id: "i3", x: 40,  y: 240, w: 120, h: 42, t: "增减方式", c: "cyan" },
+    { id: "i4", x: 40,  y: 320, w: 120, h: 42, t: "存放地址", c: "cyan" },
+    { id: "hub", x: 260, y: 200, w: 130, h: 46, t: "资产明细", c: "orange" },
+    { id: "d1", x: 260, y: 80,  w: 120, h: 42, t: "调动类别", c: "cyan" },
+    { id: "a1", x: 480, y: 60,  w: 120, h: 42, t: "资产领用", c: "orange" },
+    { id: "a2", x: 480, y: 140, w: 120, h: 42, t: "资产调动", c: "orange" },
+    { id: "a3", x: 480, y: 220, w: 120, h: 42, t: "资产变动", c: "orange" },
+    { id: "a4", x: 480, y: 300, w: 120, h: 42, t: "资产维修", c: "orange" },
+    { id: "a5", x: 480, y: 380, w: 120, h: 42, t: "资产减少", c: "orange" },
+    { id: "a6", x: 480, y: 460, w: 120, h: 42, t: "资产盘点", c: "orange" },
+    { id: "dep", x: 260, y: 460, w: 120, h: 42, t: "资产折旧", c: "orange" },
+    { id: "o1", x: 700, y: 140, w: 130, h: 42, t: "调动追踪表", c: "yellow", small: 1 },
+    { id: "o2", x: 700, y: 220, w: 130, h: 42, t: "变动追踪表", c: "yellow", small: 1 },
+    { id: "o3", x: 700, y: 300, w: 120, h: 42, t: "其他应付", c: "green" },
+    { id: "o4", x: 700, y: 380, w: 120, h: 42, t: "收支管理", c: "green" },
+    { id: "o5", x: 700, y: 460, w: 120, h: 42, t: "盘点扫描", c: "cyan", small: 1 },
+    { id: "o6", x: 700, y: 560, w: 130, h: 42, t: "总账凭证", c: "green" },
+  ],
+  groups: [
+    { x: 40, y: 54, t: "基础属性" },
+    { x: 480, y: 34, t: "资产业务操作" },
+    { x: 700, y: 34, t: "结果与财务" },
+  ],
+  edges: [
+    { f: "i1", t: "hub", key: 1 }, { f: "i2", t: "hub" }, { f: "i3", t: "hub" }, { f: "i4", t: "hub" },
+    { f: "hub", t: "a1", key: 1 }, { f: "hub", t: "a2", key: 1 }, { f: "hub", t: "a3", key: 1 },
+    { f: "hub", t: "a4", key: 1 }, { f: "hub", t: "a5", key: 1 }, { f: "hub", t: "a6", key: 1 },
+    { f: "d1", t: "a2" },
+    { f: "a2", t: "o1" }, { f: "a3", t: "o2" },
+    { f: "a4", t: "o3" }, { f: "o3", t: "o4" },
+    { f: "a6", t: "o5" },
+    { f: "hub", t: "dep", key: 1 }, { f: "dep", t: "o6", key: 1 },
+  ],
+};
+
+/* 图十一：财务总账 */
+const FLOW_GL = {
+  w: 1440, h: 900,
+  nodes: [
+    { id: "b1", x: 40,  y: 60,  w: 120, h: 42, t: "基本资料", c: "cyan" },
+    { id: "b2", x: 40,  y: 130, w: 120, h: 42, t: "核算项目", c: "cyan" },
+    { id: "b3", x: 40,  y: 200, w: 120, h: 42, t: "科目管理", c: "cyan" },
+    { id: "b4", x: 40,  y: 270, w: 120, h: 42, t: "会计期间", c: "cyan" },
+    { id: "b5", x: 40,  y: 340, w: 130, h: 42, t: "科目初始化", c: "cyan", small: 1 },
+    { id: "b6", x: 40,  y: 470, w: 140, h: 42, t: "期间汇率管理", c: "cyan", small: 1 },
+    { id: "b7", x: 40,  y: 540, w: 150, h: 42, t: "转凭证科目设置", c: "cyan", small: 1 },
+    { id: "b8", x: 40,  y: 610, w: 120, h: 42, t: "报表公式", c: "cyan", small: 1 },
+    { id: "g0", x: 240, y: 340, w: 120, h: 44, t: "收支管理", c: "green" },
+    { id: "g1", x: 240, y: 170, w: 120, h: 42, t: "收款单", c: "white" },
+    { id: "g2", x: 240, y: 240, w: 120, h: 42, t: "付款单", c: "white" },
+    { id: "g3", x: 240, y: 600, w: 130, h: 42, t: "报销申请单", c: "white", small: 1 },
+    { id: "g4", x: 420, y: 340, w: 120, h: 44, t: "凭证录入", c: "orange" },
+    { id: "g5", x: 420, y: 170, w: 140, h: 42, t: "自动生成凭证", c: "orange", small: 1 },
+    { id: "g6", x: 580, y: 340, w: 120, h: 44, t: "凭证审核", c: "orange" },
+    { id: "g7", x: 740, y: 340, w: 120, h: 44, t: "凭证过账", c: "orange" },
+    { id: "g8", x: 900, y: 340, w: 120, h: 44, t: "期末调汇", c: "orange" },
+    { id: "g9", x: 1060, y: 440, w: 120, h: 44, t: "损益结转", c: "orange" },
+    { id: "g10", x: 1060, y: 560, w: 120, h: 44, t: "期末结账", c: "green" },
+    { id: "k1", x: 740, y: 480, w: 120, h: 42, t: "日记账", c: "yellow", small: 1 },
+    { id: "k2", x: 740, y: 550, w: 130, h: 42, t: "明细分类账", c: "yellow", small: 1 },
+    { id: "k3", x: 740, y: 620, w: 130, h: 42, t: "总分类账", c: "yellow", small: 1 },
+    { id: "k4", x: 740, y: 690, w: 120, h: 42, t: "科目余额", c: "yellow", small: 1 },
+    { id: "f1", x: 1060, y: 660, w: 130, h: 42, t: "资产负债表", c: "yellow", small: 1 },
+    { id: "f2", x: 1220, y: 560, w: 110, h: 42, t: "利润表", c: "yellow", small: 1 },
+    { id: "f3", x: 1220, y: 660, w: 130, h: 42, t: "现金流量表", c: "yellow", small: 1 },
+    { id: "f4", x: 1220, y: 740, w: 130, h: 42, t: "现金流量项目", c: "cyan", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 34, t: "基础设置" },
+    { x: 420, y: 54, t: "凭证处理" },
+    { x: 1060, y: 34, t: "期末处理" },
+    { x: 740, y: 454, t: "账簿" },
+  ],
+  edges: [
+    { f: "g1", t: "g0", key: 1 }, { f: "g2", t: "g0", key: 1 }, { f: "g3", t: "g0" },
+    { f: "g0", t: "g4", key: 1 }, { f: "b5", t: "g4" }, { f: "g5", t: "g4" }, { f: "b7", t: "g5" },
+    { f: "g4", t: "g6", key: 1 }, { f: "g6", t: "g7", key: 1 },
+    { f: "g7", t: "g8", key: 1 }, { f: "b6", t: "g8" },
+    { f: "g8", t: "g9", key: 1 }, { f: "g9", t: "g10", key: 1 },
+    { f: "g9", t: "f1", key: 1 }, { f: "g9", t: "f2", key: 1 }, { f: "g9", t: "f3", key: 1 },
+    { f: "b8", t: "f2" }, { f: "f4", t: "f3" },
+    { f: "g7", t: "k1" }, { f: "g7", t: "k2" }, { f: "g7", t: "k3" }, { f: "g7", t: "k4" },
+  ],
+};
+
+/* 图十二：人力资源 */
+const FLOW_HR = {
+  w: 1440, h: 900,
+  nodes: [
+    { id: "h1", x: 40,  y: 80,  w: 120, h: 42, t: "基本资料", c: "cyan" },
+    { id: "h2", x: 40,  y: 150, w: 120, h: 42, t: "部门资料", c: "cyan" },
+    { id: "h3", x: 40,  y: 220, w: 120, h: 42, t: "职位资料", c: "cyan" },
+    { id: "h4", x: 40,  y: 290, w: 120, h: 42, t: "工种资料", c: "cyan" },
+    { id: "h5", x: 40,  y: 360, w: 120, h: 42, t: "保险项目", c: "cyan" },
+    { id: "h6", x: 40,  y: 430, w: 120, h: 42, t: "奖惩项目", c: "cyan" },
+    { id: "emp", x: 240, y: 240, w: 120, h: 46, t: "职工档案", c: "orange" },
+    { id: "e1", x: 440, y: 60,  w: 120, h: 42, t: "劳动合同", c: "orange" },
+    { id: "e2", x: 440, y: 130, w: 120, h: 42, t: "升迁调动", c: "orange" },
+    { id: "e3", x: 440, y: 200, w: 120, h: 42, t: "培训记录", c: "orange" },
+    { id: "e4", x: 440, y: 270, w: 120, h: 42, t: "宿舍管理", c: "orange" },
+    { id: "e5", x: 440, y: 340, w: 120, h: 42, t: "离职作业", c: "orange" },
+    { id: "k1", x: 40,  y: 560, w: 120, h: 42, t: "考勤类别", c: "cyan" },
+    { id: "k2", x: 40,  y: 630, w: 120, h: 42, t: "班次设置", c: "cyan" },
+    { id: "k3", x: 220, y: 560, w: 120, h: 42, t: "打卡记录", c: "white" },
+    { id: "k4", x: 220, y: 630, w: 120, h: 42, t: "补卡记录", c: "white" },
+    { id: "k5", x: 220, y: 700, w: 120, h: 42, t: "异常考勤", c: "white" },
+    { id: "d1", x: 420, y: 630, w: 120, h: 42, t: "考勤日报", c: "orange" },
+    { id: "d2", x: 600, y: 630, w: 120, h: 42, t: "考勤汇总", c: "orange" },
+    { id: "d3", x: 420, y: 710, w: 120, h: 42, t: "标准工时", c: "cyan" },
+    { id: "p1", x: 800, y: 560, w: 120, h: 42, t: "费用项目", c: "cyan" },
+    { id: "p2", x: 800, y: 630, w: 120, h: 42, t: "薪资项目", c: "cyan" },
+    { id: "p3", x: 980, y: 560, w: 130, h: 42, t: "行政费用记录", c: "orange", small: 1 },
+    { id: "p4", x: 980, y: 630, w: 120, h: 42, t: "调薪明细", c: "orange", small: 1 },
+    { id: "pay", x: 1180, y: 620, w: 130, h: 50, t: "薪资计算", c: "green" },
+    { id: "r1", x: 800, y: 60,  w: 130, h: 42, t: "人事档案表", c: "yellow", small: 1 },
+    { id: "r2", x: 800, y: 130, w: 130, h: 42, t: "离职分析表", c: "yellow", small: 1 },
+    { id: "r3", x: 800, y: 200, w: 150, h: 42, t: "出勤人数统计表", c: "yellow", small: 1 },
+    { id: "r4", x: 800, y: 270, w: 130, h: 42, t: "薪资分析表", c: "yellow", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 54, t: "人事基础资料" },
+    { x: 40, y: 534, t: "考勤管理" },
+    { x: 800, y: 534, t: "薪资核算" },
+    { x: 800, y: 34, t: "人事报表" },
+  ],
+  edges: [
+    { f: "h1", t: "emp", key: 1 }, { f: "h2", t: "emp" }, { f: "h3", t: "emp" }, { f: "h4", t: "emp" }, { f: "h5", t: "emp" }, { f: "h6", t: "emp" },
+    { f: "emp", t: "e1", key: 1 }, { f: "emp", t: "e2", key: 1 }, { f: "emp", t: "e3", key: 1 }, { f: "emp", t: "e4", key: 1 }, { f: "emp", t: "e5", key: 1 },
+    { f: "k3", t: "d1", key: 1 }, { f: "k4", t: "d1" }, { f: "k5", t: "d1" }, { f: "k1", t: "d1" }, { f: "k2", t: "d1" },
+    { f: "d1", t: "d2", key: 1 }, { f: "d3", t: "d2" },
+    { f: "p1", t: "p3" }, { f: "p2", t: "p4" },
+    { f: "d2", t: "pay", key: 1 }, { f: "p3", t: "pay", key: 1 }, { f: "p4", t: "pay", key: 1 },
+    { f: "emp", t: "r1" }, { f: "e5", t: "r2" }, { f: "d2", t: "r3" }, { f: "pay", t: "r4" },
+  ],
+};
+
+/* ---------------- 流程图中心（13 视图分组导航） ---------------- */
 PAGES.flow = async function (box) {
   const sos = await API.list("Sales Order", ["name", "custom_factory_order_no"], [["docstatus", "=", 1]], 10);
   const fo = sos[0]?.custom_factory_order_no;
@@ -1054,37 +1502,95 @@ PAGES.flow = async function (box) {
     chainHTML = `<div class="card card-bd empty">暂无已提交订单，无法生成链路图</div>`;
   }
 
-  const legendMain = `<div class="flow-legend">
-    <span><i style="background:#7FA8E8"></i>产品数据</span><span><i style="background:#A78BFA"></i>订单处理</span>
-    <span><i style="background:#FFB020"></i>生产执行</span><span><i style="background:#6ED592"></i>采购管理</span>
-    <span><i style="background:#FF8A70"></i>仓储质检</span><span><i style="background:#FFC455"></i>财务核算</span>
-    <span><i style="background:#4FD1C5"></i>辅助支撑</span></div>`;
-  const legendMaster = `<div class="flow-legend">
-    <span><i style="background:#4FD1C5"></i>编码上游基础</span><span><i style="background:#7FA8E8"></i>编码要素</span>
-    <span><i style="background:#E8EDF6"></i>编码结果</span><span><i style="background:#6ED592"></i>业务应用</span>
-    <span><i style="background:#FFC455"></i>业务伙伴资料</span><span><i style="background:#A78BFA"></i>系统扩展</span>
-    <span><i style="background:#8B96A8"></i>规则资料</span></div>`;
+  /* 图例与说明（按视图配置） */
+  const lg = (pairs) => `<div class="flow-legend">${pairs.map(([c, l]) => `<span><i style="background:${FLOW_COLORS[c][1]}"></i>${l}</span>`).join("")}</div>`;
+  const V = {
+    main: {
+      lg: lg([["blue", "产品数据"], ["purple", "订单处理"], ["orange", "生产执行"], ["green", "采购管理"], ["peach", "仓储质检"], ["yellow", "财务核算"], ["cyan", "辅助支撑"]]),
+      cfg: FLOW_MAIN,
+      note: "从型体产品库到财务三大报表的全景业务流：BOM 驱动订单用量 → 生产派工 / 采购 → 暂收-检验-入库 → 领料出库 → 应付与成本 → 凭证与报表",
+    },
+    master: {
+      lg: lg([["cyan", "编码上游基础"], ["blue", "编码要素"], ["white", "编码结果"], ["green", "业务应用"], ["yellow", "业务伙伴资料"], ["purple", "系统扩展"], ["gray", "规则资料"]]),
+      cfg: FLOW_MASTER,
+      note: "四组基础资料为全系统主数据底座；物料编码由「大类 + 品名 + 规格 + 颜色」四要素生成，直达采购管理",
+    },
+    mes: {
+      lg: lg([["blue", "产品数据"], ["white", "订单输入"], ["orange", "计划派工与报工"], ["cyan", "工段SOP与查询"], ["peach", "工序检验"], ["green", "扫描入库"], ["purple", "现场工具"]]),
+      cfg: FLOW_MES,
+      note: "生管派工下发裁备 / 针车 / 成型 / 其它四条产线，每线走「派工 → 检验 → 报工 → 扫描入库」闭环；PDA / 平板现场作业并打印工艺标签，产量汇聚大屏看板与条码查询中心",
+    },
+    qc: {
+      lg: lg([["white", "订单与派工"], ["cyan", "品检基础"], ["orange", "检验执行"], ["purple", "线上检验"], ["yellow", "品质报表"]]),
+      cfg: FLOW_QC,
+      note: "依据品检基础资料与工段检验项目执行车间检验，成品验货 / 翻箱 / 送测闭环，检验不良率与 RFT 月统计报表支撑品质改善",
+    },
+    sfc: {
+      lg: lg([["cyan", "基础设置"], ["white", "订单派工"], ["orange", "出入库业务"], ["green", "半成品库存"], ["yellow", "库存报表"]]),
+      cfg: FLOW_SFC,
+      note: "针车产量录入生成半成品入库，半成品库存统一驱动出库、盘点、调整、结转，进销存与配套报表全程可视",
+    },
+    fg: {
+      lg: lg([["cyan", "仓库与条码查询"], ["white", "订单与出货"], ["orange", "出入库业务"], ["green", "成品库存"], ["purple", "扫描作业"], ["yellow", "应收与报表"]]),
+      cfg: FLOW_FG,
+      note: "生产入库与出货通知双轨驱动成品库存；订单装箱 / 条码 / 扫描出入库防止错发漏发，出货同步生成应收明细",
+    },
+    ar: {
+      lg: lg([["white", "业务来源"], ["cyan", "应收基础"], ["orange", "应收流程"], ["green", "收支管理"], ["blue", "期初初始化"], ["yellow", "应收报表"]]),
+      cfg: FLOW_AR,
+      note: "成品 / 样品 / 外卖材料出货统一生成出货应收明细，经对账单与收款单进入收支管理，支持预收、扣款与发票管理",
+    },
+    ap: {
+      lg: lg([["white", "业务来源"], ["cyan", "应付基础"], ["orange", "应付流程"], ["green", "收支管理"], ["blue", "期初初始化"], ["yellow", "应付报表"]]),
+      cfg: FLOW_AP,
+      note: "委外与验收入库生成应付明细，工厂确认后与供应商对账，付款单进入收支管理，完成厂商对账闭环",
+    },
+    cost: {
+      lg: lg([["white", "业务触发"], ["cyan", "分摊与成控"], ["orange", "核算流程"], ["green", "凭证与锁账"], ["yellow", "标准成本与报表"], ["purple", "异常追踪"]]),
+      cfg: FLOW_COST,
+      note: "材料加工核销与成本项目归集，成本计算 → 成本结转 → 存货核算 → 销售成本，自动生成凭证并财务锁账",
+    },
+    asset: {
+      lg: lg([["cyan", "基础属性"], ["orange", "资产业务"], ["green", "财务结果"], ["yellow", "追踪报表"]]),
+      cfg: FLOW_ASSET,
+      note: "资产明细统一驱动领用 / 调动 / 变动 / 维修 / 减少 / 盘点六类业务，折旧自动生成总账凭证",
+    },
+    gl: {
+      lg: lg([["cyan", "基础设置"], ["white", "收付款单"], ["green", "收支与结账"], ["orange", "凭证处理"], ["yellow", "账簿与报表"]]),
+      cfg: FLOW_GL,
+      note: "收付款与报销汇总生成凭证，审核 → 过账 → 期末调汇 → 损益结转 → 期末结账，输出日记账、明细账与三大报表",
+    },
+    hr: {
+      lg: lg([["cyan", "基础资料"], ["white", "考勤记录"], ["orange", "人事与考勤业务"], ["green", "薪资计算"], ["yellow", "人事报表"]]),
+      cfg: FLOW_HR,
+      note: "人事档案、考勤、薪资一体化：打卡 / 补卡 / 异常考勤汇总为考勤日报，连同标准工时与调薪明细进入薪资计算",
+    },
+  };
+
+  /* 分组 Tab 导航 */
+  const GROUPS = [
+    ["核心链路", [["chain", "指令单链路穿透"], ["main", "ERP 总体业务流程"], ["master", "基础资料与物料编码"]]],
+    ["生产管理", [["mes", "生产制造 MES"], ["qc", "品质检验管理"]]],
+    ["仓储管理", [["sfc", "半成品库存管理"], ["fg", "成品库存与条码"]]],
+    ["财务管理", [["ar", "应收账款"], ["ap", "应付账款"], ["cost", "成本核算"], ["asset", "固定资产"], ["gl", "财务总账"]]],
+    ["人力资源", [["hr", "人力资源"]]],
+  ];
+  const tabsHTML = GROUPS.map(([g, items]) =>
+    `<span class="ft-group">${g}</span>` + items.map(([k, t]) => `<button data-tab="${k}">${t}</button>`).join("")).join("");
 
   box.innerHTML = `
-    ${pageHeader("i-link", "流程图中心", "指令单链路穿透 + ERP 全景业务流程 + 基础资料与物料编码",
-      `<span class="pill run">共 3 张流程图</span>`)}
-    <div class="flow-tabs">
-      <button data-tab="chain" class="active">指令单链路穿透</button>
-      <button data-tab="main">ERP 总体业务流程</button>
-      <button data-tab="master">基础资料与物料编码</button>
-    </div>
+    ${pageHeader("i-link", "流程图中心", "指令单链路穿透 + 生产 / 仓储 / 财务 / 人资全景流程图",
+      `<span class="pill run">共 13 张流程图</span>`)}
+    <div class="flow-tabs">${tabsHTML}</div>
     <div id="flow-tab-body"></div>`;
 
   const body = $("#flow-tab-body");
   const renderTab = (tab) => {
     if (tab === "chain") {
       body.innerHTML = `<p class="flow-note" style="text-align:left">指令单 ${esc(fo || "—")} 的 14 步单据链路，金色节点为已完成环节</p>${chainHTML}`;
-    } else if (tab === "main") {
-      body.innerHTML = legendMain + flowRender(FLOW_MAIN) +
-        `<p class="flow-note">从型体产品库到财务三大报表的全景业务流：BOM 驱动订单用量 → 生产派工 / 采购 → 暂收-检验-入库 → 领料出库 → 应付与成本 → 凭证与报表</p>`;
     } else {
-      body.innerHTML = legendMaster + flowRender(FLOW_MASTER) +
-        `<p class="flow-note">四组基础资料为全系统主数据底座；物料编码由「大类 + 品名 + 规格 + 颜色」四要素生成，直达采购管理</p>`;
+      const v = V[tab] || V.main;
+      body.innerHTML = v.lg + flowRender(v.cfg) + `<p class="flow-note">${v.note}</p>`;
     }
     $$(".flow-tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
   };

@@ -424,7 +424,9 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
   box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 3px 12px rgba(255, 176, 32, .4); }
 
 /* ============ 流程图中心（Tab + SVG 流程图） ============ */
-.flow-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.flow-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+.flow-tabs .ft-group { font-size: 11.5px; color: var(--faint); font-weight: 700; letter-spacing: 2px; margin: 0 6px 0 10px; }
+.flow-tabs .ft-group:first-child { margin-left: 0; }
 .flow-tabs button { border: 1px solid var(--line-2); background: transparent; color: var(--sub);
   padding: 8px 18px; border-radius: 10px; font-size: 13.5px; font-family: inherit; font-weight: 600;
   cursor: pointer; transition: all .18s var(--ease); }

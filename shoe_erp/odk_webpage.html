@@ -737,6 +737,7 @@ function enterApp() {
   const u = localStorage.getItem("odk_user") || "Administrator";
   $("#tnav-user-name").textContent = u === "Administrator" ? "系统管理员" : u;
   $("#tnav-user-role").textContent = u;
+  if (!location.hash) history.replaceState(null, "", "#/dashboard");
   render();
 }
 

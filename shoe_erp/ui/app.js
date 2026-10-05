@@ -118,7 +118,7 @@ function openERP(doctype, name) {
 function showLogin() {
   localStorage.removeItem("odk_token");
   $("#app-view").hidden = true;
-  $("#login-view").style.display = "flex";
+  $("#login-view").style.display = "grid";
   $("#login-base").value = $("#login-base").value || (location.origin.startsWith("http") ? location.origin : "");
   /* 预览环境：自动填入演示令牌，直接点登录即可 */
   if (!$("#login-token").value) {
@@ -154,8 +154,8 @@ function enterApp() {
   $("#login-view").style.display = "none";
   $("#app-view").hidden = false;
   const u = localStorage.getItem("odk_user") || "Administrator";
-  $("#side-user-name").textContent = u === "Administrator" ? "系统管理员" : u;
-  $("#side-user-role").textContent = u;
+  $("#tnav-user-name").textContent = u === "Administrator" ? "系统管理员" : u;
+  $("#tnav-user-role").textContent = u;
   render();
 }
 
@@ -171,8 +171,8 @@ function currentRoute() {
 }
 async function render() {
   const page = currentRoute();
-  $("#crumb").textContent = TITLES[page];
-  $$("#nav a").forEach(a => a.classList.toggle("active", a.dataset.page === page));
+  document.title = TITLES[page] + " · 奥登科鞋业智造协同平台";
+  $$(".tnav a").forEach(a => a.classList.toggle("active", a.dataset.page === page));
   const box = $("#page");
   box.innerHTML = skeleton(8);
   try {
@@ -828,7 +828,7 @@ $("#global-search").addEventListener("keydown", async (e) => {
     "Work Order", "Job Card", "Stock Entry", "Subcontracting Order", "Subcontracting Receipt", "Material Request"];
   for (const dt of types) {
     const rows = await API.list(dt, ["name"], [["name", "=", q]], 2);
-    if (rows.length) { toast(`在「${TITLES[Object.keys(TITLES)[0]]}」找到 ${dt}: ${q}`); openERP(dt, q); e.target.value = ""; return; }
+    if (rows.length) { toast(`已找到单据 ${q}（${dt}），正在打开原单`); openERP(dt, q); e.target.value = ""; return; }
   }
   // 试款号
   const items = await API.list("Item", ["item_code"], [["item_code", "like", `%${q}%`]], 20);

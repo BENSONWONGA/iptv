@@ -8,13 +8,6 @@
 </head>
 <body>
 
-<!-- 壁纸光斑层（iOS 26 Liquid Glass 背景） -->
-<div class="aurora">
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-  <div class="glow glow-3"></div>
-</div>
-
 <!-- SVG 图标库 -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-dash" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/></symbol>
@@ -30,78 +23,89 @@
   <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></symbol>
   <symbol id="i-shoe" viewBox="0 0 24 24"><path d="M2 17c0 .55.45 1 1 1h18c.55 0 1-.45 1-1v-1c0-3-1.5-4.5-4-6-2-1.2-3-3-3.5-5C14.4 4.4 14 4 13.5 4h-1c-.55 0-1 .45-1 1 0 2.5-1.5 4-3 4.5C6 10 5 11 4 13c-.5 1-2 1.5-2 3v1zm2-1c0-1 .8-1.5 1.5-2C7 13.5 8.5 12 9.5 10c.4-.8.5-1.5.5-2.5 0 0 1.5 2.5 3.5 3.5 1.7.85 4 2.5 4 5H4z" fill="currentColor"/><path d="M8 15h8v2H8z" fill="currentColor"/></symbol>
   <symbol id="i-chip" viewBox="0 0 24 24"><path d="M6 6h12v12H6V6zm2 2v8h8V8H8zM2 4a2 2 0 0 1 2-2h2v2H4v2H2V4zm0 4h2v2H2V8zm0 4h2v2H2v-2zm0 4h2v2H2v-2zm0 4h2v2a2 2 0 0 1-2-2zM18 2h2a2 2 0 0 1 2 2v2h-2V4h-2V2zm2 6h2v2h-2V8zm0 4h2v2h-2v-2zm0 4h2v2a2 2 0 0 1-2 2h-2v-2h2v-2zM4 2h2v2H4V2z" fill="currentColor"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6v-2H5V5h5V3zm4.59 2 5.71 5.71c.63.63.63 1.63 0 2.26L14.59 19 13.17 17.59l3.99-4H8.5v-2h8.66l-3.99-4L14.59 5z" fill="currentColor"/></symbol>
 </svg>
 
-<!-- ===================== 登录页 ===================== -->
+<!-- ===================== 登录页（分屏） ===================== -->
 <div id="login-view" class="login-view">
-  <div class="login-bg"></div>
-  <div class="login-panel">
-    <div class="login-brand">
-      <span class="nav-ic big" style="--g:linear-gradient(135deg,#FF9F0A,#FF453A)"><svg><use href="#i-shoe"/></svg></span>
-      <div>
-        <h1>奥登科 · 鞋业智造</h1>
-        <p>外贸代加工协同平台 · ERPNext 驱动</p>
+  <!-- 左侧品牌区 -->
+  <div class="login-left">
+    <div class="ll-inner">
+      <div class="ll-brand">
+        <span class="ll-logo"><svg><use href="#i-shoe"/></svg></span>
+        <div>
+          <b>奥登科 · 鞋业智造</b>
+          <span>外贸代加工协同平台</span>
+        </div>
+      </div>
+      <div class="ll-hero">
+        <h1>一单到底<br>从接单到付款全程数字化</h1>
+        <p>以工厂指令单号为主线，串联 MRP、采购、委外、生产、仓储与财务，全流程单据一键穿透。</p>
+      </div>
+      <ul class="ll-feats">
+        <li><svg><use href="#i-check"/></svg>指令单号贯穿全流程，22 类单据一键追溯</li>
+        <li><svg><use href="#i-check"/></svg>MRP 自动算料，采购、委外、工单全联动</li>
+        <li><svg><use href="#i-check"/></svg>扫码枪即扫即录，仓库出入库零手输</li>
+        <li><svg><use href="#i-check"/></svg>厂商对账一键结平，应付进度一目了然</li>
+      </ul>
+      <div class="ll-foot">© 2026 奥登科鞋业有限公司 · 基于 ERPNext v15</div>
+    </div>
+    <div class="ll-deco ll-deco-1"></div>
+    <div class="ll-deco ll-deco-2"></div>
+  </div>
+  <!-- 右侧表单区 -->
+  <div class="login-right">
+    <div class="lr-card">
+      <h2>欢迎回来</h2>
+      <p class="lr-sub">登录鞋业智造协同平台，继续今天的工作</p>
+      <div class="lr-form">
+        <label>服务地址</label>
+        <input id="login-base" type="text" value="" placeholder="ERPNext 服务地址（预览环境自动识别）">
+        <label>API 令牌</label>
+        <input id="login-token" type="password" placeholder="格式: api_key:api_secret">
+        <button id="login-btn" class="btn-primary btn-block">登 录</button>
+        <p class="login-tip">预览环境已自动填入演示令牌，直接点「登 录」即可。生产环境令牌请在 ERPNext「用户 › API 密钥与密文」中生成，格式 <code>api_key:api_secret</code></p>
+        <p id="login-err" class="login-err"></p>
       </div>
     </div>
-    <div class="login-form">
-      <label>服务地址</label>
-      <input id="login-base" type="text" value="" placeholder="ERPNext 地址">
-      <label>API 令牌</label>
-      <input id="login-token" type="password" placeholder="格式: api_key:api_secret">
-      <button id="login-btn" class="btn-amber btn-block">登 录</button>
-      <p class="login-tip">预览环境已自动填入演示令牌，直接点「登 录」即可进入。生产环境令牌请在 ERPNext「用户 › API 密钥与密文」中生成，格式 <code>api_key:api_secret</code></p>
-      <p id="login-err" class="login-err"></p>
-    </div>
-    <div class="login-foot">预览环境 · 数据为线上真实数据 · 请勿随意提交单据</div>
   </div>
 </div>
 
-<!-- ===================== 主应用 ===================== -->
+<!-- ===================== 主应用（顶部导航） ===================== -->
 <div id="app-view" class="app-view" hidden>
 
-  <!-- 侧栏 -->
-  <aside class="sidebar">
+  <header class="topnav">
     <div class="brand">
-      <span class="nav-ic big" style="--g:linear-gradient(135deg,#FF9F0A,#FF453A)"><svg><use href="#i-shoe"/></svg></span>
-      <div class="brand-txt">
-        <b>奥登科鞋业</b>
-        <span>智造协同平台</span>
-      </div>
+      <span class="brand-ic"><svg><use href="#i-shoe"/></svg></span>
+      <div class="brand-txt"><b>奥登科鞋业</b><span>鞋业智造协同平台</span></div>
     </div>
-    <nav id="nav" class="nav">
-      <a href="#/dashboard" data-page="dashboard" title="工作台"><span class="nav-ic" style="--g:linear-gradient(135deg,#FF9F0A,#FFD60A)"><svg><use href="#i-dash"/></svg></span><span class="nav-t">工作台</span></a>
-      <a href="#/orders" data-page="orders" title="指令单中心"><span class="nav-ic" style="--g:linear-gradient(135deg,#0A84FF,#5E5CE6)"><svg><use href="#i-order"/></svg></span><span class="nav-t">指令单中心</span></a>
-      <div class="nav-sec">业务流转</div>
-      <a href="#/purchase" data-page="purchase" title="采购管理"><span class="nav-ic" style="--g:linear-gradient(135deg,#30D158,#64D2FF)"><svg><use href="#i-buy"/></svg></span><span class="nav-t">采购管理</span></a>
-      <a href="#/subcontract" data-page="subcontract" title="委外加工"><span class="nav-ic" style="--g:linear-gradient(135deg,#BF5AF2,#5E5CE6)"><svg><use href="#i-sub"/></svg></span><span class="nav-t">委外加工</span></a>
-      <a href="#/production" data-page="production" title="生产制造"><span class="nav-ic" style="--g:linear-gradient(135deg,#FF453A,#FF9F0A)"><svg><use href="#i-mfg"/></svg></span><span class="nav-t">生产制造</span></a>
-      <a href="#/warehouse" data-page="warehouse" title="仓库管理"><span class="nav-ic" style="--g:linear-gradient(135deg,#64D2FF,#0A84FF)"><svg><use href="#i-wh"/></svg></span><span class="nav-t">仓库管理</span></a>
-      <a href="#/scan" data-page="scan" title="扫码出入库"><span class="nav-ic" style="--g:linear-gradient(135deg,#FFD60A,#FF9F0A)"><svg><use href="#i-scan"/></svg></span><span class="nav-t">扫码出入库</span></a>
-      <div class="nav-sec">财务结算</div>
-      <a href="#/finance" data-page="finance" title="应付对账"><span class="nav-ic" style="--g:linear-gradient(135deg,#30D158,#A7F3D0)"><svg><use href="#i-fin"/></svg></span><span class="nav-t">应付对账</span></a>
-      <a href="#/flow" data-page="flow" title="流程链路图"><span class="nav-ic" style="--g:linear-gradient(135deg,#5E5CE6,#BF5AF2)"><svg><use href="#i-link"/></svg></span><span class="nav-t">流程链路图</span></a>
+    <nav id="nav" class="tnav">
+      <a href="#/dashboard" data-page="dashboard" title="工作台"><svg><use href="#i-dash"/></svg><span class="tn-l">工作台</span></a>
+      <a href="#/orders" data-page="orders" title="指令单中心"><svg><use href="#i-order"/></svg><span class="tn-l">指令单中心</span></a>
+      <a href="#/purchase" data-page="purchase" title="采购管理"><svg><use href="#i-buy"/></svg><span class="tn-l">采购管理</span></a>
+      <a href="#/subcontract" data-page="subcontract" title="委外加工"><svg><use href="#i-sub"/></svg><span class="tn-l">委外加工</span></a>
+      <a href="#/production" data-page="production" title="生产制造"><svg><use href="#i-mfg"/></svg><span class="tn-l">生产制造</span></a>
+      <a href="#/warehouse" data-page="warehouse" title="仓库管理"><svg><use href="#i-wh"/></svg><span class="tn-l">仓库管理</span></a>
+      <a href="#/scan" data-page="scan" title="扫码出入库"><svg><use href="#i-scan"/></svg><span class="tn-l">扫码出入库</span></a>
+      <a href="#/finance" data-page="finance" title="应付对账"><svg><use href="#i-fin"/></svg><span class="tn-l">应付对账</span></a>
+      <a href="#/flow" data-page="flow" title="流程链路图"><svg><use href="#i-link"/></svg><span class="tn-l">流程链路</span></a>
     </nav>
-    <div class="side-foot">
-      <div class="side-user">
-        <span class="nav-ic" style="--g:linear-gradient(135deg,#0A84FF,#64D2FF)"><svg><use href="#i-user"/></svg></span>
-        <div><b id="side-user-name">系统管理员</b><span id="side-user-role">Administrator</span></div>
-      </div>
-      <button id="btn-logout" class="btn-ghost">退出登录</button>
-    </div>
-  </aside>
-
-  <!-- 主区 -->
-  <div class="main">
-    <header class="topbar">
-      <div class="crumb" id="crumb">工作台</div>
+    <div class="tnav-right">
       <div class="top-search">
         <svg><use href="#i-search"/></svg>
-        <input id="global-search" type="text" placeholder="搜索单号 / 指令单号 / 款号，回车查询">
+        <input id="global-search" type="text" placeholder="搜索单号 / 指令单号 / 款号">
       </div>
       <span class="env-badge">预览版</span>
-    </header>
-    <main id="page" class="page"></main>
-  </div>
+      <div class="tnav-user">
+        <span class="tu-ic"><svg><use href="#i-user"/></svg></span>
+        <div><b id="tnav-user-name">系统管理员</b><span id="tnav-user-role">Administrator</span></div>
+      </div>
+      <button id="btn-logout" class="tnav-out" title="退出登录"><svg><use href="#i-out"/></svg></button>
+    </div>
+  </header>
+
+  <main id="page" class="page"></main>
 </div>
 
 <!-- 通用 Toast -->

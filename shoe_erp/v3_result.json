@@ -1,0 +1,993 @@
+{
+ "meta": {
+  "base": "http://127.0.0.1:3333",
+  "chrome": "/root/.cache/puppeteer/chrome/linux-151.0.7922.71/chrome-linux64/chrome",
+  "viewport_desktop": "1440x900",
+  "viewport_mobile": "390x844",
+  "started": "2026-10-05 05:45:19",
+  "finished": "2026-10-05 05:45:36",
+  "final_url": "http://127.0.0.1:3333/#/flow"
+ },
+ "login": {
+  "gridCols": "46% 54%",
+  "leftRatio": 0.389,
+  "leftBg": "linear-gradient(160deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 40%, rgb(14, 66, 210) 100%)",
+  "logoBg": "rgba(255, 255, 255, 0.16)",
+  "logoBorder": "rgba(255, 255, 255, 0.3)",
+  "logoShadow": "rgba(255, 255, 255, 0.4) 0px 1px 0px 0px inset, rgba(0, 20, 80, 0.25) 0px 8px 20px 0px",
+  "logoPos": {
+   "x": 64,
+   "y": 192
+  },
+  "brandText": "奥登科 · 鞋业智造",
+  "h1Text": "一单到底 从接单到付款全程数字化",
+  "h1Size": "34px",
+  "h1Color": "rgb(255, 255, 255)",
+  "featCount": 4,
+  "featHasCheck": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "featTexts": [
+   "指令单号贯穿全流程，22 类单据一键追溯",
+   "MRP 自动算料，采购、委外、工单全联动",
+   "扫码枪即扫即录，仓库出入库零手输",
+   "厂商对账一键结平，应付进度一目了然"
+  ],
+  "footText": "© 2026 奥登科鞋业有限公司 · 基于 ERPNext v15",
+  "rightBg": "rgb(255, 255, 255)",
+  "h2Text": "欢迎回来",
+  "h2Size": "26px",
+  "baseValue": "http://127.0.0.1:3333",
+  "tokenValue": "77455c7d4b3a8fe:f36c1a4b10e8b5e",
+  "tokenType": "text",
+  "btnText": "登 录",
+  "btnBg": "linear-gradient(rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 88, 232))",
+  "btnShadow": "rgba(255, 255, 255, 0.28) 0px 1px 0px 0px inset, rgba(0, 45, 120, 0.25) 0px -2px 3px 0px inset, rgba(22, 104, 252, 0.3) 0px 2px 4px 0px, rgba(22, 104, 252, 0.32) 0px 6px 16px 0px",
+  "btnShadowLayers": 4,
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  },
+  "press": {
+   "transform": "matrix(1, 0, 0, 1, 0, 1)",
+   "shadow": "rgba(0, 45, 120, 0.3) 0px 2px 4px 0px inset, rgba(22, 104, 252, 0.3) 0px 1px 2px 0px"
+  }
+ },
+ "topnav": {
+  "navH": "60px",
+  "navPos": "sticky",
+  "navBg": "rgb(255, 255, 255)",
+  "brandIcBg": "linear-gradient(rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+  "brandIcRadius": "11px",
+  "brandB": "奥登科鞋业",
+  "brandSpan": "鞋业智造协同平台",
+  "menuCount": 9,
+  "menuPages": [
+   "dashboard",
+   "orders",
+   "purchase",
+   "subcontract",
+   "production",
+   "warehouse",
+   "scan",
+   "finance",
+   "flow"
+  ],
+  "menuLabels": [
+   "工作台",
+   "指令单中心",
+   "采购管理",
+   "委外加工",
+   "生产制造",
+   "仓库管理",
+   "扫码出入库",
+   "应付对账",
+   "流程链路"
+  ],
+  "menuAllHaveIcon": true,
+  "activePage": "dashboard",
+  "activeColor": "rgb(14, 66, 210)",
+  "activeBg": "rgb(234, 241, 255)",
+  "iconColors": [
+   "rgb(22, 104, 252)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)",
+   "rgb(86, 98, 122)"
+  ],
+  "searchPlaceholder": "搜索单号 / 指令单号 / 款号",
+  "searchVisible": true,
+  "envBadge": "预览版",
+  "userName": "系统管理员",
+  "userRole": "Administrator",
+  "userIcBg": "linear-gradient(rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+  "logoutExists": true,
+  "oldSidebarAbsent": true,
+  "appChildren": [
+   "topnav",
+   "page"
+  ],
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  }
+ },
+ "dashboard": {
+  "bodyBg": "rgb(245, 247, 250)",
+  "statCardCount": 4,
+  "statLabels": [
+   "进行中指令单",
+   "在产工单",
+   "待付货款",
+   "成品仓库存"
+  ],
+  "statValues": [
+   "1单",
+   "0双",
+   "0.0万元",
+   "2,000双"
+  ],
+  "statBgs": [
+   "rgb(255, 255, 255)",
+   "rgb(255, 255, 255)",
+   "rgb(255, 255, 255)",
+   "rgb(255, 255, 255)"
+  ],
+  "statRadius": "14px",
+  "statShadowLayers": 3,
+  "statShadowSample": "rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px, rgba(31, 39, 51, 0.08) 0px 14px 32px 0px",
+  "statValueSize": "33px",
+  "fbStepCount": 14,
+  "fbDoneCount": 14,
+  "fbRunCount": 0,
+  "fbTodoCount": 0,
+  "fbDotBgDone": "linear-gradient(rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(14, 124, 56))",
+  "fbDotShadowDone": "rgba(255, 255, 255, 0.4) 0px 1px 0px 0px inset, rgba(0, 80, 40, 0.3) 0px -2px 3px 0px inset, rgba(22, 163, 74, 0.4) 0px 3px 10px 0px",
+  "fbLabels": [
+   "接单",
+   "计划",
+   "MRP",
+   "工单",
+   "采购",
+   "收料",
+   "委外",
+   "发料",
+   "帮面",
+   "领料",
+   "报工",
+   "入库",
+   "应付",
+   "付款"
+  ],
+  "decorBlobs": [],
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  },
+  "hover": {
+   "transform": "matrix(1, 0, 0, 1, 0, -3)",
+   "shadow": "rgba(31, 39, 51, 0.06) 0px 2px 4px 0px, rgba(31, 39, 51, 0.08) 0px 8px 20px 0px, rgba(31, 39, 51, 0.12) 0px 24px 56px 0px",
+   "shadowLayers": 3
+  }
+ },
+ "orders": {
+  "header": "指令单中心 以工厂指令单号为主线，点击行查看全流程链路穿透",
+  "rowCount": 1,
+  "firstFo": "FO-2026-001",
+  "cardBg": "rgb(255, 255, 255)",
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  }
+ },
+ "drawer": {
+  "drawerBg": "rgb(255, 255, 255)",
+  "drawerWidth": 560,
+  "title": "指令单 FO-2026-001 全流程链路 点击单号可在 ERPNext 中打开原单",
+  "nodeCount": 14,
+  "doneCount": 14,
+  "runCount": 0,
+  "doneDotBg": "linear-gradient(rgb(62, 219, 119), rgb(14, 124, 56))",
+  "doneDotShadow": "rgba(22, 163, 74, 0.55) 0px 0px 0px 1.5px, rgba(22, 163, 74, 0.4) 0px 2px 6px 0px",
+  "docLinkCount": 23,
+  "maskExists": true
+ },
+ "scan": {
+  "before": {
+   "heroBg": "linear-gradient(160deg, rgb(30, 116, 255), rgb(22, 104, 252) 45%, rgb(14, 66, 210))",
+   "heroColor": "rgb(255, 255, 255)",
+   "heroShadow": "rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(22, 104, 252, 0.35) 0px 10px 36px 0px, rgba(22, 104, 252, 0.25) 0px 4px 12px 0px",
+   "inputBg": "rgb(255, 255, 255)",
+   "inputColor": "rgb(31, 39, 51)",
+   "inputFontSize": "17px",
+   "inputRadius": "12px",
+   "stateText": "待扫描",
+   "countText": "0",
+   "logCardExists": true,
+   "overflow": {
+    "scrollW": 1440,
+    "innerW": 1440
+   }
+  },
+  "after": {
+   "stateText": "已识别",
+   "itemText": "M-FAB-001 （面料） 牛巴戈面料(黑色) · 单位 码 · 条码 6901234500011 已识别",
+   "pillText": "已识别",
+   "fromOptions": [
+    "材料仓",
+    "半成品仓",
+    "委外仓",
+    "在制品",
+    "成品仓"
+   ],
+   "submitBtnText": "提交出入库"
+  }
+ },
+ "production": {
+  "header": "生产制造 工单进度与 MES 工序报工",
+  "woCardCount": 1,
+  "firstCardBg": "rgb(255, 255, 255)",
+  "firstCardShadow": "rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px, rgba(31, 39, 51, 0.08) 0px 14px 32px 0px",
+  "barCount": 1,
+  "greenBars": 1,
+  "orangeBars": 0,
+  "pillOkCount": 2,
+  "pillOkSample": {
+   "bg": "rgb(232, 248, 238)",
+   "color": "rgb(22, 163, 74)",
+   "text": "Completed"
+  },
+  "jcRows": 1,
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  }
+ },
+ "finance": {
+  "header": "应付对账 供应商开票、付款与往来余额一表看清",
+  "statCount": 3,
+  "statLabels": [
+   "累计开票",
+   "累计付款",
+   "未结清余额"
+  ],
+  "statBgs": [
+   "rgb(255, 255, 255)",
+   "rgb(255, 255, 255)",
+   "rgb(255, 255, 255)"
+  ],
+  "amberValueColor": "rgb(217, 119, 6)",
+  "totalRow": true,
+  "balZeroColor": "rgb(22, 163, 74)",
+  "balZeroCount": 4,
+  "balOpenCount": 0,
+  "reconRows": 10,
+  "pillOkCount": 3,
+  "pillRunCount": 0,
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  }
+ },
+ "flow": {
+  "header": "流程链路图 指令单 FO-2026-001：从接单到付款的 14 步全流程穿透",
+  "nodeCount": 14,
+  "doneCount": 14,
+  "nodeBgSample": "rgba(0, 0, 0, 0)",
+  "nodeBorderSample": "rgba(22, 163, 74, 0.3)",
+  "nodeShadowSample": "rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px, rgba(31, 39, 51, 0.08) 0px 14px 32px 0px",
+  "doneBg": "linear-gradient(rgb(255, 255, 255), rgb(242, 251, 245))",
+  "doneStepBadge": "linear-gradient(rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(14, 124, 56))",
+  "stepBadgeBlue": null,
+  "stepLabels": [
+   "01 接单",
+   "02 计划",
+   "03 MRP",
+   "04 工单",
+   "05 采购",
+   "06 收料",
+   "07 委外",
+   "08 发料",
+   "09 帮面",
+   "10 领料",
+   "11 报工",
+   "12 入库",
+   "13 应付",
+   "14 付款"
+  ],
+  "overflow": {
+   "scrollW": 1440,
+   "innerW": 1440
+  }
+ },
+ "mobile": {
+  "nav": {
+   "vw": 390,
+   "tnLDisplay": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+   ],
+   "iconsVisible": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "brandTxtDisplay": "none",
+   "navH": "54px",
+   "searchDisplay": "none",
+   "envBadgeDisplay": "none",
+   "userDisplay": "none",
+   "logoutVisible": true,
+   "overflow": {
+    "scrollW": 390,
+    "innerW": 390
+   }
+  },
+  "login": {
+   "leftDisplay": "none",
+   "leftRectW": 0,
+   "rightW": 448,
+   "gridCols": "1fr",
+   "h2Visible": true,
+   "formVisible": true,
+   "tokenValue": "77455c7d4b3a8fe:f36c1a4b10e8b5e",
+   "overflow": {
+    "scrollW": 390,
+    "innerW": 390
+   }
+  }
+ },
+ "regression": {
+  "console": [],
+  "net_errors": [],
+  "load_times": {
+   "login_submit": {
+    "ms": 11
+   },
+   "dashboard": {
+    "ms": 2287,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "orders": {
+    "ms": 240,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "drawer_chain": {
+    "ms": 1786,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "scan": {
+    "ms": 2,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "scan_recognize": {
+    "ms": 793,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "production": {
+    "ms": 134,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "finance": {
+    "ms": 128,
+    "stuck": false,
+    "skel_left": 0
+   },
+   "flow": {
+    "ms": 1913,
+    "stuck": false,
+    "skel_left": 0
+   }
+  }
+ },
+ "checks": [
+  {
+   "phase": "login",
+   "name": "分屏比例 46%/54%",
+   "ok": false,
+   "detail": "leftRatio=0.389 cols=46% 54%"
+  },
+  {
+   "phase": "login",
+   "name": "左侧品牌蓝渐变 #1E74FF->#0E42D2",
+   "ok": true,
+   "detail": "linear-gradient(160deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 40%, rgb(14, 66, 210) 100%)"
+  },
+  {
+   "phase": "login",
+   "name": "logo 白色玻璃感(半透明白+inset高光)",
+   "ok": true,
+   "detail": "rgba(255, 255, 255, 0.16) | rgba(255, 255, 255, 0.4) 0px 1px 0px 0px inset, rgba(0, 20, 80, 0.25) 0px 8px 20px 0px"
+  },
+  {
+   "phase": "login",
+   "name": "logo 位于左上角",
+   "ok": false,
+   "detail": "{'x': 64, 'y': 192}"
+  },
+  {
+   "phase": "login",
+   "name": "品牌名「奥登科·鞋业智造」",
+   "ok": true,
+   "detail": "奥登科 · 鞋业智造"
+  },
+  {
+   "phase": "login",
+   "name": "大标题文案完整",
+   "ok": true,
+   "detail": "一单到底 从接单到付款全程数字化"
+  },
+  {
+   "phase": "login",
+   "name": "大标题 34px 白字",
+   "ok": true,
+   "detail": "34px / rgb(255, 255, 255)"
+  },
+  {
+   "phase": "login",
+   "name": "4 条特性清单且带勾选图标",
+   "ok": true,
+   "detail": "4 [\"指令单号贯穿全流程，22 类单据一键追溯\", \"MRP 自动算料，采购、委外、工单全联动\", \"扫码枪即扫即录，仓库出入库零手输\", \"厂商对账一键结平，应付进度一目了然\"]"
+  },
+  {
+   "phase": "login",
+   "name": "左下角版权",
+   "ok": true,
+   "detail": "© 2026 奥登科鞋业有限公司 · 基于 ERPNext v15"
+  },
+  {
+   "phase": "login",
+   "name": "右侧白底区",
+   "ok": true,
+   "detail": "rgb(255, 255, 255)"
+  },
+  {
+   "phase": "login",
+   "name": "「欢迎回来」26px",
+   "ok": true,
+   "detail": "欢迎回来 / 26px"
+  },
+  {
+   "phase": "login",
+   "name": "服务地址自动识别",
+   "ok": true,
+   "detail": "http://127.0.0.1:3333"
+  },
+  {
+   "phase": "login",
+   "name": "令牌自动填入演示令牌",
+   "ok": true,
+   "detail": "77455c7d4b3a8fe:f36c1a4b10e8b5e"
+  },
+  {
+   "phase": "login",
+   "name": "令牌明文可见(text 便于核对)",
+   "ok": true,
+   "detail": "text"
+  },
+  {
+   "phase": "login",
+   "name": "登录按钮文案「登 录」",
+   "ok": true,
+   "detail": "'登 录'"
+  },
+  {
+   "phase": "login",
+   "name": "按钮品牌蓝渐变",
+   "ok": true,
+   "detail": "linear-gradient(rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 88, 232))"
+  },
+  {
+   "phase": "login",
+   "name": "按钮 inset 高光 + 多层阴影",
+   "ok": true,
+   "detail": "layers=4"
+  },
+  {
+   "phase": "login",
+   "name": "登录页无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "login",
+   "name": "按压 translateY 效果(active)",
+   "ok": true,
+   "detail": "matrix(1, 0, 0, 1, 0, 1)"
+  },
+  {
+   "phase": "topnav",
+   "name": "顶部导航 60px 白色",
+   "ok": true,
+   "detail": "60px / rgb(255, 255, 255)"
+  },
+  {
+   "phase": "topnav",
+   "name": "sticky 置顶",
+   "ok": true,
+   "detail": "sticky"
+  },
+  {
+   "phase": "topnav",
+   "name": "logo 蓝色渐变圆角方块",
+   "ok": true,
+   "detail": "linear-gradient(rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210)) radius=11px"
+  },
+  {
+   "phase": "topnav",
+   "name": "双行品牌文字",
+   "ok": true,
+   "detail": "奥登科鞋业 / 鞋业智造协同平台"
+  },
+  {
+   "phase": "topnav",
+   "name": "横向菜单 9 项且顺序正确",
+   "ok": true,
+   "detail": "['dashboard', 'orders', 'purchase', 'subcontract', 'production', 'warehouse', 'scan', 'finance', 'flow']"
+  },
+  {
+   "phase": "topnav",
+   "name": "菜单项均带图标",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "phase": "topnav",
+   "name": "当前页高亮=工作台(浅蓝底 #EAF1FF 蓝字 #0E42D2)",
+   "ok": true,
+   "detail": "dashboard bg=rgb(234, 241, 255) color=rgb(14, 66, 210)"
+  },
+  {
+   "phase": "topnav",
+   "name": "导航图标统一蓝色系(无彩虹)",
+   "ok": true,
+   "detail": "['rgb(22, 104, 252)', 'rgb(86, 98, 122)']"
+  },
+  {
+   "phase": "topnav",
+   "name": "右侧搜索框+预览版徽章+头像+退出齐全",
+   "ok": true,
+   "detail": "ph=搜索单号 / 指令单号 / 款号 badge=预览版 user=系统管理员/Administrator"
+  },
+  {
+   "phase": "topnav",
+   "name": "无左侧边栏(结构=顶导航+主区)",
+   "ok": true,
+   "detail": "['topnav', 'page']"
+  },
+  {
+   "phase": "topnav",
+   "name": "桌面布局无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "dash",
+   "name": "背景 #F5F7FA 纯净",
+   "ok": true,
+   "detail": "rgb(245, 247, 250)"
+  },
+  {
+   "phase": "dash",
+   "name": "无彩色光斑装饰",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "dash",
+   "name": "4 张白色统计卡",
+   "ok": true,
+   "detail": "4 [\"进行中指令单\", \"在产工单\", \"待付货款\", \"成品仓库存\"]"
+  },
+  {
+   "phase": "dash",
+   "name": "统计卡 14px 圆角",
+   "ok": true,
+   "detail": "14px"
+  },
+  {
+   "phase": "dash",
+   "name": "多层立体阴影(>=3层)",
+   "ok": true,
+   "detail": "layers=3 sample=rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px, rgba(31, "
+  },
+  {
+   "phase": "dash",
+   "name": "数字大而清晰(33px)",
+   "ok": true,
+   "detail": "33px [\"1单\", \"0双\", \"0.0万元\", \"2,000双\"]"
+  },
+  {
+   "phase": "dash",
+   "name": "hover 上浮 translateY(-3px)",
+   "ok": true,
+   "detail": "transform=matrix(1, 0, 0, 1, 0, -3)"
+  },
+  {
+   "phase": "dash",
+   "name": "hover 阴影增强(大阴影)",
+   "ok": true,
+   "detail": "rgba(31, 39, 51, 0.06) 0px 2px 4px 0px, rgba(31, 39, 51, 0.08) 0px 8px 20px 0px, rgba(31, "
+  },
+  {
+   "phase": "dash",
+   "name": "流程进度条 14 步",
+   "ok": true,
+   "detail": "steps=14 labels=[\"接单\", \"计划\", \"MRP\", \"工单\", \"采购\", \"收料\", \"委外\", \"发料\", \"帮面\", \"领料\", \"报工\", \"入库\", \"应付\", \"付款\"]"
+  },
+  {
+   "phase": "dash",
+   "name": "进度圆点全绿(渐变绿3D)",
+   "ok": true,
+   "detail": "done=14 run=0 todo=0 dot=linear-gradient(rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(14, 124, 56))"
+  },
+  {
+   "phase": "dash",
+   "name": "工作台无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "orders",
+   "name": "订单表格加载完成",
+   "ok": true,
+   "detail": "rows=1 load=240ms firstFo=FO-2026-001"
+  },
+  {
+   "phase": "orders",
+   "name": "白色卡片风格",
+   "ok": true,
+   "detail": "rgb(255, 255, 255)"
+  },
+  {
+   "phase": "orders",
+   "name": "骨架屏未卡死",
+   "ok": true,
+   "detail": "{'ms': 240, 'stuck': False, 'skel_left': 0}"
+  },
+  {
+   "phase": "orders",
+   "name": "页面无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "drawer",
+   "name": "右侧抽屉(白色)",
+   "ok": true,
+   "detail": "rgb(255, 255, 255) w=560"
+  },
+  {
+   "phase": "drawer",
+   "name": "抽屉宽度 ~560px",
+   "ok": true,
+   "detail": "560"
+  },
+  {
+   "phase": "drawer",
+   "name": "垂直时间线 14 节点",
+   "ok": true,
+   "detail": "nodes=14 title=指令单 FO-2026-001 全流程链路 点击单号可在 ERPNext 中打开原单"
+  },
+  {
+   "phase": "drawer",
+   "name": "完成节点绿点(渐变绿)",
+   "ok": true,
+   "detail": "done=14 run=0 dot=linear-gradient(rgb(62, 219, 119), rgb(14, 124, 56))"
+  },
+  {
+   "phase": "drawer",
+   "name": "链路单据可穿透点击",
+   "ok": true,
+   "detail": "links=23"
+  },
+  {
+   "phase": "scan",
+   "name": "蓝色渐变大卡(品牌蓝 #1668FC)",
+   "ok": true,
+   "detail": "linear-gradient(160deg, rgb(30, 116, 255), rgb(22, 104, 252) 45%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "scan",
+   "name": "非深紫色(无残留旧配色)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "scan",
+   "name": "白色扫码输入框",
+   "ok": true,
+   "detail": "rgb(255, 255, 255) radius=12px fs=17px"
+  },
+  {
+   "phase": "scan",
+   "name": "条码 6901234500011 识别成功",
+   "ok": true,
+   "detail": "已识别 / 已识别"
+  },
+  {
+   "phase": "scan",
+   "name": "识别出物料 M-FAB-001 并渲染表单",
+   "ok": true,
+   "detail": "M-FAB-001 （面料） 牛巴戈面料(黑色) · 单位 码 · 条码 6901234500011 已识别"
+  },
+  {
+   "phase": "scan",
+   "name": "仓位下拉 5 项(五仓)",
+   "ok": true,
+   "detail": "[\"材料仓\", \"半成品仓\", \"委外仓\", \"在制品\", \"成品仓\"]"
+  },
+  {
+   "phase": "scan",
+   "name": "识别耗时 <60s",
+   "ok": true,
+   "detail": "793ms"
+  },
+  {
+   "phase": "scan",
+   "name": "页面无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "prod",
+   "name": "工单卡片白色风格",
+   "ok": true,
+   "detail": "1 bg=rgb(255, 255, 255)"
+  },
+  {
+   "phase": "prod",
+   "name": "卡片立体阴影",
+   "ok": true,
+   "detail": "rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px,"
+  },
+  {
+   "phase": "prod",
+   "name": "绿色渐变进度条(完成工单)",
+   "ok": true,
+   "detail": "green=1 orange=0 total=1"
+  },
+  {
+   "phase": "prod",
+   "name": "状态徽章正常(绿色已提交)",
+   "ok": true,
+   "detail": "{'bg': 'rgb(232, 248, 238)', 'color': 'rgb(22, 163, 74)', 'text': 'Completed'}"
+  },
+  {
+   "phase": "prod",
+   "name": "骨架屏未卡死",
+   "ok": true,
+   "detail": "{'ms': 134, 'stuck': False, 'skel_left': 0}"
+  },
+  {
+   "phase": "prod",
+   "name": "页面无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "fin",
+   "name": "3 张统计卡(白底)",
+   "ok": true,
+   "detail": "3 [\"累计开票\", \"累计付款\", \"未结清余额\"]"
+  },
+  {
+   "phase": "fin",
+   "name": "厂商对账合计行",
+   "ok": true,
+   "detail": "rows=10"
+  },
+  {
+   "phase": "fin",
+   "name": "结平余额绿色标识(bal-zero)",
+   "ok": true,
+   "detail": "rgb(22, 163, 74) count=4"
+  },
+  {
+   "phase": "fin",
+   "name": "骨架屏未卡死",
+   "ok": true,
+   "detail": "{'ms': 128, 'stuck': False, 'skel_left': 0}"
+  },
+  {
+   "phase": "fin",
+   "name": "页面无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "flow",
+   "name": "14 个链路节点",
+   "ok": true,
+   "detail": "nodes=14"
+  },
+  {
+   "phase": "flow",
+   "name": "白色卡片节点",
+   "ok": true,
+   "detail": "rgba(0, 0, 0, 0) doneBg=linear-gradient(rgb(255, 255, 255), rgb(242, 251, 245))"
+  },
+  {
+   "phase": "flow",
+   "name": "完成节点绿徽章(渐变绿)",
+   "ok": true,
+   "detail": "done=14 badge=linear-gradient(rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(14, 124, 56))"
+  },
+  {
+   "phase": "flow",
+   "name": "未完成节点品牌蓝渐变徽章",
+   "ok": false,
+   "detail": "None"
+  },
+  {
+   "phase": "flow",
+   "name": "节点立体阴影",
+   "ok": true,
+   "detail": "rgba(31, 39, 51, 0.05) 0px 1px 2px 0px, rgba(31, 39, 51, 0.06) 0px 4px 12px 0px,"
+  },
+  {
+   "phase": "flow",
+   "name": "骨架屏未卡死",
+   "ok": true,
+   "detail": "{'ms': 1913, 'stuck': False, 'skel_left': 0}"
+  },
+  {
+   "phase": "flow",
+   "name": "页面无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 1440, 'innerW': 1440}"
+  },
+  {
+   "phase": "mobile",
+   "name": "视口 390px",
+   "ok": true,
+   "detail": "390"
+  },
+  {
+   "phase": "mobile",
+   "name": "顶部导航只显示图标(文字隐藏)",
+   "ok": true,
+   "detail": "tnL=['none'] icons=[True, True, True, True, True, True, True, True, True]"
+  },
+  {
+   "phase": "mobile",
+   "name": "品牌双行文字隐藏",
+   "ok": true,
+   "detail": "none"
+  },
+  {
+   "phase": "mobile",
+   "name": "搜索/徽章/用户区隐藏(<=720px)",
+   "ok": true,
+   "detail": "none/none/none"
+  },
+  {
+   "phase": "mobile",
+   "name": "退出按钮仍可见",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "phase": "mobile",
+   "name": "移动端无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 390, 'innerW': 390}"
+  },
+  {
+   "phase": "mobile",
+   "name": "登录页只显示右侧表单区(左侧隐藏)",
+   "ok": true,
+   "detail": "none w=0 rightW=448"
+  },
+  {
+   "phase": "mobile",
+   "name": "表单与演示令牌仍可用",
+   "ok": true,
+   "detail": "77455c7d4b3a8fe:f36c1a4b10e8b5"
+  },
+  {
+   "phase": "mobile",
+   "name": "移动登录页无横向溢出",
+   "ok": true,
+   "detail": "{'scrollW': 390, 'innerW': 390}"
+  },
+  {
+   "phase": "reg",
+   "name": "全程无 console.error",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "reg",
+   "name": "全程无 pageerror",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "reg",
+   "name": "无失败网络请求(>=400/failed)",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "reg",
+   "name": "无骨架屏卡死",
+   "ok": true,
+   "detail": "{}"
+  }
+ ],
+ "console": [],
+ "net_err": [],
+ "load_times": {
+  "login_submit": {
+   "ms": 11
+  },
+  "dashboard": {
+   "ms": 2287,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "orders": {
+   "ms": 240,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "drawer_chain": {
+   "ms": 1786,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "scan": {
+   "ms": 2,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "scan_recognize": {
+   "ms": 793,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "production": {
+   "ms": 134,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "finance": {
+   "ms": 128,
+   "stuck": false,
+   "skel_left": 0
+  },
+  "flow": {
+   "ms": 1913,
+   "stuck": false,
+   "skel_left": 0
+  }
+ },
+ "errors": {}
+}

@@ -1,0 +1,718 @@
+{
+ "checks": [
+  {
+   "phase": "0-security",
+   "name": "页面含门户低权限令牌",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "phase": "0-security",
+   "name": "页面无管理员 api_key/secret",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "phase": "1-loginpage",
+   "name": "深色底 #0C1118",
+   "ok": true,
+   "detail": "rgb(12, 17, 24)"
+  },
+  {
+   "phase": "1-loginpage",
+   "name": "分屏布局",
+   "ok": true,
+   "detail": "748.797px 691.188px"
+  },
+  {
+   "phase": "1-loginpage",
+   "name": "自动填入=门户低权限令牌",
+   "ok": true,
+   "detail": "0c72b5c60d05fcc:..."
+  },
+  {
+   "phase": "1-loginpage",
+   "name": "管理员令牌未预填",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "phase": "2-login",
+   "name": "同域 API 登录 → 工作台",
+   "ok": true,
+   "detail": "4.84"
+  },
+  {
+   "phase": "2-login",
+   "name": "身份=门户专用账号",
+   "ok": true,
+   "detail": "portal@aodengke.com / portal@aodengke.com"
+  },
+  {
+   "phase": "2-login",
+   "name": "非 Administrator 身份",
+   "ok": true,
+   "detail": "portal@aodengke.com"
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "欢迎横幅",
+   "ok": true,
+   "detail": "下午好，portal@aodengke."
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "横幅数字芯片",
+   "ok": true,
+   "detail": "['1', '2,000', '0']"
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "4 张统计卡",
+   "ok": true,
+   "detail": "n=4"
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "进行中指令单有数据",
+   "ok": true,
+   "detail": "1单"
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "成品仓库存有数据",
+   "ok": true,
+   "detail": "2,000双"
+  },
+  {
+   "phase": "3-dashboard",
+   "name": "流程 14/14 金色节点",
+   "ok": true,
+   "detail": "14 done=14/14"
+  },
+  {
+   "phase": "4-orders",
+   "name": "表格有数据行",
+   "ok": true,
+   "detail": "rows=1"
+  },
+  {
+   "phase": "4-orders",
+   "name": "抽屉 14 步链路",
+   "ok": true,
+   "detail": "nodes=14"
+  },
+  {
+   "phase": "5-scan",
+   "name": "条码已识别",
+   "ok": true,
+   "detail": "已识别"
+  },
+  {
+   "phase": "5-scan",
+   "name": "物料 M-FAB-001",
+   "ok": true,
+   "detail": "M-FAB-001 （面料）"
+  },
+  {
+   "phase": "6-finance",
+   "name": "3 张统计卡",
+   "ok": true,
+   "detail": "['累计开票=11.0万元', '累计付款=11.0万元', '未结清余额=0.00万元']"
+  },
+  {
+   "phase": "6-finance",
+   "name": "对账表有数据行",
+   "ok": true,
+   "detail": "rows=10"
+  },
+  {
+   "phase": "7-production",
+   "name": "工单卡片",
+   "ok": true,
+   "detail": "cards=1"
+  },
+  {
+   "phase": "7-production",
+   "name": "琥珀色进度条",
+   "ok": true,
+   "detail": "amber=1/1"
+  },
+  {
+   "phase": "8-flow",
+   "name": "13 张流程图 Tab",
+   "ok": true,
+   "detail": "tabs=13"
+  },
+  {
+   "phase": "8-flow",
+   "name": "链路穿透 14 节点",
+   "ok": true,
+   "detail": "nodes=14 done=14"
+  },
+  {
+   "phase": "8-flow",
+   "name": "ERP 总体流程 SVG 渲染",
+   "ok": true,
+   "detail": "fnodes=31"
+  },
+  {
+   "phase": "8-flow",
+   "name": "SVG 文字坐标无 undefined/NaN",
+   "ok": true,
+   "detail": "bad=0"
+  },
+  {
+   "phase": "8-flow",
+   "name": "链路节点文字有内容",
+   "ok": true,
+   "detail": "销售订单"
+  },
+  {
+   "phase": "9-network",
+   "name": "API 全部 200（95 次调用）",
+   "ok": true,
+   "detail": "95/95"
+  },
+  {
+   "phase": "9-network",
+   "name": "无 CORS 错误（同域）",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "9-network",
+   "name": "无 401/403/5xx",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "9-network",
+   "name": "无门户资源 404",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "9-network",
+   "name": "门户自身无 console 错误",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "9-network",
+   "name": "站点级遗留 404（环境问题，非门户缺陷）",
+   "ok": true,
+   "detail": "http://220.162.99.166:88/assets/erpnext/dist/css/erpnext-web.bundle.JMI2YOI3.css; http://220.162.99.166:88/assets/erpnext/css/ios26.css"
+  },
+  {
+   "phase": "9-network",
+   "name": "无页面崩溃异常",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "timing": {
+  "goto_s": 0.63,
+  "login_ready_s": 1.67,
+  "login_to_dash_s": 4.84,
+  "total_s": 21.84
+ },
+ "login": {
+  "bodyBg": "rgb(12, 17, 24)",
+  "gridCols": "748.797px 691.188px",
+  "hasLeft": true,
+  "slogan": "一双鞋的旅程尽在一块屏之上",
+  "formTitle": "进入驾驶舱",
+  "tokenValue": "0c72b5c60d05fcc:e815d3027f553b1",
+  "btnText": "登 录"
+ },
+ "dash": {
+  "heroText": "下午好，portal@aodengke.com",
+  "heroChips": [
+   "1",
+   "2,000",
+   "0"
+  ],
+  "statCount": 4,
+  "statVals": [
+   {
+    "label": "进行中指令单",
+    "value": "1单"
+   },
+   {
+    "label": "在产工单",
+    "value": "0双"
+   },
+   {
+    "label": "待付货款",
+    "value": "0.0万元"
+   },
+   {
+    "label": "成品仓库存",
+    "value": "2,000双"
+   }
+  ],
+  "fcNum": "14",
+  "fbDone": 14,
+  "fbTotal": 14
+ },
+ "orders": {
+  "rows": 1,
+  "total": 14,
+  "done": 14
+ },
+ "scan": {
+  "state": "已识别",
+  "item": "M-FAB-001 （面料）"
+ },
+ "finance": {
+  "cards": [
+   "累计开票=11.0万元",
+   "累计付款=11.0万元",
+   "未结清余额=0.00万元"
+  ],
+  "tblRows": 10
+ },
+ "prod": {
+  "woCards": 1,
+  "bars": 1,
+  "amber": 1
+ },
+ "flow": {
+  "tabs": 13,
+  "nodes": 14,
+  "done": 14,
+  "mainNodes": 31,
+  "badText": 0,
+  "chainText": "销售订单"
+ },
+ "console_errors": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  }
+ ],
+ "page_errors": [],
+ "net_failed": [
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/dist/css/erpnext-web.bundle.JMI2YOI3.css",
+   "err": "net::ERR_ABORTED"
+  },
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/css/ios26.css",
+   "err": "net::ERR_ABORTED"
+  }
+ ],
+ "http_bad": [],
+ "api_calls": [
+  {
+   "url": "/api/method/frappe.auth.get_logged_user",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Bin?limit_page_length=200&fields=%5B%22item_code%22%2C%22warehouse%22%2C%22actual_qty%22%5D&filt",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%22",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22grand_total%",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=20&fields=%5B%22name%22%2C%22status%22%5D&filters=%5B%5B%22docst",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Job%20Card?limit_page_length=100&fields=%5B%22name%22%2C%22operation%22%2C%22workstation%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Production%20Plan/MFG-PP-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22postin",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt/MAT-SCR-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22party%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order/SAL-ORD-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Job%20Card?limit_page_length=100&fields=%5B%22name%22%2C%22operation%22%2C%22workstation%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Production%20Plan/MFG-PP-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22postin",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt/MAT-SCR-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22party%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item?limit_page_length=500&fields=%5B%22name%22%2C%22item_code%22%2C%22item_name%22%2C%22item_gr",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/FG-A001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/FG-A001-43-BK",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/FG-A001-40-BK",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-ACC-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/FG-A001-42-BK",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/FG-A001-41-BK",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-BOT-002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-LIN-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-ACC-002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-BOT-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-FAB-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-CHE-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/SF-A001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/SVC-STI",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/GL%20Entry?limit_page_length=500&fields=%5B%22party%22%2C%22debit%22%2C%22credit%22%2C%22account",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry?limit_page_length=200&fields=%5B%22name%22%2C%22party%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=200&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Job%20Card?limit_page_length=100&fields=%5B%22name%22%2C%22work_order%22%2C%22operation%22%2C%22",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=10&fields=%5B%22name%22%2C%22custom_factory_order_no%22%5D&filte",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Job%20Card?limit_page_length=100&fields=%5B%22name%22%2C%22operation%22%2C%22workstation%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Production%20Plan/MFG-PP-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Receipt/MAT-PRE-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22postin",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Receipt/MAT-SCR-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22posting_date",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Invoice/ACC-PINV-2026-00003",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22party%22%2C%22posting_date%22%2C",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00002",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Payment%20Entry/ACC-PAY-2026-00003",
+   "status": 200
+  }
+ ],
+ "cors_issues": [],
+ "shots": [
+  "/workspace/shoe_erp/online-login.png",
+  "/workspace/shoe_erp/online-dashboard.png",
+  "/workspace/shoe_erp/online-drawer.png",
+  "/workspace/shoe_erp/online-scan.png",
+  "/workspace/shoe_erp/online-flow.png"
+ ],
+ "notfound": [
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/dist/css/erpnext-web.bundle.JMI2YOI3.css"
+  },
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/css/ios26.css"
+  }
+ ],
+ "site_level_404": [
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/dist/css/erpnext-web.bundle.JMI2YOI3.css"
+  },
+  {
+   "url": "http://220.162.99.166:88/assets/erpnext/css/ios26.css"
+  }
+ ],
+ "unexpected_404": []
+}

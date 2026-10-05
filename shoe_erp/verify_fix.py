@@ -14,7 +14,7 @@ import json, time
 from playwright.sync_api import sync_playwright
 
 BASE = 'http://220.162.99.166:88/odk'
-DEMO_TOKEN = '77455c7d4b3a8fe:f36c1a4b10e8b5e'
+DEMO_TOKEN = '77455c7d4b3a8fe:432939a748243fd'
 CHROME = '/root/.cache/puppeteer/chrome/linux-151.0.7922.71/chrome-linux64/chrome'
 OUT = '/workspace/shoe_erp'
 BARCODE = '6901234500011'

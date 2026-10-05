@@ -6,7 +6,7 @@ import json, traceback
 from playwright.sync_api import sync_playwright
 
 BASE = "http://127.0.0.1:3333"
-TOKEN = "77455c7d4b3a8fe:f36c1a4b10e8b5e"
+TOKEN = "77455c7d4b3a8fe:432939a748243fd"
 CHROME = "/root/.cache/puppeteer/chrome/linux-151.0.7922.71/chrome-linux64/chrome"
 OUT = "/data/tool/browser_snapshots"
 

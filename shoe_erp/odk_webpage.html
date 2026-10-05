@@ -1527,7 +1527,8 @@ function flowRender(cfg) {
   for (const n of cfg.nodes) {
     const [fill, stroke] = FLOW_COLORS[n.c || "gray"];
     const fs = n.small ? 11.5 : 13;
-    nodes += `<g class="fnode"><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="10" fill="${fill}" stroke="${stroke}" stroke-opacity=".55" stroke-width="1.2"/><text x="${n.cx}" y="${n.cy + fs * 0.36}" fill="#E8EDF6" font-size="${fs}" font-weight="600" text-anchor="middle">${n.t}</text></g>`;
+    const cx = n.x + n.w / 2, cy = n.y + n.h / 2;
+    nodes += `<g class="fnode"><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="10" fill="${fill}" stroke="${stroke}" stroke-opacity=".55" stroke-width="1.2"/><text x="${cx}" y="${cy + fs * 0.36}" fill="#E8EDF6" font-size="${fs}" font-weight="600" text-anchor="middle">${n.t}</text></g>`;
   }
   const groups = (cfg.groups || []).map(g =>
     `<text x="${g.x}" y="${g.y}" fill="#5A6577" font-size="12" font-weight="700" letter-spacing="3">${g.t}</text>`).join("");

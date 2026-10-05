@@ -16,7 +16,7 @@ import sys
 import requests
 
 BASE = "http://220.162.99.166:88"
-ADMIN_TOKEN = "77455c7d4b3a8fe:f36c1a4b10e8b5e"
+ADMIN_TOKEN = "77455c7d4b3a8fe:432939a748243fd"
 PORTAL_EMAIL = "portal@aodengke.com"
 PORTAL_NAME = "门户专用账号"
 # 门户最小角色集：库存(Stock Entry 扫描写入/Bin)、生产、采购、销售、财务(对账/GL)、委外
@@ -176,9 +176,21 @@ def main():
     log(f"负测试·修改 Administrator（应 403）: HTTP {r.status_code}",
         ok=(r.status_code in (403, 404)))
 
-    # 越权负测试：门户令牌不得访问用户列表
+    # 越权负测试：User 列表是 Frappe 系统用户默认可见的目录（仅 name 字段，
+    # 供 @提及/头像使用）。真正的安全边界是：敏感字段被 permlevel 剥离、
+    # 他人完整记录不可读。验证之：
     r = p.get(f"{BASE}/api/resource/User", params={"limit_page_length": 1}, timeout=30)
-    log(f"越权负测试（User 列表应 403/404）: HTTP {r.status_code}",
+    names_only = (r.status_code == 200
+                  and all(set(d.keys()) == {"name"} for d in r.json().get("data", [])))
+    log(f"越权负测试（User 列表仅 name 字段）: HTTP {r.status_code}", ok=names_only)
+    r = p.get(f"{BASE}/api/resource/User",
+              params={"fields": json.dumps(["name", "api_key"]), "limit_page_length": 1},
+              timeout=30)
+    no_secret = (r.status_code == 200
+                 and all("api_key" not in d for d in r.json().get("data", [])))
+    log("越权负测试（api_key 被 permlevel 剥离）", ok=no_secret)
+    r = p.get(f"{BASE}/api/resource/User/Administrator", timeout=30)
+    log(f"越权负测试（读他人完整记录应 403）: HTTP {r.status_code}",
         ok=(r.status_code in (403, 404)))
 
     print("\nPORTAL_TOKEN=" + token)

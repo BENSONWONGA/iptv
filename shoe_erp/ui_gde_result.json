@@ -1,0 +1,60 @@
+{
+ "checks": [
+  {
+   "name": "全部单据页类型按钮（25 种）",
+   "ok": true,
+   "detail": "n=25"
+  },
+  {
+   "name": "Stock Entry 列表加载",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "Stock Entry 保存并提交",
+   "ok": true,
+   "detail": "MAT-STE-2026-00012 已保存并提交 ✓"
+  },
+  {
+   "name": "列表出现新调拨单",
+   "ok": true,
+   "detail": "MAT-STE-2026-00012"
+  },
+  {
+   "name": "Customer 按钮为「保存」（不可提交单据）",
+   "ok": true,
+   "detail": "保存"
+  },
+  {
+   "name": "Customer 保存",
+   "ok": true,
+   "detail": "测试客户GDE - 6 已保存 ✓"
+  },
+  {
+   "name": "已提交单只读查看",
+   "ok": true,
+   "detail": "{\"title\": \"查看 SAL-ORD-2026-00002已提交单据（只读）\", \"disabled\": 102, \"total\": 102, \"hasSubmit\": false}"
+  },
+  {
+   "name": "无权限单据降级提示",
+   "ok": true,
+   "detail": "暂无单据"
+  },
+  {
+   "name": "无页面 JS 异常",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "created": [
+  [
+   "Stock Entry",
+   "MAT-STE-2026-00012"
+  ],
+  [
+   "Customer",
+   "测试客户GDE"
+  ]
+ ],
+ "page_errors": []
+}

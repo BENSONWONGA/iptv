@@ -378,6 +378,24 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
 #mrp-run { margin: 4px 0 12px; }
 #mrp-result .tbl { margin-top: 4px; }
 
+/* ---- 全部单据（通用单据引擎） ---- */
+.gde-group { margin-bottom: 18px; }
+.gde-group-hd { font-size: 13px; font-weight: 800; color: var(--amber); letter-spacing: 2px;
+  margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed var(--line-2); }
+.gde-type-btn { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  background: var(--panel); border: 1px solid var(--line-2); border-radius: 10px; padding: 11px 16px;
+  color: var(--ink); font: inherit; font-weight: 700; font-size: 13.5px; cursor: pointer;
+  margin: 0 8px 8px 0; transition: all .15s; }
+.gde-type-btn small { font-weight: 400; font-size: 11px; color: var(--faint); letter-spacing: .3px; }
+.gde-type-btn:hover { border-color: var(--amber); background: var(--amber-soft); transform: translateY(-1px); }
+.gde-row { display: grid; grid-template-columns: repeat(4, 1fr) 34px; gap: 8px; align-items: center;
+  background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-bottom: 8px; }
+.gde-row .fd-field { gap: 4px; }
+.gde-row .fd-field > label { font-size: 11px; }
+.gde-row input, .gde-row select, .gde-row textarea { font-size: 12.5px; padding: 7px 9px; }
+.gde-rows { display: flex; flex-direction: column; }
+@media (max-width: 900px) { .gde-row { grid-template-columns: 1fr 1fr 34px; } }
+
 .chain { position: relative; padding-left: 30px; }
 .chain::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px;
   background: linear-gradient(180deg, var(--amber), rgba(79, 209, 197, .4), var(--line-2)); opacity: .55; }

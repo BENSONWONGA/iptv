@@ -184,7 +184,7 @@ function enterApp() {
 /* ---------------- 路由 ---------------- */
 const TITLES = {
   dashboard: "工作台", orders: "指令单中心", material: "物料管理", purchase: "采购管理", subcontract: "委外加工",
-  production: "生产制造", warehouse: "仓库管理", scan: "扫码出入库", finance: "应付对账", flow: "流程图中心",
+  production: "生产制造", warehouse: "仓库管理", scan: "扫码出入库", finance: "应付对账", flow: "流程图中心", docs: "全部单据",
 };
 const PAGES = {};
 function currentRoute() {
@@ -906,7 +906,382 @@ PAGES.orders = async function (box) {
     </div>`;
 };
 
-/* ---------------- 物料管理（物料 / BOM / MRP 采购申请） ---------------- */
+/* ---------------- 通用单据引擎（任意 doctype 的列表/表单/提交/取消，由原系统定义驱动） ---------------- */
+const DOC_TYPES = [
+  ["销售与出货", [["Sales Order", "指令单（销售订单）"], ["Delivery Note", "销售出库单"], ["Sales Invoice", "销售发票"], ["Payment Entry", "收/付款单"]]],
+  ["采购", [["Material Request", "采购申请（MRP）"], ["Purchase Order", "采购订单"], ["Purchase Receipt", "采购收货单"], ["Purchase Invoice", "采购发票"]]],
+  ["生产", [["Production Plan", "生产计划"], ["Work Order", "生产工单"], ["Job Card", "工序报工"], ["Stock Entry", "库存出入库"], ["Stock Reconciliation", "库存盘点"]]],
+  ["委外", [["Subcontracting Order", "委外加工单"], ["Subcontracting Receipt", "委外收货单"]]],
+  ["物料与资料", [["Item", "物料档案"], ["BOM", "BOM 配方"], ["Quality Inspection", "品质检验单"], ["Customer", "客户"], ["Supplier", "供应商"], ["Employee", "员工"], ["Project", "项目"]]],
+  ["财务", [["Journal Entry", "会计凭证"], ["Payment Entry", "收付款单"], ["Asset", "固定资产"]]],
+];
+const GDE = { meta: {}, dt: null, page: 0, q: "" };
+/* 子表/主表中的系统元字段：不渲染 */
+const GDE_SYS = ["name", "parent", "parentfield", "parenttype", "idx", "docstatus", "owner",
+  "creation", "modified", "modified_by", "__newname", "amended_from", "row_format",
+  "against_expense_account", "_assign", "_comments", "_liked_by", "_seen"];
+const GDE_SKIP = ["Section Break", "Column Break", "Tab Break", "HTML", "Heading", "Button", "Image", "Read Only", "Attach", "Attach Image", "Signature"];
+/* withTable=true 用于主表（保留子表字段），默认用于子表行（不再递归嵌套） */
+const gdeCells = (fields, withTable = false) => fields.filter(cf =>
+  !cf.hidden && !GDE_SKIP.includes(cf.fieldtype) && !GDE_SYS.includes(cf.fieldname)
+  && (withTable || cf.fieldtype !== "Table"));
+/* 子表行的列选取：必填优先 + 常用字段偏好，避免长子表截断关键字段 */
+const GDE_ROW_PREF = ["item_code", "item_name", "qty", "s_warehouse", "t_warehouse", "warehouse",
+  "rate", "amount", "uom", "stock_uom", "schedule_date", "received_qty", "conversion_factor", "barcode"];
+function gdeRowCells(fields) {
+  const cells = gdeCells(fields);
+  const req = cells.filter(f => f.reqd);
+  const rest = cells.filter(f => !f.reqd).sort((a, b) => {
+    const ai = GDE_ROW_PREF.indexOf(a.fieldname), bi = GDE_ROW_PREF.indexOf(b.fieldname);
+    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+  });
+  const room = Math.max(0, 10 - Math.min(req.length, 7));
+  return [...req.slice(0, 7), ...rest.slice(0, room)];
+}
+
+async function gdeMeta(dt) {
+  if (!GDE.meta[dt]) {
+    const j = await API.method("frappe.desk.form.load.getdoctype", { doctype: dt });
+    const docs = j.docs || [];
+    const main = docs.find(d => d.name === dt) || {};
+    GDE.meta[dt] = { fields: main.fields || [], isSubmittable: !!main.is_submittable, titleField: main.title_field };
+    /* 子表定义也缓存 */
+    for (const d of docs) if (d.istable && d.fields) GDE.meta[d.name] = { fields: d.fields, istable: 1 };
+  }
+  return GDE.meta[dt];
+}
+function gdeListFields(meta) {
+  const vis = meta.fields.filter(f => f.in_list_view && !f.hidden && f.fieldtype !== "Table");
+  if (vis.length) return vis.slice(0, 5);
+  const guess = ["customer", "supplier", "party", "item_code", "item", "purpose", "transaction_date", "posting_date", "status", "total", "grand_total", "qty"];
+  const picked = meta.fields.filter(f => guess.includes(f.fieldname) && !f.hidden).slice(0, 4);
+  return picked;
+}
+const GDE_LABEL = {
+  name: "编号", naming_series: "编号系列", docstatus: "单据状态", company: "公司", currency: "币种",
+  customer: "客户", customer_name: "客户名称", customer_type: "客户类型", customer_group: "客户组",
+  supplier: "供应商", supplier_name: "供应商名称", supplier_group: "供应商组",
+  party: "往来单位", party_type: "往来单位类型", party_name: "往来单位名称",
+  item_code: "物料编码", item_name: "物料名称", item_group: "物料组", item: "物料",
+  barcode: "条码", description: "描述", remarks: "备注", uom: "单位", stock_uom: "库存单位",
+  qty: "数量", stock_qty: "库存数量", transfer_qty: "调拨数量", received_qty: "已收数量",
+  rate: "单价", price_list_rate: "价目表价格", basic_rate: "基本单价", valuation_rate: "估值单价",
+  amount: "金额", total: "金额", grand_total: "合计金额", rounded_total: "舍入合计",
+  purpose: "用途", stock_entry_type: "库存变动类型",
+  warehouse: "仓库", s_warehouse: "源仓库", t_warehouse: "目的仓库",
+  source_warehouse: "源仓库", target_warehouse: "目的仓库", from_warehouse: "调出仓库", to_warehouse: "调入仓库",
+  per_transferred: "转移百分比", schedule_date: "预计交货日期", required_date: "需求日期", required_by: "需求日期",
+  delivery_date: "交货日期", transaction_date: "日期", posting_date: "记账日期", due_date: "到期日",
+  status: "状态", project: "项目", cost_center: "成本中心", expense_account: "费用账户",
+  serial_no: "序列号", batch_no: "批号", bom_no: "BOM 编号", bom: "BOM",
+  payment_type: "收/付款类型", mode_of_payment: "付款方式", paid_amount: "已付金额",
+  received_amount: "已收金额", reference_no: "参考编号", reference_date: "参考日期",
+  purchase_order: "采购订单", sales_order: "销售订单", work_order: "生产工单",
+  is_return: "是否退货", return_against: "冲销单据", workstation: "工作站", operation: "工序",
+  for_quantity: "生产数量", wip_warehouse: "在制品仓库", asset_category: "资产类别",
+  discount_percentage: "折扣百分比", conversion_factor: "换算系数",
+};
+const gdeLabel = f => GDE_LABEL[f.fieldname] || f.label || f.fieldname;
+/* Select 选项值的中文显示（仅显示层翻译，存库值保持英文原值，与原系统提交的数据完全一致） */
+const GDE_VALUE = {
+  "Material Transfer": "物料调拨", "Material Receipt": "物料入库", "Material Issue": "物料出库",
+  "Manufacture": "生产", "Repack": "重新包装", "Send to Subcontractor": "发外加工",
+  "Individual": "个人", "Company": "公司",
+  "Draft": "草稿", "Ordered": "已下单", "Received": "已收货", "Partly Received": "部分收货",
+  "Pending": "待处理", "Partially Received": "部分收货", "Approved": "已批准", "Rejected": "已拒绝",
+  "To Bill": "待开票", "Fully Billed": "已全额开票", "Completed": "已完成", "In Process": "生产中",
+  "Stopped": "已停止", "Cancelled": "已取消", "Ordered and Received": "已下单并收货",
+  "Not Started": "未开始", "In Progress": "进行中", "Submitted": "已提交",
+  "Pay": "付款", "Receive": "收款", "Internal Transfer": "内部转账",
+  "Opening Entry": "期初录入", "Stock Reconciliation": "库存盘点",
+};
+const gdeValue = v => GDE_VALUE[v] || v;
+
+/* 全部单据页 */
+PAGES.docs = async function (box) {
+  box.innerHTML = `
+    ${pageHeader("i-docs", "全部单据", "任意单据的新建 / 编辑 / 提交 / 取消 — 表单由 ERPNext 原始定义自动生成，业务规则与原系统完全一致", `<span class="pill run">通用单据引擎</span>`)}
+    <div id="gde-type-list">${DOC_TYPES.map(([g, items]) => `
+      <div class="gde-group">
+        <div class="gde-group-hd">${g}</div>
+        ${items.map(([dt, label]) => `<button class="gde-type-btn" data-dt="${dt}">${label}<small>${dt}</small></button>`).join("")}
+      </div>`).join("")}
+    </div>
+    <div id="gde-list" hidden></div>`;
+  $$(".gde-type-btn", box).forEach(b => b.addEventListener("click", () => gdeList(b.dataset.dt)));
+  if (GDE.dt) gdeList(GDE.dt);
+};
+
+async function gdeList(dt) {
+  GDE.dt = dt; GDE.page = 0; GDE.q = "";
+  const meta = await gdeMeta(dt);
+  const fields = gdeListFields(meta);
+  const typeList = $("#gde-type-list");
+  const listBox = $("#gde-list");
+  typeList.hidden = true; listBox.hidden = false;
+  const label = ([...DOC_TYPES.flatMap(g => g[1])].find(x => x[0] === dt) || [, dt])[1];
+  listBox.innerHTML = `
+    <div class="card">
+      <div class="card-hd">
+        <h3>${label} <button class="btn-sm ghost" id="gde-back" style="margin-left:10px">← 返回</button></h3>
+        <div style="display:flex;gap:10px;align-items:center">
+          <input id="gde-search" placeholder="按编号搜索" style="background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;padding:7px 12px;color:var(--ink);outline:none;font:inherit;font-size:13px">
+          <button class="btn-amber" id="gde-new">＋ 新建${label}</button>
+        </div>
+      </div>
+      <div class="card-bd" id="gde-rows"><div class="loading-block">${"<div class='skel'></div>".repeat(4)}</div></div>
+      <div class="card-ft" id="gde-pager" style="display:flex;gap:10px;align-items:center;padding:10px 18px;border-top:1px solid var(--line)"></div>
+    </div>`;
+  $("#gde-back").addEventListener("click", () => { listBox.hidden = true; typeList.hidden = false; GDE.dt = null; });
+  $("#gde-new").addEventListener("click", () => gdeForm(dt, null));
+  $("#gde-search").addEventListener("keydown", e => {
+    if (e.key !== "Enter") return;
+    GDE.q = e.target.value.trim(); GDE.page = 0;
+    gdeRows(dt, fields);
+  });
+  await gdeRows(dt, fields);
+}
+
+async function gdeRows(dt, fields) {
+  const rowsBox = $("#gde-rows");
+  const p = new URLSearchParams();
+  p.set("limit_page_length", "20");
+  p.set("order_by", "modified desc");
+  p.set("limit_start", String(GDE.page * 20));
+  const fs = ["name", "docstatus", ...fields.map(f => f.fieldname)];
+  p.set("fields", JSON.stringify(fs));
+  if (GDE.q) p.set("filters", JSON.stringify([["name", "like", `%${GDE.q}%`]]));
+  let rows = [], total = 0;
+  try {
+    const j = await API.req("GET", `/api/resource/${encodeURIComponent(dt)}?${p}`);
+    rows = j.data || []; total = j.data ? j.data.length : 0;
+  } catch (e) {
+    rowsBox.innerHTML = `<div class="empty">无法读取：${esc(e.message)}</div>`;
+    return;
+  }
+  rowsBox.innerHTML = `<table class="tbl"><thead><tr><th>编号</th>${fields.map(f => `<th>${esc(gdeLabel(f))}</th>`).join("")}<th>单据状态</th><th style="width:170px">操作</th></tr></thead>
+    <tbody>${rows.map(r => `<tr>
+      <td class="mono">${esc(r.name)}</td>
+      ${fields.map(f => {
+        const raw = r[f.fieldname];
+        const shown = raw == null ? "—" :
+          (f.fieldtype === "Date" || f.fieldtype === "Datetime") ? fmtDate(raw) : gdeValue(raw);
+        return `<td>${esc(shown)}</td>`;
+      }).join("")}
+      <td>${r.docstatus === 1 ? '<span class="pill ok">已提交</span>' : r.docstatus === 2 ? '<span class="pill wait">已取消</span>' : '<span class="pill run">草稿</span>'}</td>
+      <td>
+        <button class="btn-sm" data-act="view" data-name="${esc(r.name)}">${r.docstatus === 0 ? "编辑" : "查看"}</button>
+        ${r.docstatus === 0 ? `<button class="btn-sm amber" data-act="submit" data-name="${esc(r.name)}">提交</button>` : ""}
+        ${r.docstatus === 1 ? `<button class="btn-sm ghost" data-act="cancel" data-name="${esc(r.name)}">取消</button>` : ""}
+        <button class="btn-sm ghost" data-act="erp" data-name="${esc(r.name)}">后台</button>
+      </td></tr>`).join("") || `<tr><td colspan="${fields.length + 3}" class="empty">暂无单据</td></tr>`}
+    </tbody></table>`;
+  $$("[data-act]", rowsBox).forEach(b => b.addEventListener("click", async () => {
+    const name = b.dataset.name, act = b.dataset.act;
+    if (act === "view") return gdeForm(dt, name);
+    if (act === "erp") return openERP(dt, name);
+    if (act === "submit") {
+      b.disabled = true; b.textContent = "提交中";
+      try { await API.submitDoc(dt, name); toast(`${name} 已提交生效 ✓`); gdeRows(dt, fields); }
+      catch (e) { toast("提交失败：" + e.message, true); b.disabled = false; b.textContent = "提交"; }
+    }
+    if (act === "cancel") {
+      b.disabled = true; b.textContent = "取消中";
+      try {
+        await API.method("frappe.client.cancel", { doctype: dt, name });
+        toast(`${name} 已取消`); gdeRows(dt, fields);
+      } catch (e) { toast("取消失败：" + e.message, true); b.disabled = false; b.textContent = "取消"; }
+    }
+  }));
+  const pager = $("#gde-pager");
+  pager.innerHTML = `
+    <button class="btn-sm ghost" id="gde-prev" ${GDE.page === 0 ? "disabled" : ""}>上一页</button>
+    <span style="color:var(--sub);font-size:12.5px">第 ${GDE.page + 1} 页（本页 ${rows.length} 条）</span>
+    <button class="btn-sm ghost" id="gde-next" ${rows.length < 20 ? "disabled" : ""}>下一页</button>`;
+  $("#gde-prev").addEventListener("click", () => { if (GDE.page > 0) { GDE.page--; gdeRows(dt, fields); } });
+  $("#gde-next").addEventListener("click", () => { if (rows.length === 20) { GDE.page++; gdeRows(dt, fields); } });
+}
+
+/* 通用表单抽屉：由 DocType 字段定义自动渲染 */
+async function gdeForm(dt, name) {
+  const meta = await gdeMeta(dt);
+  let doc = { docstatus: 0 };
+  if (name) doc = await API.getDoc(dt, name);
+  const editable = name && doc.docstatus !== 0 ? false : true;
+
+  const renderField = (f, val, prefix = "gf") => {
+    if (f.hidden) return "";
+    const t = f.fieldtype;
+    if (["Section Break", "Column Break", "Tab Break", "HTML", "Heading", "Button", "Image", "Attach", "Attach Image", "Signature"].includes(t)) return "";
+    if (t === "Table") {
+      const childMeta = GDE.meta[f.options];
+      if (!childMeta) return "";
+      return `<div class="fd-field full">
+        <label>${esc(gdeLabel(f))}${f.reqd ? ' <i class="req">*</i>' : ""}</label>
+        <div class="gde-rows" data-table="${f.fieldname}">
+          ${((val || []).map((row, i) => gdeRowHTML(childMeta, row, i, f.fieldname)).join("")) || `<div class="empty" style="padding:12px">暂无明细行</div>`}
+        </div>
+        <button class="btn-sm ghost gde-add-row" data-table="${f.fieldname}" data-child="${f.options}">＋ 添加行</button>
+      </div>`;
+    }
+    const id = `${prefix}-${f.fieldname}`;
+    const req = f.reqd ? "required" : "";
+    let ctl = "";
+    const v = val ?? f.default ?? "";
+    if (t === "Data" || t === "Barcode" || t === "Name" || t === "Phone" || t === "Email" || t === "Color") ctl = `<input id="${id}" type="text" value="${esc(v)}" ${req} ${editable ? "" : "disabled"}>`;
+    else if (t === "Small Text" || t === "Text" || t === "Long Text" || t === "Text Editor" || t === "Markdown Editor") ctl = `<textarea id="${id}" rows="2" ${req} ${editable ? "" : "disabled"}>${esc(v)}</textarea>`;
+    else if (t === "Int" || t === "Float" || t === "Currency" || t === "Percent") ctl = `<input id="${id}" type="number" step="${t === "Int" ? "1" : "0.01"}" value="${esc(v)}" ${req} ${editable ? "" : "disabled"}>`;
+    else if (t === "Date") ctl = `<input id="${id}" type="date" value="${String(v).slice(0, 10)}" ${req} ${editable ? "" : "disabled"}>`;
+    else if (t === "Datetime") ctl = `<input id="${id}" type="datetime-local" value="${String(v).slice(0, 16)}" ${req} ${editable ? "" : "disabled"}>`;
+    else if (t === "Check") ctl = `<input id="${id}" type="checkbox" ${v == 1 || v === 1 ? "checked" : ""} ${editable ? "" : "disabled"} style="width:20px;height:20px;margin-top:8px">`;
+    else if (t === "Select") {
+      const opts = (f.options || "").split("\n").filter(Boolean);
+      /* 与原系统一致：无值时默认选中第一个选项（如编号系列 naming_series） */
+      const sel = (v !== "" && v !== null && v !== undefined) ? String(v) : (opts[0] || "");
+      ctl = `<select id="${id}" ${editable ? "" : "disabled"}>${`<option value=""></option>` + opts.map(o => `<option value="${esc(o)}" ${sel === o ? "selected" : ""}>${esc(GDE_VALUE[o] || o)}</option>`).join("")}</select>`;
+    } else if (t === "Link") {
+      ctl = `<input id="${id}" class="gde-link" data-link="${esc(f.options)}" type="text" list="dl-${id}" value="${esc(v)}" ${req} ${editable ? "" : "disabled"} placeholder="输入搜索">
+             <datalist id="dl-${id}"></datalist>`;
+    } else if (t === "Read Only") return "";
+    else return "";
+    return `<div class="fd-field"><label>${esc(gdeLabel(f))}${f.reqd ? ' <i class="req">*</i>' : ""}</label>${ctl}</div>`;
+  };
+
+  const gdeRowHTML = (childMeta, row, i, parentField) => {
+    const cells = gdeRowCells(childMeta.fields);
+    return `<div class="gde-row" data-i="${i}">
+      ${cells.map(cf => renderField(cf, row[cf.fieldname], `gf-${parentField}-${i}`)).join("")}
+      <button class="br-del gde-row-del" data-i="${i}">✕</button>
+    </div>`;
+  };
+
+  /* 表单主字段：可编辑的非只读字段（原系统的必填与常用项，含子表） */
+  const mainFields = gdeCells(meta.fields, true);
+
+  closeDrawer();
+  const mask = document.createElement("div");
+  mask.className = "drawer-mask"; mask.addEventListener("click", closeDrawer);
+  document.body.appendChild(mask);
+  const d = document.createElement("div");
+  d.className = "drawer";
+  d.innerHTML = `
+    <div class="drawer-hd">
+      <h3>${name ? (editable ? "编辑" : "查看") + " " + esc(name) : "新建 " + esc(dt)}<small>${name ? (doc.docstatus === 1 ? "已提交单据（只读）" : doc.docstatus === 2 ? "已取消" : "草稿") : "表单由 ERPNext 单据定义自动生成"}</small></h3>
+      <button class="drawer-x">✕</button>
+    </div>
+    <div class="drawer-bd"><div class="nd-form" id="gde-form">
+      ${mainFields.map(f => renderField(f, doc[f.fieldname])).join("")}
+      <div class="fd-actions full">
+        <button class="btn-sm ghost" id="gf-cancel">关 闭</button>
+        <button class="btn-sm ghost" id="gf-erp">后台打开</button>
+        ${editable ? `<button class="btn-sm" id="gf-save">保存草稿</button>
+        ${meta.isSubmittable ? `<button class="btn-amber" id="gf-submit">保存并提交</button>` : `<button class="btn-amber" id="gf-submit">保存</button>`}` : ""}
+      </div>
+    </div></div>`;
+  document.body.appendChild(d);
+  $(".drawer-x", d).addEventListener("click", closeDrawer);
+  $("#gf-cancel", d).addEventListener("click", closeDrawer);
+  $("#gf-erp", d).addEventListener("click", () => name && openERP(dt, name));
+
+  /* Link 字段：聚焦/输入时实时搜索候选（含后加的行） */
+  const bindLinks = () => $$(".gde-link:not([data-bound])", d).forEach(inp => {
+    inp.dataset.bound = "1";
+    let timer = null;
+    const load = async () => {
+      const dl = $("#" + inp.getAttribute("list"), d);
+      if (!dl) return;
+      try {
+        const j = await API.method("frappe.desk.search.search_link",
+          { doctype: inp.dataset.link, txt: inp.value || "", page_length: 20 });
+        dl.innerHTML = (j.message || []).map(r =>
+          `<option value="${esc(r.value)}">${esc(r.description || "")}</option>`).join("");
+      } catch (e) { /* 忽略搜索失败 */ }
+    };
+    inp.addEventListener("focus", load);
+    inp.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(load, 350); });
+  });
+  /* 子表行删除 */
+  const bindDel = () => $$(".gde-row-del", d).forEach(b => {
+    if (b.dataset.bound) return;
+    b.dataset.bound = "1";
+    b.addEventListener("click", () => b.closest(".gde-row").remove());
+  });
+  /* 子表添加行 */
+  const bindRows = () => $$(".gde-add-row", d).forEach(btn => {
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => {
+      const childMeta = GDE.meta[btn.dataset.child] || { fields: [] };
+      const rowsBox = $(`.gde-rows[data-table="${btn.dataset.table}"]`, d);
+      const empty = rowsBox.querySelector(".empty");
+      if (empty) empty.remove();
+      const i = rowsBox.querySelectorAll(".gde-row").length;
+      rowsBox.insertAdjacentHTML("beforeend", gdeRowHTML(childMeta, {}, i, btn.dataset.table));
+      bindLinks(); bindDel();
+    });
+  });
+  bindLinks(); bindDel(); bindRows();
+
+  /* 收集 + 保存 */
+  const collect = () => {
+    const out = {};
+    for (const f of mainFields) {
+      if (f.fieldtype === "Table") {
+        const rowsBox = $(`.gde-rows[data-table="${f.fieldname}"]`, d);
+        if (!rowsBox) { out[f.fieldname] = doc[f.fieldname] || []; continue; }
+        const childMeta = GDE.meta[f.options] || { fields: [] };
+        const cells = gdeRowCells(childMeta.fields);
+        out[f.fieldname] = $$(".gde-row", rowsBox).map(rowEl => {
+          const i = rowEl.dataset.i;
+          const row = { doctype: f.options };
+          for (const cf of cells) {
+            const el = $(`#gf-${f.fieldname}-${i}-${cf.fieldname}`, rowEl) || $(`#gf-${f.fieldname}-${i}-${cf.fieldname}`, d);
+            if (!el) continue;
+            row[cf.fieldname] = cf.fieldtype === "Check" ? (el.checked ? 1 : 0) : el.value;
+          }
+          return row;
+        });
+      } else {
+        const el = $(`#gf-${f.fieldname}`, d);
+        if (!el) continue;
+        out[f.fieldname] = f.fieldtype === "Check" ? (el.checked ? 1 : 0) : el.value;
+      }
+    }
+    return out;
+  };
+  const doSave = async (andSubmit) => {
+    const data = collect();
+    for (const f of mainFields) if (f.reqd && !(f.fieldtype === "Table" ? (data[f.fieldname] || []).length : String(data[f.fieldname] ?? "").trim())) {
+      toast(`请填写「${gdeLabel(f)}」`, true); return;
+    }
+    try {
+      let savedName = name;
+      if (!name) {
+        const r = await API.post(dt, data);
+        savedName = r.name;
+      } else {
+        await API.req("PUT", `/api/resource/${encodeURIComponent(dt)}/${encodeURIComponent(name)}`, data);
+      }
+      if (andSubmit && meta.isSubmittable) {
+        await API.submitDoc(dt, savedName);
+        toast(`${savedName} 已保存并提交 ✓`);
+      } else {
+        toast(`${savedName} 已保存${meta.isSubmittable ? "（草稿）" : ""} ✓`);
+      }
+      closeDrawer();
+      if (location.hash === "#/docs") { GDE.page = 0; gdeList(dt); }
+      else render();
+    } catch (e) {
+      toast("保存失败：" + (e.message || "请检查必填项"), true);
+    }
+  };
+  if (editable) {
+    $("#gf-save", d).addEventListener("click", () => doSave(false));
+    $("#gf-submit", d).addEventListener("click", () => doSave(true));
+  }
+}
+
+
 PAGES.material = async function (box) {
   const [items, boms, mrs, bins, groups] = await Promise.all([
     API.list("Item", ["item_code", "item_name", "item_group", "stock_uom", "is_stock_item", "has_variants", "disabled"], [["disabled", "=", 0]], 500),

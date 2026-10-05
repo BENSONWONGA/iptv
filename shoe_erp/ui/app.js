@@ -5,6 +5,8 @@
 "use strict";
 
 const COMPANY = "奥登科鞋业有限公司";
+/* 预览环境演示令牌（上线部署前请移除） */
+const DEMO_TOKEN = "77455c7d4b3a8fe:f36c1a4b10e8b5e";
 const WAREHOUSES = {
   "材料仓": "材料仓 - 奥登科",
   "半成品仓": "半成品仓 - 奥登科",
@@ -118,6 +120,11 @@ function showLogin() {
   $("#app-view").hidden = true;
   $("#login-view").style.display = "flex";
   $("#login-base").value = $("#login-base").value || (location.origin.startsWith("http") ? location.origin : "");
+  /* 预览环境：自动填入演示令牌，直接点登录即可 */
+  if (!$("#login-token").value) {
+    $("#login-token").value = DEMO_TOKEN;
+    $("#login-token").type = "text";
+  }
 }
 async function doLogin() {
   const base = $("#login-base").value.trim();

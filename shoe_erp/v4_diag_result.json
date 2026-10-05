@@ -1,0 +1,287 @@
+{
+ "flow": {
+  "count": 14,
+  "doneCount": 14,
+  "data": [
+   {
+    "step": "01 接单",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "02 计划",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "03 MRP",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "04 工单",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "05 采购",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "06 收料",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "07 委外",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "08 发料",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "09 帮面",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "10 领料",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "11 报工",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "12 入库",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "13 应付",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   },
+   {
+    "step": "14 付款",
+    "done": true,
+    "nodeBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+    "stepColor": "rgb(26, 18, 6)",
+    "stepBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 60%, rgb(245, 158, 11))",
+    "stepShadow": "rgba(255, 255, 255, 0.45) 0px 1px 0px 0px inset, rgba(255, 176, 32, 0.4) 0px 3px 12px 0px"
+   }
+  ],
+  "headerPill": "14 / 14 已完成",
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0,
+  "render_s": 3.0
+ },
+ "scan": {
+  "before": {
+   "inputBg": "rgb(244, 246, 250)",
+   "inputColor": "rgb(20, 24, 31)",
+   "heroBg": "radial-gradient(600px 260px at 90% -10%, rgba(255, 176, 32, 0.13), rgba(0, 0, 0, 0) 62%), linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+   "state": "待扫描",
+   "overflowX": 0
+  },
+  "after": {
+   "state": "已识别",
+   "count": "0",
+   "itemShown": true,
+   "imgBg": "rgba(255, 176, 32, 0.12)",
+   "imgBorder": "rgba(255, 176, 32, 0.45)",
+   "imgSvg": "rgb(255, 176, 32)",
+   "itemCode": "M-FAB-001 （面料）",
+   "overflowX": 0,
+   "scan_s": 1.7
+  },
+  "recognized": true,
+  "mutations": [
+   {
+    "t": 0.1,
+    "m": "add:loading-block"
+   },
+   {
+    "t": 0.1,
+    "m": "add:|page-hd||scan-layout"
+   }
+  ]
+ },
+ "hover": {
+  "tdBg": "rgba(255, 176, 32, 0.043)"
+ },
+ "balzero": {
+  "found": true,
+  "tag": "TD",
+  "cls": "num bal-zero",
+  "matched": [],
+  "computedColor": "rgb(232, 237, 246)",
+  "computedShadow": "rgba(255, 176, 32, 0.3) 0px 0px 18px",
+  "zeroCount": 4,
+  "totalRowZeroColor": "rgb(232, 237, 246)"
+ },
+ "mobile": {
+  "vw": 390,
+  "scrollW": 448,
+  "overflowX": 58,
+  "over": [
+   {
+    "t": "DIV",
+    "id": "",
+    "cls": "login-right",
+    "w": 448,
+    "left": 0,
+    "right": 448
+   },
+   {
+    "t": "DIV",
+    "id": "",
+    "cls": "lr-card",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "H2",
+    "id": "",
+    "cls": "",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "P",
+    "id": "",
+    "cls": "lr-sub",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "DIV",
+    "id": "",
+    "cls": "lr-form",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "LABEL",
+    "id": "",
+    "cls": "",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "INPUT",
+    "id": "login-base",
+    "cls": "",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "LABEL",
+    "id": "",
+    "cls": "",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "INPUT",
+    "id": "login-token",
+    "cls": "",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "BUTTON",
+    "id": "login-btn",
+    "cls": "btn-primary btn-block",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "P",
+    "id": "",
+    "cls": "login-tip",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "P",
+    "id": "login-err",
+    "cls": "login-err",
+    "w": 400,
+    "left": 24,
+    "right": 424
+   },
+   {
+    "t": "A",
+    "id": "",
+    "cls": "",
+    "w": 35,
+    "left": 358,
+    "right": 393
+   }
+  ],
+  "cardW": 400,
+  "cardMaxW": "100%",
+  "rightW": 448,
+  "rightPad": "24px",
+  "gridCols": "448px"
+ },
+ "console": [],
+ "pageerrors": []
+}

@@ -1,0 +1,795 @@
+{
+ "meta": {
+  "base": "http://127.0.0.1:3333",
+  "viewport": "1440x900",
+  "mobile": "390x844",
+  "cache_disabled": true,
+  "chrome": "/root/.cache/puppeteer/chrome/linux-151.0.7922.71/chrome-linux64/chrome",
+  "duration_s": 20.3
+ },
+ "login": {
+  "bodyBg": "rgb(12, 17, 24)",
+  "bodyGrid": "linear-gradient(rgba(139, 150, 168, 0.05) 1px, rgba(0, 0, 0, 0) 1px), linear-gradient(90deg, rgba(139, 150, 168, 0.05) 1px, rgba(0, 0, 0, 0) 1px)",
+  "gridCols": "748.797px 691.188px",
+  "leftRatio": 0.52,
+  "rightRatio": 0.48,
+  "leftGrid": "linear-gradient(rgba(139, 150, 168, 0.07) 1px, rgba(0, 0, 0, 0) 1px), linear-gradient(90deg, rgba(139, 150, 168, 0.07) 1px, rgba(0, 0, 0, 0) 1px)",
+  "bandW": "1px",
+  "bandBg": "linear-gradient(rgba(0, 0, 0, 0), rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))",
+  "logoBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(245, 158, 11))",
+  "logoRadius": "12px",
+  "logoSvgColor": "rgb(26, 18, 6)",
+  "h1Size": "44px",
+  "h1Weight": "900",
+  "h1Color": "rgb(232, 237, 246)",
+  "emColor": "rgb(255, 176, 32)",
+  "emShadow": "rgba(255, 176, 32, 0.35) 0px 0px 32px",
+  "procCount": 6,
+  "proc": [
+   {
+    "no": "01",
+    "text": "01裁断",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   },
+   {
+    "no": "02",
+    "text": "02针车",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   },
+   {
+    "no": "03",
+    "text": "03成型",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   },
+   {
+    "no": "04",
+    "text": "04画线",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   },
+   {
+    "no": "05",
+    "text": "05品检",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   },
+   {
+    "no": "06",
+    "text": "06包装出货",
+    "iColor": "rgb(255, 176, 32)",
+    "font": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace",
+    "linkW": "14px",
+    "linkBg": "linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+   }
+  ],
+  "formTitle": "进入驾驶舱",
+  "inputBg": "rgba(255, 255, 255, 0.03)",
+  "inputColor": "rgb(232, 237, 246)",
+  "btnBg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(245, 158, 11))",
+  "btnColor": "rgb(26, 18, 6)",
+  "tokenValue": "77455c7d4b3a8fe:f36c1a4b10e8b5e",
+  "tokenType": "text",
+  "baseValue": "http://127.0.0.1:3333",
+  "overflowX": 0
+ },
+ "focus": {
+  "focused": true,
+  "borderColor": "rgb(255, 176, 32)",
+  "boxShadow": "rgba(255, 176, 32, 0.12) 0px 0px 0px 4px",
+  "background": "rgba(255, 176, 32, 0.05)"
+ },
+ "dashboard": {
+  "bodyBg": "rgb(12, 17, 24)",
+  "bodyGrid": "linear-gradient(rgba(139, 150, 168, 0.05) 1px, rgba(0, 0, 0, 0) 1px), linear-gradient(90deg, rgba(139, 150, 168, 0.05) 1px, rgba(0, 0, 0, 0) 1px)",
+  "navBg": "rgba(15, 21, 31, 0.92)",
+  "navBlur": "blur(14px)",
+  "navAfterBg": "linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(255, 176, 32, 0.55), rgba(0, 0, 0, 0))",
+  "activeColor": "rgb(255, 176, 32)",
+  "activeSvg": "rgb(255, 176, 32)",
+  "activePage": "dashboard",
+  "heroBg": "radial-gradient(700px 300px at 92% -20%, rgba(255, 176, 32, 0.12), rgba(0, 0, 0, 0) 65%), linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+  "heroAfterH": "2px",
+  "heroAfterBg": "linear-gradient(90deg, rgb(255, 176, 32), rgba(255, 176, 32, 0.12) 70%, rgba(0, 0, 0, 0))",
+  "heroH2": "早上好，系统管理员",
+  "heroP": "2026年10月5日星期一 · 鞋业代工全流程运转正常，数据实时同步自 ERPNext",
+  "chipCount": 3,
+  "chips": [
+   {
+    "v": "1",
+    "color": "rgb(255, 176, 32)",
+    "shadow": "rgba(255, 176, 32, 0.3) 0px 0px 20px"
+   },
+   {
+    "v": "2,000",
+    "color": "rgb(255, 176, 32)",
+    "shadow": "rgba(255, 176, 32, 0.3) 0px 0px 20px"
+   },
+   {
+    "v": "0",
+    "color": "rgb(255, 176, 32)",
+    "shadow": "rgba(255, 176, 32, 0.3) 0px 0px 20px"
+   }
+  ],
+  "statCount": 4,
+  "stats": [
+   {
+    "no": "01",
+    "noColor": "rgb(90, 101, 119)",
+    "noPos": "absolute",
+    "noTop": "14px",
+    "noRight": "16px",
+    "icClass": "blue",
+    "icBg": "rgba(111, 158, 229, 0.14)",
+    "icImg": "none",
+    "icBorder": "rgba(111, 158, 229, 0.4)",
+    "label": "进行中指令单",
+    "value": "1单",
+    "valSize": "34px",
+    "valFont": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace"
+   },
+   {
+    "no": "02",
+    "noColor": "rgb(90, 101, 119)",
+    "noPos": "absolute",
+    "noTop": "14px",
+    "noRight": "16px",
+    "icClass": "cyan",
+    "icBg": "rgba(79, 209, 197, 0.12)",
+    "icImg": "none",
+    "icBorder": "rgba(79, 209, 197, 0.4)",
+    "label": "在产工单",
+    "value": "0双",
+    "valSize": "34px",
+    "valFont": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace"
+   },
+   {
+    "no": "03",
+    "noColor": "rgb(90, 101, 119)",
+    "noPos": "absolute",
+    "noTop": "14px",
+    "noRight": "16px",
+    "icClass": "amber",
+    "icBg": "rgba(255, 176, 32, 0.12)",
+    "icImg": "none",
+    "icBorder": "rgba(255, 176, 32, 0.4)",
+    "label": "待付货款",
+    "value": "0.0万元",
+    "valSize": "34px",
+    "valFont": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace"
+   },
+   {
+    "no": "04",
+    "noColor": "rgb(90, 101, 119)",
+    "noPos": "absolute",
+    "noTop": "14px",
+    "noRight": "16px",
+    "icClass": "green",
+    "icBg": "rgba(110, 213, 146, 0.12)",
+    "icImg": "none",
+    "icBorder": "rgba(110, 213, 146, 0.4)",
+    "label": "成品仓库存",
+    "value": "2,000双",
+    "valSize": "34px",
+    "valFont": "Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace"
+   }
+  ],
+  "fcNum": "14 / 14",
+  "fcIColor": "rgb(255, 176, 32)",
+  "fcIShadow": "rgba(255, 176, 32, 0.4) 0px 0px 20px",
+  "dotCount": 14,
+  "doneDots": 14,
+  "dots": [
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   },
+   {
+    "cls": "fb-chip done",
+    "bgImg": "linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))",
+    "bgColor": "rgba(0, 0, 0, 0)",
+    "shadow": "rgba(255, 255, 255, 0.5) 0px 1px 0px 0px inset, rgba(160, 100, 0, 0.35) 0px -2px 3px 0px inset, rgba(255, 176, 32, 0.5) 0px 0px 0px 1px, rgba(255, 176, 32, 0.5) 0px 4px 16px 0px"
+   }
+  ],
+  "pillOk": "已全部完成",
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "navhover": {
+  "color": "rgb(232, 237, 246)",
+  "svgColor": "rgb(255, 176, 32)"
+ },
+ "orders": {
+  "rowCount": 1,
+  "foText": "FO-2026-001",
+  "foColor": "rgb(255, 176, 32)",
+  "tdColor": "rgb(232, 237, 246)",
+  "subColor": "rgb(139, 150, 168)",
+  "title": "指令单中心",
+  "activeNav": "orders",
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "rowhover": {
+  "tdBg": "rgba(255, 176, 32, 0.043)"
+ },
+ "drawer": {
+  "open": true,
+  "title": "指令单 FO-2026-001 全流程链路点击单号可在 ERPNext 中打开原单",
+  "drawerBg": "linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+  "drawerBorder": "rgba(255, 255, 255, 0.14)",
+  "maskBg": "rgba(5, 9, 15, 0.6)",
+  "nodeCount": 14,
+  "doneCount": 14,
+  "doneDotBg": "linear-gradient(rgb(255, 196, 85), rgb(219, 138, 0))",
+  "doneDotShadow": "rgba(255, 176, 32, 0.6) 0px 0px 0px 1.5px, rgba(255, 176, 32, 0.5) 0px 0px 14px 0px",
+  "skelInDrawer": false,
+  "fail": false
+ },
+ "production": {
+  "woCount": 1,
+  "wos": [
+   {
+    "name": "MFG-WO-2026-00001",
+    "status": "Completed",
+    "barBg": "linear-gradient(90deg, rgb(219, 138, 0), rgb(255, 176, 32), rgb(255, 196, 85))",
+    "barW": "100%"
+   }
+  ],
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "finance": {
+  "zeroCount": 4,
+  "openCount": 0,
+  "zeroTexts": [
+   "¥0.00",
+   "¥0.00",
+   "¥0.00",
+   "¥0.00"
+  ],
+  "zeroColor": "rgb(232, 237, 246)",
+  "zeroShadow": "rgba(255, 176, 32, 0.3) 0px 0px 18px",
+  "openColor": null,
+  "supplierRows": 10,
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "flow": {
+  "count": 0,
+  "doneCount": 0,
+  "data": [],
+  "headerPill": "",
+  "skel": true,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "scan_before": {
+  "inputBg": "rgb(244, 246, 250)",
+  "inputColor": "rgb(20, 24, 31)",
+  "heroBg": "radial-gradient(600px 260px at 90% -10%, rgba(255, 176, 32, 0.13), rgba(0, 0, 0, 0) 62%), linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38))",
+  "heroBorder": "rgba(255, 255, 255, 0.14)",
+  "state": "待扫描",
+  "skel": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "scan_after": {
+  "state": "",
+  "count": "",
+  "itemShown": false,
+  "imgBg": null,
+  "imgBorder": null,
+  "imgSvg": null,
+  "itemCode": "",
+  "pill": "",
+  "overflowX": 0
+ },
+ "mobile_login": {
+  "leftDisplay": "none",
+  "rightVisible": true,
+  "cardVisible": true,
+  "tokenValue": "77455c7d4b3a8fe:f36c1a4b10e8b5e",
+  "vw": 390,
+  "overflowX": 58
+ },
+ "mobile_nav": {
+  "tnl": "none",
+  "brandTxt": "none",
+  "topSearch": "none",
+  "envBadge": "none",
+  "tnavUser": "none",
+  "tnavOut": "flex",
+  "navIconCount": 9,
+  "heroVisible": true,
+  "skel": false,
+  "overflowX": 0
+ },
+ "residue": {
+  "dashboard": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "orders": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "production": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "finance": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "flow": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "scan": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  },
+  "mobile": {
+   "bright": [],
+   "blueBtns": [],
+   "greens": []
+  }
+ },
+ "regression": {
+  "console": [],
+  "pageerrors": [],
+  "net_err": []
+ },
+ "checks": [
+  {
+   "phase": "login",
+   "name": "整体深炭底 #0C1118",
+   "ok": true,
+   "detail": "rgb(12, 17, 24)"
+  },
+  {
+   "phase": "login",
+   "name": "深色分屏 52/48",
+   "ok": true,
+   "detail": "left=0.52 right=0.48 cols=748.797px 691.188px"
+  },
+  {
+   "phase": "login",
+   "name": "左侧蓝图网格纹理",
+   "ok": true,
+   "detail": "linear-gradient(rgba(139, 150, 168, 0.07) 1px, rgba(0, 0, 0, 0) 1px), linear-gradient(90de"
+  },
+  {
+   "phase": "login",
+   "name": "左区右缘竖向琥珀光带(1px)",
+   "ok": true,
+   "detail": "w=1px bg=linear-gradient(rgba(0, 0, 0, 0), rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))"
+  },
+  {
+   "phase": "login",
+   "name": "琥珀金渐变圆角 logo 块 + 深色图标",
+   "ok": true,
+   "detail": "bg=linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(245, 158, 11)) svg=rgb(26, 18, 6) r=12px"
+  },
+  {
+   "phase": "login",
+   "name": "大标语 44px / 900 权重 / 白色",
+   "ok": true,
+   "detail": "44px/900/rgb(232, 237, 246)"
+  },
+  {
+   "phase": "login",
+   "name": "「一块屏」琥珀色发光字",
+   "ok": true,
+   "detail": "color=rgb(255, 176, 32) shadow=rgba(255, 176, 32, 0.35) 0px 0px 32px"
+  },
+  {
+   "phase": "login",
+   "name": "制鞋工序轴 6 胶囊（琥珀序号/等宽字体/渐变连线）",
+   "ok": true,
+   "detail": "proc=[{\"no\": \"01\", \"text\": \"01裁断\", \"iColor\": \"rgb(255, 176, 32)\", \"font\": \"Bahnschrift, \\\"DIN Alternate\\\", \\\"Helvetica Neue\\\", \\\"SF Mono\\\", monospace\", \"linkW\": \"14px\", \"linkBg\": \"linear-gradient(90deg, rgba(255, 176, 32, 0.5), rgba(0, 0, 0, 0))\"}, {\"no\": \"02\", \"te"
+  },
+  {
+   "phase": "login",
+   "name": "表单标题「进入驾驶舱」",
+   "ok": true,
+   "detail": "进入驾驶舱"
+  },
+  {
+   "phase": "login",
+   "name": "输入框深色半透明 + 浅色文字",
+   "ok": true,
+   "detail": "bg=rgba(255, 255, 255, 0.03) color=rgb(232, 237, 246)"
+  },
+  {
+   "phase": "login",
+   "name": "登录按钮琥珀金渐变 + 深色文字 #1A1206（非白字）",
+   "ok": true,
+   "detail": "bg=linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(245, 158, 11)) color=rgb(26, 18, 6)"
+  },
+  {
+   "phase": "login",
+   "name": "令牌自动预填",
+   "ok": true,
+   "detail": "77455c7d4b3a8fe:f36c1a4b"
+  },
+  {
+   "phase": "login",
+   "name": "登录页无横向溢出",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "phase": "login",
+   "name": "输入框聚焦琥珀光圈",
+   "ok": true,
+   "detail": "border=rgb(255, 176, 32) shadow=rgba(255, 176, 32, 0.12) 0px 0px 0px 4px"
+  },
+  {
+   "phase": "dash",
+   "name": "全局深炭底 + 隐约蓝图网格",
+   "ok": true,
+   "detail": "bg=rgb(12, 17, 24) grid=linear-gradient(rgba(139, 150, 168, 0.05) 1px, rgba(0, 0, 0,"
+  },
+  {
+   "phase": "dash",
+   "name": "顶部导航深色半透明毛玻璃",
+   "ok": true,
+   "detail": "bg=rgba(15, 21, 31, 0.92) blur=blur(14px)"
+  },
+  {
+   "phase": "dash",
+   "name": "导航底部琥珀光带线",
+   "ok": true,
+   "detail": "linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(255, 176, 32, 0.55), rgba(0, 0, 0, 0))"
+  },
+  {
+   "phase": "dash",
+   "name": "菜单 active 琥珀色（文字+图标）",
+   "ok": true,
+   "detail": "color=rgb(255, 176, 32) svg=rgb(255, 176, 32) page=dashboard"
+  },
+  {
+   "phase": "dash",
+   "name": "菜单图标 hover 琥珀色",
+   "ok": true,
+   "detail": "svg=rgb(255, 176, 32) text=rgb(232, 237, 246)"
+  },
+  {
+   "phase": "dash",
+   "name": "欢迎横幅深色面板 + 右上角琥珀光晕",
+   "ok": true,
+   "detail": "radial-gradient(700px 300px at 92% -20%, rgba(255, 176, 32, 0.12), rgba(0, 0, 0, 0) 65%), linear-gradient(rgb("
+  },
+  {
+   "phase": "dash",
+   "name": "横幅底部琥珀渐变刻度线(2px)",
+   "ok": true,
+   "detail": "h=2px bg=linear-gradient(90deg, rgb(255, 176, 32), rgba(255, 176, 32, 0.12) 70%, rgba(0, 0, 0, 0))"
+  },
+  {
+   "phase": "dash",
+   "name": "数字胶囊琥珀色发光数字",
+   "ok": true,
+   "detail": "chips=[{\"v\": \"1\", \"color\": \"rgb(255, 176, 32)\", \"shadow\": \"rgba(255, 176, 32, 0.3) 0px 0px 20px\"}, {\"v\": \"2,000\", \"color\": \"rgb(255, 176, 32)\", \"shadow\": \"rgba(255, 176, 32, 0.3) 0px 0px 20px\"}, {\"v\": \"0\", "
+  },
+  {
+   "phase": "dash",
+   "name": "4 张统计卡 + 01-04 灰色序号（右上角）",
+   "ok": true,
+   "detail": "nos=['01', '02', '03', '04'] color=rgb(90, 101, 119)"
+  },
+  {
+   "phase": "dash",
+   "name": "分类色图标块 蓝/青/琥珀/绿（深色底描边非实心）",
+   "ok": true,
+   "detail": "cls=['blue', 'cyan', 'amber', 'green'] bg=['rgba(111, 158, 229, 0.14)', 'rgba(79, 209, 197, 0.12)', 'rgba(255, 176, 32, 0.12)', 'rgba(110, 213, 146, 0.12)'] border=['rgba(111, 158, 229, 0.4)', 'rgba(79, 209, 197, 0.4)', 'rgba(255, 176, 32, 0.4)', 'rgba(110, 213, 146, 0.4)']"
+  },
+  {
+   "phase": "dash",
+   "name": "34px 等宽大数字",
+   "ok": true,
+   "detail": "size=['34px', '34px', '34px', '34px'] font=Bahnschrift, \"DIN Alternate\", \"Helvetica Neue\", \"SF Mono\", monospace"
+  },
+  {
+   "phase": "dash",
+   "name": "流程卡头部「14 / 14」（14 琥珀发光）",
+   "ok": true,
+   "detail": "num='14 / 14' iColor=rgb(255, 176, 32) shadow=rgba(255, 176, 32, 0.4) 0px 0px 20px"
+  },
+  {
+   "phase": "dash",
+   "name": "14 步骤圆点琥珀金渐变球（金色外发光，非绿色）",
+   "ok": true,
+   "detail": "count=14 done=14 sample={\"cls\": \"fb-chip done\", \"bgImg\": \"linear-gradient(rgb(255, 196, 85), rgb(255, 176, 32) 55%, rgb(219, 138, 0))\", \"bgColor\": \"rgba(0, 0, 0, 0)\", \"shadow"
+  },
+  {
+   "phase": "dash",
+   "name": "工作台无骨架卡死/无加载失败",
+   "ok": true,
+   "detail": "skel=False fail=False"
+  },
+  {
+   "phase": "dash",
+   "name": "工作台无横向溢出",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "phase": "orders",
+   "name": "指令单中心渲染 + 导航激活",
+   "ok": true,
+   "detail": "title=指令单中心 active=orders rows=1"
+  },
+  {
+   "phase": "orders",
+   "name": "表格单据号琥珀色",
+   "ok": true,
+   "detail": "text=FO-2026-001 color=rgb(255, 176, 32)"
+  },
+  {
+   "phase": "orders",
+   "name": "表格 td 文字 #E8EDF6 对比",
+   "ok": true,
+   "detail": "rgb(232, 237, 246)"
+  },
+  {
+   "phase": "orders",
+   "name": "副标题 #8B96A8 可读",
+   "ok": true,
+   "detail": "rgb(139, 150, 168)"
+  },
+  {
+   "phase": "orders",
+   "name": "指令单页无骨架卡死/无溢出",
+   "ok": true,
+   "detail": "skel=False ox=0"
+  },
+  {
+   "phase": "orders",
+   "name": "表格行 hover 琥珀微光",
+   "ok": false,
+   "detail": "rgba(255, 176, 32, 0.043)"
+  },
+  {
+   "phase": "drawer",
+   "name": "点行打开深色抽屉",
+   "ok": true,
+   "detail": "open=True bg=linear-gradient(rgb(24, 33, 47), rgb(19, 26, 38)) fail=False"
+  },
+  {
+   "phase": "drawer",
+   "name": "链路时间线节点琥珀金圆点",
+   "ok": true,
+   "detail": "nodes=14 done=14 bg=linear-gradient(rgb(255, 196, 85), rgb(219, 138, 0)) shadow=rgba(255, 176, 32, 0.6) 0px 0px 0px 1.5px, rgba(255, 176, 32, 0.5) 0px 0px 14px 0px"
+  },
+  {
+   "phase": "production",
+   "name": "工单进度条琥珀金渐变填充（完成态，非绿色）",
+   "ok": true,
+   "detail": "total=1 completed=1 bars=[{\"name\": \"MFG-WO-2026-00001\", \"status\": \"Completed\", \"barBg\": \"linear-gradient(90deg, rgb(219, 138, 0), rgb(255, 176, 32), rgb(255, 196, 85))\", \"barW\": \"100%\"}]"
+  },
+  {
+   "phase": "production",
+   "name": "生产页无骨架卡死/无溢出",
+   "ok": true,
+   "detail": "skel=False ox=0"
+  },
+  {
+   "phase": "finance",
+   "name": "余额 0 琥珀色发光字（非绿色）",
+   "ok": false,
+   "detail": "zeros=4 texts=['¥0.00', '¥0.00', '¥0.00', '¥0.00'] color=rgb(232, 237, 246) shadow=rgba(255, 176, 32, 0.3) 0px 0px 18px"
+  },
+  {
+   "phase": "finance",
+   "name": "未结余额红色（无绿色残留）",
+   "ok": true,
+   "detail": "open=0 color=None"
+  },
+  {
+   "phase": "finance",
+   "name": "财务页无骨架卡死/无溢出",
+   "ok": true,
+   "detail": "skel=False ox=0"
+  },
+  {
+   "phase": "flow",
+   "name": "步骤徽章「01 接单」等琥珀金渐变胶囊（完成态深色字）",
+   "ok": false,
+   "detail": "empty"
+  },
+  {
+   "phase": "flow",
+   "name": "节点卡深色",
+   "ok": false,
+   "detail": "bg=None"
+  },
+  {
+   "phase": "flow",
+   "name": "链路页无骨架卡死/无溢出",
+   "ok": false,
+   "detail": "skel=True ox=0"
+  },
+  {
+   "phase": "scan",
+   "name": "扫码输入框白底高对比",
+   "ok": true,
+   "detail": "bg=rgb(244, 246, 250) color=rgb(20, 24, 31)"
+  },
+  {
+   "phase": "scan",
+   "name": "扫码大卡深色面板 + 琥珀光晕",
+   "ok": true,
+   "detail": "radial-gradient(600px 260px at 90% -10%, rgba(255, 176, 32, 0.13), rgba(0, 0, 0, 0) 62%), linear-gradient(rgb("
+  },
+  {
+   "phase": "scan",
+   "name": "输入 6901234500011 回车识别 + 物料图标块琥珀描边",
+   "ok": false,
+   "detail": "state= imgBg=None border=None svg=None code="
+  },
+  {
+   "phase": "scan",
+   "name": "扫码页无溢出",
+   "ok": true,
+   "detail": "0/0"
+  },
+  {
+   "phase": "mobile",
+   "name": "390px 登录页只显示表单区（左侧隐藏）",
+   "ok": true,
+   "detail": "left=none right=True vw=390"
+  },
+  {
+   "phase": "mobile",
+   "name": "390px 登录页无横向溢出",
+   "ok": false,
+   "detail": "58"
+  },
+  {
+   "phase": "mobile",
+   "name": "顶部导航图标化（文字/搜索/用户区隐藏）",
+   "ok": true,
+   "detail": "tnl=none search=none user=none icons=9"
+  },
+  {
+   "phase": "mobile",
+   "name": "移动端工作台无骨架卡死/无横向溢出",
+   "ok": true,
+   "detail": "skel=False ox=0"
+  },
+  {
+   "phase": "reg",
+   "name": "0 console error（桌面+移动）",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "reg",
+   "name": "0 pageerror（桌面+移动）",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "reg",
+   "name": "无浅色残留（白底卡片/蓝色按钮/绿色状态）",
+   "ok": true,
+   "detail": "bright=[] blue=[] green=[]"
+  },
+  {
+   "phase": "reg",
+   "name": "console warning 数量（信息项）",
+   "ok": true,
+   "detail": "0 warnings"
+  }
+ ],
+ "shots": [
+  "/workspace/shoe_erp/v4-login.png",
+  "/workspace/shoe_erp/v4-dashboard.png",
+  "/workspace/shoe_erp/v4-drawer.png",
+  "/workspace/shoe_erp/v4-production.png",
+  "/workspace/shoe_erp/v4-finance.png",
+  "/workspace/shoe_erp/v4-flow.png",
+  "/workspace/shoe_erp/v4-scan.png",
+  "/workspace/shoe_erp/v4-mobile-login.png",
+  "/workspace/shoe_erp/v4-mobile.png"
+ ]
+}

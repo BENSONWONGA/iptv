@@ -14,7 +14,7 @@ const WAREHOUSES = {
   "在制品": "在制品 - 奥登科",
   "成品仓": "成品仓 - 奥登科",
 };
-const WH_COLORS = { "材料仓": "#2C5A97", "半成品仓": "#7C5CBF", "委外仓": "#E8871E", "在制品": "#3E8FA3", "成品仓": "#1B7A4B" };
+const WH_COLORS = { "材料仓": "#7FA8E8", "半成品仓": "#A78BFA", "委外仓": "#FFB020", "在制品": "#4FD1C5", "成品仓": "#6ED592" };
 
 /* ---------------- API 层 ---------------- */
 const API = {
@@ -169,7 +169,9 @@ function currentRoute() {
   const h = location.hash.replace(/^#\//, "") || "dashboard";
   return TITLES[h] ? h : "dashboard";
 }
+let renderSeq = 0;
 async function render() {
+  const seq = ++renderSeq;
   const page = currentRoute();
   document.title = TITLES[page] + " · 奥登科鞋业智造协同平台";
   $$(".tnav a").forEach(a => a.classList.toggle("active", a.dataset.page === page));
@@ -177,7 +179,9 @@ async function render() {
   box.innerHTML = skeleton(8);
   try {
     await PAGES[page](box);
+    if (seq !== renderSeq) return; /* 已切换到其他页面，丢弃迟到渲染 */
   } catch (e) {
+    if (seq !== renderSeq) return;
     box.innerHTML = `<div class="card card-bd empty"><svg class="ic"><use href="#i-chip"/></svg><b>加载失败</b><p>${esc(e.message)}</p></div>`;
   }
 }
@@ -428,24 +432,28 @@ PAGES.dashboard = async function (box) {
     </div>
     <div class="grid g4" style="margin-bottom:16px">
       <div class="card stat-card">
+        <span class="stat-no">01</span>
         <span class="stat-ic blue"><svg><use href="#i-order"/></svg></span>
         <div class="stat-body"><div class="stat-label">进行中指令单</div>
           <div class="stat-value">${fmtNum(activeSO.length)}<small>单</small></div>
           <div class="stat-foot">累计接单 ${sos.length} 单</div></div>
       </div>
       <div class="card stat-card">
+        <span class="stat-no">02</span>
         <span class="stat-ic cyan"><svg><use href="#i-mfg"/></svg></span>
         <div class="stat-body"><div class="stat-label">在产工单</div>
           <div class="stat-value">${fmtNum(activeWO.reduce((a, b) => a + (b.qty || 0), 0))}<small>双</small></div>
           <div class="stat-foot">${activeWO.length} 张工单生产中</div></div>
       </div>
       <div class="card stat-card">
+        <span class="stat-no">03</span>
         <span class="stat-ic amber"><svg><use href="#i-fin"/></svg></span>
         <div class="stat-body"><div class="stat-label">待付货款</div>
           <div class="stat-value">${fmtNum(unpaidAmt / 10000, 1)}<small>万元</small></div>
           <div class="stat-foot">${unpaid.length} 张发票待付</div></div>
       </div>
       <div class="card stat-card">
+        <span class="stat-no">04</span>
         <span class="stat-ic green"><svg><use href="#i-wh"/></svg></span>
         <div class="stat-body"><div class="stat-label">成品仓库存</div>
           <div class="stat-value">${fmtNum(fgQty)}<small>双</small></div>
@@ -480,7 +488,7 @@ PAGES.orders = async function (box) {
         <thead><tr><th>指令单号</th><th>销售订单</th><th>客户</th><th>款号明细</th><th>订单金额</th><th>日期</th><th>状态</th><th></th></tr></thead>
         <tbody>${rows.map(so => `
           <tr style="cursor:pointer" onclick="openChainDrawer('${esc(so.custom_factory_order_no || so.name)}')">
-            <td><b class="mono" style="color:#0069DB">${esc(so.custom_factory_order_no || "—")}</b></td>
+            <td><b class="mono" style="color:var(--amber)">${esc(so.custom_factory_order_no || "—")}</b></td>
             <td class="mono">${esc(so.name)}</td>
             <td>${esc(so.customer)}</td>
             <td style="font-size:12.5px;color:var(--sub)">${so.items}</td>
@@ -505,13 +513,13 @@ PAGES.purchase = async function (box) {
     ${pageHeader("i-buy", "采购管理", "材料采购订单与到货收料全程跟踪", `<span class="pill run">采购总额 ${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span>`)}
     <div class="grid g2" style="margin-bottom:14px">
       <div class="card"><div class="card-hd"><h3>供应商（${sups.length}）</h3></div><div class="card-bd" style="padding:8px 18px">
-        ${sups.map(s => `<div class="wh-chip"><span class="dot" style="background:${s.supplier_group === "委外加工厂" ? "#E8871E" : "#2C5A97"}"></span>
+        ${sups.map(s => `<div class="wh-chip"><span class="dot" style="background:${s.supplier_group === "委外加工厂" ? "#FFB020" : "#7FA8E8"}"></span>
           <b>${esc(s.supplier_name)}<small style="color:var(--sub);font-weight:400;margin-left:6px">${esc(s.supplier_group || "")}</small></b></div>`).join("")}
       </div></div>
       <div class="card"><div class="card-hd"><h3>采购概览</h3></div><div class="card-bd">
-        <div class="wh-chip"><span class="dot" style="background:#2C5A97"></span><b>采购订单总数</b><span class="qty">${pos.length}</span></div>
-        <div class="wh-chip"><span class="dot" style="background:#1B7A4B"></span><b>已到货收料</b><span class="qty">${prs.length}</span></div>
-        <div class="wh-chip"><span class="dot" style="background:#E8871E"></span><b>采购总额</b><span class="qty">${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span></div>
+        <div class="wh-chip"><span class="dot" style="background:#7FA8E8"></span><b>采购订单总数</b><span class="qty">${pos.length}</span></div>
+        <div class="wh-chip"><span class="dot" style="background:#6ED592"></span><b>已到货收料</b><span class="qty">${prs.length}</span></div>
+        <div class="wh-chip"><span class="dot" style="background:#FFB020"></span><b>采购总额</b><span class="qty">${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span></div>
       </div></div>
     </div>
     <div class="card" style="margin-bottom:14px">
@@ -605,11 +613,11 @@ PAGES.production = async function (box) {
           <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:10px">
             <span>成品：<b style="color:var(--ink)">${esc(w.production_item)}</b></span>
             <span class="mono">指令单 ${esc(w.custom_factory_order_no || "—")}</span></div>
-          <div style="height:10px;background:#EDF1F7;border-radius:5px;overflow:hidden;margin-bottom:6px">
-            <div style="width:${pct}%;height:100%;background:${done ? "linear-gradient(180deg,#4BE37D,#1FA848)" : "linear-gradient(180deg,#FFC24A,#F07F00)"};border-radius:5px;transition:width .6s;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)"></div></div>
+          <div style="height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden;margin-bottom:6px;box-shadow:inset 0 2px 4px rgba(0,0,0,.35)">
+            <div style="width:${pct}%;height:100%;background:${done ? "linear-gradient(90deg,#DB8A00,#FFB020,#FFC455)" : "linear-gradient(90deg,#2AA398,#4FD1C5,#6FE0D6)"};border-radius:5px;transition:width .6s;box-shadow:0 0 12px rgba(255,176,32,.35)"></div></div>
           <div style="display:flex;justify-content:space-between;font-size:12.5px">
             <span style="color:var(--sub)">计划 <b class="num" style="color:var(--ink)">${fmtNum(w.qty)}</b> 双</span>
-            <span style="color:var(--sub)">已入库 <b class="num" style="color:${done ? "#1D8A3E" : "#C24F00"}">${fmtNum(w.produced_qty || 0)}</b> 双（${pct}%）</span>
+            <span style="color:var(--sub)">已入库 <b class="num" style="color:${done ? "#FFB020" : "#4FD1C5"}">${fmtNum(w.produced_qty || 0)}</b> 双（${pct}%）</span>
           </div>
           <div style="margin-top:10px;display:flex;gap:8px">
             <button class="btn-sm" onclick="openERP('Work Order','${esc(w.name)}')">工单详情</button>
@@ -870,7 +878,7 @@ PAGES.flow = async function (box) {
     return `<div class="fm-node ${cls === "done" ? "done" : ""}" style="animation-delay:${i * 60}ms">
       <span class="fm-step">${String(i + 1).padStart(2, "0")} ${st.label}</span>
       <b>${esc(st.name)}</b>
-      ${docs.length ? docs.map(d => `<span class="mono">${esc(d.name)}</span>`).join("") : `<small style="color:#C3CEDD">— 无单据 —</small>`}
+      ${docs.length ? docs.map(d => `<span class="mono">${esc(d.name)}</span>`).join("") : `<small style="color:var(--faint)">— 无单据 —</small>`}
       <small>${docs.length ? `${docs.length} 张 · ${docs.every(d => d.docstatus === 1) ? "全部已提交" : "含草稿"}` : "待该环节执行"}</small>
       ${main ? `<small>${esc(main.supplier || main.customer || main.purpose || "")}${main.grand_total ? " · " + fmtMoney(main.grand_total) : ""}</small>` : ""}
     </div>`;

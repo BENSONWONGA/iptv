@@ -356,6 +356,26 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
 .drawer-bd::-webkit-scrollbar { width: 5px; }
 .drawer-bd::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
 
+/* ---- 开单表单（新建指令单 / 采购单 / 委外单 / 付款） ---- */
+.nd-form { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 16px; }
+.fd-field { display: flex; flex-direction: column; gap: 7px; }
+.fd-field.full { grid-column: 1 / -1; }
+.fd-field > label { font-size: 12.5px; color: var(--sub); font-weight: 700; letter-spacing: .3px; }
+.fd-field > label .req { color: var(--amber); font-style: normal; }
+.fd-field > input, .fd-field > select {
+  background: var(--panel-2); border: 1px solid var(--line-2); border-radius: 10px;
+  padding: 10px 13px; color: var(--ink); font: inherit; font-size: 13.5px; outline: none; width: 100%;
+  box-sizing: border-box; transition: border-color .18s, box-shadow .18s;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, .22); }
+.fd-field > input::placeholder { color: var(--faint); }
+.fd-field > input:focus, .fd-field > select:focus {
+  border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-soft), inset 0 2px 4px rgba(0, 0, 0, .22); }
+.fd-field > select { cursor: pointer; }
+.fd-field > select option { background: var(--panel); color: var(--ink); }
+.fd-actions { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px;
+  padding-top: 16px; border-top: 1px dashed var(--line-2); }
+@media (max-width: 640px) { .nd-form { grid-template-columns: 1fr; } }
+
 .chain { position: relative; padding-left: 30px; }
 .chain::before { content: ""; position: absolute; left: 10px; top: 12px; bottom: 12px; width: 2px; border-radius: 2px;
   background: linear-gradient(180deg, var(--amber), rgba(79, 209, 197, .4), var(--line-2)); opacity: .55; }
@@ -677,7 +697,9 @@ const API = {
     return j.data;
   },
   async submitDoc(doctype, name) {
-    const j = await this.req("POST", "/api/method/frappe.client.submit", { doctype, name });
+    /* frappe.client.submit 要求传完整 {doc}，不能只传 doctype+name */
+    const doc = await this.getDoc(doctype, name);
+    const j = await this.req("POST", "/api/method/frappe.client.submit", { doc });
     return j.message;
   },
   async method(path, args) {
@@ -728,7 +750,7 @@ function statusPill(status, docstatus) {
   return `<span class="pill ${cls}">${esc(txt)}</span>`;
 }
 function openERP(doctype, name) {
-  const base = localStorage.getItem("odk_erp_base") || "";
+  const base = localStorage.getItem("odk_base") || "";
   if (base) window.open(`${base}/app/${encodeURIComponent(doctype.toLowerCase().replace(/ /g, "-"))}/${encodeURIComponent(name)}`, "_blank");
 }
 
@@ -976,6 +998,216 @@ function openChainDrawer(fo) {
 }
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
 
+/* ---------------- 开单（在门户内直接创建业务单据） ---------------- */
+const today = () => new Date().toISOString().slice(0, 10);
+const plusDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const PAY_FROM = "现金 - 奥登科";      /* 付款账户 */
+const PAY_TO = "债权人 - 奥登科";      /* 应付账款科目 */
+
+/* 下拉数据（惰性缓存） */
+const PICKS = {};
+async function pick(key, doctype, fields, filters, labelFn) {
+  if (!PICKS[key]) {
+    const rows = await API.list(doctype, fields, filters, 200);
+    PICKS[key] = rows.map(r => ({ v: r[fields[0]], t: labelFn(r) }));
+  }
+  return PICKS[key];
+}
+const pickCustomers = () => pick("cust", "Customer", ["name"], [], r => r.name);
+const pickSuppliers = (subOnly) => pick(subOnly ? "sup_sub" : "sup_all", "Supplier",
+  ["name", "supplier_group"], subOnly ? [["supplier_group", "=", "委外加工厂"]] : [],
+  r => `${r.name}（${r.supplier_group || "供应商"}）`);
+const pickFG = () => pick("fg", "Item", ["item_code", "item_name", "stock_uom"],
+  [["item_code", "like", "FG-%"], ["has_variants", "=", 0]], r => `${r.item_code} ${r.item_name || ""}`);
+const pickMaterials = () => pick("mat", "Item", ["item_code", "item_name", "stock_uom"],
+  [["item_code", "like", "M-%"]], r => `${r.item_code} ${r.item_name || ""}`);
+const pickServices = () => pick("svc", "Item", ["item_code", "item_name", "stock_uom"],
+  [["item_code", "like", "SVC-%"]], r => `${r.item_code} ${r.item_name || ""}`);
+const pickSemiFG = () => pick("sfg", "Item", ["item_code", "item_name", "stock_uom"],
+  [["item_code", "like", "SF-%"]], r => `${r.item_code} ${r.item_name || ""}`);
+
+/* 表单字段定义：{key,label,type,required,def,full,ph} */
+const NEW_DOC_FIELDS = {
+  so: [
+    { key: "customer", label: "客户", type: "select", required: 1, src: pickCustomers },
+    { key: "fo_no", label: "工厂指令单号", type: "text", required: 1, ph: "如 FO-20261005-01（本厂编号）" },
+    { key: "item_code", label: "成品款号", type: "select", required: 1, src: pickFG },
+    { key: "qty", label: "订单数量（双）", type: "number", required: 1, def: 100 },
+    { key: "rate", label: "销售单价（元/双）", type: "number", ph: "留空按价目表自动取价" },
+    { key: "delivery_date", label: "客户交期", type: "date", def: plusDays(30) },
+  ],
+  po: [
+    { key: "supplier", label: "供应商", type: "select", required: 1, src: () => pickSuppliers(false) },
+    { key: "item_code", label: "采购物料", type: "select", required: 1, src: pickMaterials },
+    { key: "qty", label: "采购数量", type: "number", required: 1, def: 100 },
+    { key: "rate", label: "采购单价（元）", type: "number", required: 1 },
+    { key: "schedule_date", label: "到货日期", type: "date", def: plusDays(10) },
+    { key: "fo_no", label: "关联指令单号", type: "text", ph: "可选，用于链路穿透归集" },
+  ],
+  sub: [
+    { key: "supplier", label: "委外加工厂", type: "select", required: 1, src: () => pickSuppliers(true) },
+    { key: "svc_item", label: "加工服务项目", type: "select", required: 1, src: pickServices },
+    { key: "fg_item", label: "加工产出（生成成品）", type: "select", required: 1, src: pickSemiFG },
+    { key: "qty", label: "加工数量", type: "number", required: 1, def: 200 },
+    { key: "rate", label: "加工单价（元）", type: "number", required: 1 },
+    { key: "schedule_date", label: "交回日期", type: "date", def: plusDays(15) },
+  ],
+  pay: [
+    { key: "party", label: "付款对象（供应商）", type: "select", required: 1, src: () => pickSuppliers(false) },
+    { key: "paid_amount", label: "付款金额（元）", type: "number", required: 1 },
+    { key: "reference_no", label: "付款摘要 / 流水号", type: "text", required: 1, ph: "如 10 月针车加工费", full: 1 },
+  ],
+};
+const NEW_DOC_META = {
+  so: { icon: "i-order", title: "新建指令单", sub: "客户接单 → 生成销售订单并提交生效" },
+  po: { icon: "i-buy", title: "新建采购单", sub: "向材料供应商下达采购订单并提交生效" },
+  sub: { icon: "i-sub", title: "新建委外单", sub: "一步完成：委外采购单 + 委外加工单，均自动提交" },
+  pay: { icon: "i-fin", title: "登记付款", sub: "现金账户向供应商付款，提交后自动生成财务分录" },
+};
+
+/* 各类型单据的创建实现，返回 [类型名, 单号, ...] */
+const NEW_DOC_BUILDERS = {
+  async so(v) {
+    const items = [{ item_code: v.item_code, qty: Number(v.qty) }];
+    if (v.rate) items[0].rate = Number(v.rate);
+    const d = await API.post("Sales Order", {
+      company: COMPANY, customer: v.customer,
+      transaction_date: today(), delivery_date: v.delivery_date,
+      custom_factory_order_no: v.fo_no, items,
+    });
+    await API.submitDoc("Sales Order", d.name);
+    return ["销售订单", d.name];
+  },
+  async po(v) {
+    const d = await API.post("Purchase Order", {
+      company: COMPANY, supplier: v.supplier,
+      transaction_date: today(), schedule_date: v.schedule_date,
+      custom_factory_order_no: v.fo_no || undefined,
+      items: [{ item_code: v.item_code, qty: Number(v.qty), rate: Number(v.rate) }],
+    });
+    await API.submitDoc("Purchase Order", d.name);
+    return ["采购订单", d.name];
+  },
+  async sub(v) {
+    const qty = Number(v.qty), rate = Number(v.rate), amount = qty * rate;
+    /* ① 委外采购订单（服务项目 + 生成成品） */
+    const po = await API.post("Purchase Order", {
+      company: COMPANY, supplier: v.supplier, is_subcontracted: 1,
+      transaction_date: today(), schedule_date: v.schedule_date,
+      items: [{ item_code: v.svc_item, qty, rate, fg_item: v.fg_item, fg_item_qty: qty, warehouse: WAREHOUSES["半成品仓"] }],
+    });
+    await API.submitDoc("Purchase Order", po.name);
+    /* ② 按产出查默认 BOM，组装委外加工单 */
+    const boms = await API.list("BOM", ["name"], [["item", "=", v.fg_item], ["is_active", "=", 1]], 3);
+    const bom = (boms.find(b => /-001$/.test(b.name)) || boms[0] || {}).name;
+    const poDoc = await API.getDoc("Purchase Order", po.name);
+    const poi = (poDoc.items || [])[0]?.name;
+    const sc = await API.post("Subcontracting Order", {
+      company: COMPANY, supplier: v.supplier,
+      transaction_date: today(), purchase_order: po.name,
+      supplier_warehouse: WAREHOUSES["委外仓"],
+      service_items: [{ item_code: v.svc_item, qty, rate, amount, fg_item: v.fg_item, fg_item_qty: qty, purchase_order_item: poi }],
+      items: [{ item_code: v.fg_item, qty, rate, amount, warehouse: WAREHOUSES["半成品仓"],
+                bom, schedule_date: v.schedule_date, service_cost_per_qty: rate,
+                subcontracting_conversion_factor: 1, purchase_order_item: poi }],
+    });
+    await API.submitDoc("Subcontracting Order", sc.name);
+    return ["委外加工单", sc.name, "委外采购单", po.name];
+  },
+  async pay(v) {
+    const amt = Number(v.paid_amount);
+    const d = await API.post("Payment Entry", {
+      company: COMPANY, payment_type: "Pay",
+      party_type: "Supplier", party: v.party,
+      paid_from: PAY_FROM, paid_from_account_currency: "CNY",
+      paid_to: PAY_TO, paid_to_account_currency: "CNY",
+      paid_amount: amt, received_amount: amt,
+      source_exchange_rate: 1, target_exchange_rate: 1,
+      reference_no: v.reference_no, reference_date: today(),
+    });
+    await API.submitDoc("Payment Entry", d.name);
+    return ["付款单", d.name];
+  },
+};
+
+/* 开单抽屉 */
+function openNewDoc(type) {
+  const meta = NEW_DOC_META[type], fields = NEW_DOC_FIELDS[type];
+  if (!meta) return;
+  closeDrawer();
+  const mask = document.createElement("div");
+  mask.className = "drawer-mask";
+  mask.addEventListener("click", closeDrawer);
+  document.body.appendChild(mask);
+  const d = document.createElement("div");
+  d.className = "drawer";
+  d.innerHTML = `
+    <div class="drawer-hd">
+      <h3>${meta.title}<small>${meta.sub}</small></h3>
+      <button class="drawer-x">✕</button>
+    </div>
+    <div class="drawer-bd"><div class="loading-block">${"<div class='skel'></div>".repeat(5)}</div></div>`;
+  document.body.appendChild(d);
+  $(".drawer-x", d).addEventListener("click", closeDrawer);
+
+  Promise.all(fields.map(f => f.type === "select" ? f.src() : null)).then(srcs => {
+    const bd = $(".drawer-bd", d);
+    bd.innerHTML = `<div class="nd-form">
+      ${fields.map((f, i) => `
+        <div class="fd-field ${f.full ? "full" : ""}">
+          <label>${f.label}${f.required ? ' <i class="req">*</i>' : ""}</label>
+          ${f.type === "select"
+            ? `<select id="nf-${f.key}">${(srcs[i] || []).map(o => `<option value="${esc(o.v)}">${esc(o.t)}</option>`).join("")}</select>`
+            : `<input id="nf-${f.key}" type="${f.type}" value="${f.def || ""}" placeholder="${f.ph || ""}" ${f.type === "number" ? 'min="0" step="0.01"' : ""}>`}
+        </div>`).join("")}
+      <div class="fd-actions full">
+        <button class="btn-sm ghost" id="nf-cancel">取 消</button>
+        <button class="btn-amber" id="nf-submit">${meta.title}</button>
+      </div>
+    </div>`;
+    $("#nf-cancel", d).addEventListener("click", closeDrawer);
+    $("#nf-submit", d).addEventListener("click", async () => {
+      const btn = $("#nf-submit", d);
+      const v = {};
+      for (const f of fields) {
+        const el = $(`#nf-${f.key}`, d);
+        v[f.key] = String(el.value || "").trim();
+        if (f.required && !v[f.key]) { toast(`请填写「${f.label}」`, true); el.focus(); return; }
+      }
+      btn.disabled = true; btn.textContent = "创建中…";
+      try {
+        const parts = await NEW_DOC_BUILDERS[type](v);
+        closeDrawer();
+        let msg = parts[0] + " " + parts[1] + " 已创建并提交 ✓";
+        if (parts.length > 2) msg += "（同时生成 " + parts[2] + " " + parts[3] + "）";
+        toast(msg);
+        render(); /* 刷新当前页列表，让新单据立即可见 */
+      } catch (e) {
+        toast("创建失败：" + (e.message || "请检查填写内容"), true);
+        btn.disabled = false; btn.textContent = meta.title;
+      }
+    });
+    const firstInput = $(".fd-field input, .fd-field select", d);
+    if (firstInput) firstInput.focus();
+  }).catch(e => {
+    $(".drawer-bd", d).innerHTML = `<div class="empty">数据加载失败：${esc(e.message)}</div>`;
+  });
+}
+
+/* 列表内草稿一键提交 */
+async function doSubmitDoc(dt, name) {
+  toast("正在提交 " + name + " …");
+  try {
+    await API.submitDoc(dt, name);
+    toast(dt === "Sales Order" ? "指令单 " + name + " 已提交生效 ✓" : name + " 已提交生效 ✓");
+    render();
+  } catch (e) {
+    toast("提交失败：" + (e.message || "请检查单据"), true);
+  }
+}
+window.openNewDoc = openNewDoc;   /* 供页面内联按钮调用 */
+window.doSubmitDoc = doSubmitDoc;
+
 /* ---------------- 工作台 ---------------- */
 PAGES.dashboard = async function (box) {
   const [sos, wos, pis, bins, drafts] = await Promise.all([
@@ -1101,7 +1333,8 @@ PAGES.orders = async function (box) {
     return { ...so, items };
   }));
   box.innerHTML = `
-    ${pageHeader("i-order", "指令单中心", "以工厂指令单号为主线，点击行查看全流程链路穿透", `<span class="pill run">共 ${rows.length} 单</span>`)}
+    ${pageHeader("i-order", "指令单中心", "以工厂指令单号为主线，点击行查看全流程链路穿透",
+      `<button class="btn-amber" onclick="openNewDoc('so')">＋ 新建指令单</button><span class="pill run">共 ${rows.length} 单</span>`)}
     <div class="card">
       <div class="card-hd"><h3>订单列表</h3><span style="font-size:12.5px;color:var(--sub)">点击任意行展开链路抽屉</span></div>
       <table class="tbl">
@@ -1115,8 +1348,10 @@ PAGES.orders = async function (box) {
             <td class="num">${fmtMoney(so.grand_total)}</td>
             <td class="num">${fmtDate(so.transaction_date)}</td>
             <td>${statusPill(so.status, so.docstatus)}</td>
-            <td><button class="btn-sm ghost" onclick="event.stopPropagation();openERP('Sales Order','${esc(so.name)}')">原单</button></td>
-          </tr>`).join("") || `<tr><td colspan="8" class="empty">暂无订单</td></tr>`}
+            <td>${so.docstatus === 0
+              ? `<button class="btn-sm amber" onclick="event.stopPropagation();doSubmitDoc('Sales Order','${esc(so.name)}')">提交</button>`
+              : `<button class="btn-sm ghost" onclick="event.stopPropagation();openERP('Sales Order','${esc(so.name)}')">原单</button>`}</td>
+          </tr>`).join("") || `<tr><td colspan="8" class="empty">暂无订单，点右上角「＋ 新建指令单」开始接单</td></tr>`}
         </tbody>
       </table>
     </div>`;
@@ -1130,7 +1365,8 @@ PAGES.purchase = async function (box) {
     API.list("Supplier", ["name", "supplier_name", "supplier_group", "country"], [], 100),
   ]);
   box.innerHTML = `
-    ${pageHeader("i-buy", "采购管理", "材料采购订单与到货收料全程跟踪", `<span class="pill run">采购总额 ${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span>`)}
+    ${pageHeader("i-buy", "采购管理", "材料采购订单与到货收料全程跟踪",
+      `<button class="btn-amber" onclick="openNewDoc('po')">＋ 新建采购单</button><span class="pill run">采购总额 ${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span>`)}
     <div class="grid g2" style="margin-bottom:14px">
       <div class="card"><div class="card-hd"><h3>供应商（${sups.length}）</h3></div><div class="card-bd" style="padding:8px 18px">
         ${sups.map(s => `<div class="wh-chip"><span class="dot" style="background:${s.supplier_group === "委外加工厂" ? "#FFB020" : "#7FA8E8"}"></span>
@@ -1148,7 +1384,9 @@ PAGES.purchase = async function (box) {
       <tbody>${pos.map(p => `<tr><td class="mono">${esc(p.name)}</td><td>${esc(p.supplier)}</td>
         <td class="mono">${esc(p.custom_factory_order_no || "—")}</td><td class="num">${fmtMoney(p.grand_total)}</td>
         <td class="num">${fmtDate(p.transaction_date)}</td><td>${statusPill(p.status, p.docstatus)}</td>
-        <td><button class="btn-sm ghost" onclick="openERP('Purchase Order','${esc(p.name)}')">原单</button></td></tr>`).join("")}
+        <td>${p.docstatus === 0
+          ? `<button class="btn-sm amber" onclick="doSubmitDoc('Purchase Order','${esc(p.name)}')">提交</button>`
+          : `<button class="btn-sm ghost" onclick="openERP('Purchase Order','${esc(p.name)}')">原单</button>`}</td></tr>`).join("")}
       </tbody></table>
     </div>
     <div class="card">
@@ -1173,7 +1411,8 @@ PAGES.subcontract = async function (box) {
     API.list("Stock Entry", ["name", "purpose", "posting_date", "docstatus"], [["purpose", "=", "Material Transfer for Manufacture"], ["docstatus", "!=", 2]], 100),
   ]);
   box.innerHTML = `
-    ${pageHeader("i-sub", "委外加工", "发料给委外厂 → 帮面收货 → 加工费结算", `<span class="pill run">${scos.length} 张委外订单</span>`)}
+    ${pageHeader("i-sub", "委外加工", "发料给委外厂 → 帮面收货 → 加工费结算",
+      `<button class="btn-amber" onclick="openNewDoc('sub')">＋ 新建委外单</button><span class="pill run">${scos.length} 张委外订单</span>`)}
     <div class="grid g3" style="margin-bottom:14px">
       <div class="card stat-card">
         <span class="stat-ic blue"><svg><use href="#i-sub"/></svg></span>
@@ -1194,7 +1433,9 @@ PAGES.subcontract = async function (box) {
       <tbody>${scos.map(s => `<tr><td class="mono">${esc(s.name)}</td><td>${esc(s.supplier)}</td>
         <td class="mono">${esc(s.custom_factory_order_no || "—")}</td><td class="num">${fmtDate(s.transaction_date)}</td>
         <td>${statusPill(s.status, s.docstatus)}</td>
-        <td><button class="btn-sm ghost" onclick="openERP('Subcontracting Order','${esc(s.name)}')">原单</button></td></tr>`).join("")}
+        <td>${s.docstatus === 0
+          ? `<button class="btn-sm amber" onclick="doSubmitDoc('Subcontracting Order','${esc(s.name)}')">提交</button>`
+          : `<button class="btn-sm ghost" onclick="openERP('Subcontracting Order','${esc(s.name)}')">原单</button>`}</td></tr>`).join("")}
       </tbody></table>
     </div>
     <div class="grid g2">
@@ -1443,7 +1684,8 @@ PAGES.finance = async function (box) {
   const totalInv = rows.reduce((a, r) => a + r.invAmt, 0);
   const totalPay = rows.reduce((a, r) => a + r.payAmt, 0);
   box.innerHTML = `
-    ${pageHeader("i-fin", "应付对账", "供应商开票、付款与往来余额一表看清", `<span class="pill ${Math.abs(rows.reduce((a, r) => a + r.bal, 0)) < 0.01 ? "ok" : "wait"}">${rows.length} 家供应商</span>`)}
+    ${pageHeader("i-fin", "应付对账", "供应商开票、付款与往来余额一表看清",
+      `<button class="btn-amber" onclick="openNewDoc('pay')">＋ 登记付款</button><span class="pill ${Math.abs(rows.reduce((a, r) => a + r.bal, 0)) < 0.01 ? "ok" : "wait"}">${rows.length} 家供应商</span>`)}
     <div class="grid g3" style="margin-bottom:14px">
       <div class="card stat-card">
         <span class="stat-ic blue"><svg><use href="#i-order"/></svg></span>

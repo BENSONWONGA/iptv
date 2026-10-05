@@ -40,7 +40,7 @@
    "phase": "2-login",
    "name": "同域 API 登录 → 工作台",
    "ok": true,
-   "detail": "4.84"
+   "detail": "4.83"
   },
   {
    "phase": "2-login",
@@ -212,10 +212,10 @@
   }
  ],
  "timing": {
-  "goto_s": 0.63,
-  "login_ready_s": 1.67,
-  "login_to_dash_s": 4.84,
-  "total_s": 21.84
+  "goto_s": 0.6,
+  "login_ready_s": 1.64,
+  "login_to_dash_s": 4.83,
+  "total_s": 21.78
  },
  "login": {
   "bodyBg": "rgb(12, 17, 24)",
@@ -318,11 +318,7 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Work%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%22",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22grand_total%",
+   "url": "/api/resource/Sales%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%2",
    "status": 200
   },
   {
@@ -330,19 +326,11 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Sales%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%2",
+   "url": "/api/resource/Purchase%20Invoice?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22grand_total%",
    "status": 200
   },
   {
-   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "url": "/api/resource/Work%20Order?limit_page_length=50&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%22",
    "status": 200
   },
   {
@@ -350,7 +338,19 @@
    "status": 200
   },
   {
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "status": 200
+  },
+  {
    "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
    "status": 200
   },
   {
@@ -438,19 +438,19 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
-   "status": 200
-  },
-  {
    "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
    "status": 200
   },
   {
+   "url": "/api/resource/Material%20Request?limit_page_length=100&fields=%5B%22name%22%2C%22transaction_date%22%2C%22docs",
+   "status": 200
+  },
+  {
    "url": "/api/resource/Work%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22production_item%22%2C%22qty%22%2C%2",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
    "status": 200
   },
   {
@@ -522,15 +522,7 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Item/FG-A001",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Item/FG-A001-43-BK",
-   "status": 200
-  },
-  {
-   "url": "/api/resource/Item/FG-A001-40-BK",
+   "url": "/api/resource/Item/FG-A001-41-BK",
    "status": 200
   },
   {
@@ -542,15 +534,15 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Item/FG-A001-41-BK",
+   "url": "/api/resource/Item/FG-A001",
    "status": 200
   },
   {
-   "url": "/api/resource/Item/M-BOT-002",
+   "url": "/api/resource/Item/FG-A001-40-BK",
    "status": 200
   },
   {
-   "url": "/api/resource/Item/M-LIN-001",
+   "url": "/api/resource/Item/FG-A001-43-BK",
    "status": 200
   },
   {
@@ -562,11 +554,19 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Item/M-FAB-001",
+   "url": "/api/resource/Item/M-LIN-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-BOT-002",
    "status": 200
   },
   {
    "url": "/api/resource/Item/M-CHE-001",
+   "status": 200
+  },
+  {
+   "url": "/api/resource/Item/M-FAB-001",
    "status": 200
   },
   {
@@ -602,11 +602,11 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
+   "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
    "status": 200
   },
   {
-   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
+   "url": "/api/resource/Sales%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22customer%22%2C%22transaction_date%",
    "status": 200
   },
   {
@@ -614,7 +614,7 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Stock%20Entry?limit_page_length=100&fields=%5B%22name%22%2C%22purpose%22%2C%22posting_date%22%2C",
+   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
    "status": 200
   },
   {
@@ -622,7 +622,7 @@
    "status": 200
   },
   {
-   "url": "/api/resource/Purchase%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transaction_da",
+   "url": "/api/resource/Subcontracting%20Order?limit_page_length=100&fields=%5B%22name%22%2C%22supplier%22%2C%22transact",
    "status": 200
   },
   {

@@ -1,0 +1,66 @@
+{
+ "checks": [
+  {
+   "name": "新建指令单 toast",
+   "ok": true,
+   "detail": "销售订单 SAL-ORD-2026-00004 已创建并提交 ✓"
+  },
+  {
+   "name": "指令单列表含新单",
+   "ok": true,
+   "detail": "SAL-ORD-2026-00004"
+  },
+  {
+   "name": "新建采购单 toast",
+   "ok": true,
+   "detail": "采购订单 PUR-ORD-2026-00007 已创建并提交 ✓"
+  },
+  {
+   "name": "新建委外单 toast",
+   "ok": true,
+   "detail": "委外加工单 SC-ORD-2026-00002 已创建并提交 ✓（同时生成 委外采购单 PUR-ORD-2026-00008）"
+  },
+  {
+   "name": "登记付款 toast",
+   "ok": true,
+   "detail": "付款单 ACC-PAY-2026-00005 已创建并提交 ✓"
+  },
+  {
+   "name": "四类单据全部创建成功",
+   "ok": true,
+   "detail": "[('Sales Order', 'SAL-ORD-2026-00004'), ('Purchase Order', 'PUR-ORD-2026-00007'), ('Subcontracting Order', 'SC-ORD-2026-00002'), ('Purchase Order', 'PUR-ORD-2026-00008'), ('Payment Entry', 'ACC-PAY-20"
+  },
+  {
+   "name": "无页面 JS 异常",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "created": [
+  [
+   "Sales Order",
+   "SAL-ORD-2026-00004"
+  ],
+  [
+   "Purchase Order",
+   "PUR-ORD-2026-00007"
+  ],
+  [
+   "Subcontracting Order",
+   "SC-ORD-2026-00002"
+  ],
+  [
+   "Purchase Order",
+   "PUR-ORD-2026-00008"
+  ],
+  [
+   "Payment Entry",
+   "ACC-PAY-2026-00005"
+  ]
+ ],
+ "console_errors": [
+  "Failed to load resource: the server responded with a status of 404 (Not Found)",
+  "Failed to load resource: the server responded with a status of 404 (Not Found)"
+ ],
+ "page_errors": []
+}

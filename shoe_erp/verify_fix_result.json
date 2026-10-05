@@ -1,0 +1,202 @@
+{
+ "checks": [
+  {
+   "phase": "1-load",
+   "name": "console error + pageerror = 0 (after 3s)",
+   "ok": false,
+   "detail": "{\"console\": [{\"type\": \"error\", \"text\": \"Failed to load resource: the server responded with a status of 404 (Not Found)\"}, {\"type\": \"error\", \"text\": \"Failed to load resource: the server responded with a status of 404 (Not Found)\"}], \"pageerror\": []}"
+  },
+  {
+   "phase": "fix1",
+   "name": "exactly ONE app script (duplicate injection gone)",
+   "ok": true,
+   "detail": "inline=1 srcRef=0 totalScripts=8"
+  },
+  {
+   "phase": "fix2",
+   "name": "window.openERP is function (IIFE export intact)",
+   "ok": true,
+   "detail": "{\"openERP\": \"function\", \"openChainDrawer\": \"function\"}"
+  },
+  {
+   "phase": "fix2",
+   "name": "window.openChainDrawer is function (IIFE export intact)",
+   "ok": true,
+   "detail": "{\"openERP\": \"function\", \"openChainDrawer\": \"function\"}"
+  },
+  {
+   "phase": "2-login",
+   "name": "demo token pre-filled",
+   "ok": true,
+   "detail": "77455c7d4b3a8fe:f3"
+  },
+  {
+   "phase": "2-login",
+   "name": "login -> dashboard rendered",
+   "ok": true,
+   "detail": "4.83s"
+  },
+  {
+   "phase": "2-login",
+   "name": "dashboard 4 stat cards",
+   "ok": true,
+   "detail": "n=4"
+  },
+  {
+   "phase": "2-login",
+   "name": "stat cards all have data",
+   "ok": true,
+   "detail": "{\"进行中指令单\": \"1单\", \"在产工单\": \"0双\", \"待付货款\": \"0.0万元\", \"成品仓库存\": \"2,000双\"}"
+  },
+  {
+   "phase": "3-scan",
+   "name": "barcode 6901234500011 recognized",
+   "ok": true,
+   "detail": "已识别"
+  },
+  {
+   "phase": "3-scan",
+   "name": "material M-FAB-001 (scan function intact)",
+   "ok": true,
+   "detail": "M-FAB-001 （面料）"
+  },
+  {
+   "phase": "4-orders",
+   "name": "orders table has rows",
+   "ok": true,
+   "detail": "rows=1"
+  },
+  {
+   "phase": "4-orders",
+   "name": "drawer opens on row click (openChainDrawer global)",
+   "ok": true,
+   "detail": "chainNodes=14 hd=指令单 FO-2026-001 全流程链路点击单号可在 ERPNext "
+  },
+  {
+   "phase": "4-orders",
+   "name": "drawer 14-step chain",
+   "ok": true,
+   "detail": "nodes=14 done=14"
+  },
+  {
+   "phase": "5-frappe",
+   "name": "navbar/footer hidden or absent (no visual residue)",
+   "ok": true,
+   "detail": "{\"nav.navbar\": \"hidden\", \".navbar\": \"hidden\", \".page-breadcrumbs\": \"hidden\", \"footer\": \"hidden\", \".web-footer\": \"hidden\", \".page-header-wrapper\": \"hidden\", \".standard-navbar\": \"absent\", \".standard-footer\": \"absent\"}"
+  },
+  {
+   "phase": "fix1",
+   "name": "no COMPANY redeclare console error",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "fix2",
+   "name": "no dollar-is-not-a-valid-selector console error",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "6-console",
+   "name": "console errors total = 0 (whole session)",
+   "ok": false,
+   "detail": "[{\"type\": \"error\", \"text\": \"Failed to load resource: the server responded with a status of 404 (Not Found)\"}, {\"type\": \"error\", \"text\": \"Failed to load resource: the server responded with a status of 404 (Not Found)\"}]"
+  },
+  {
+   "phase": "6-console",
+   "name": "pageerror total = 0 (whole session)",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "timing": {
+  "load_s": 3.68,
+  "login_to_dash_s": 4.83,
+  "total_s": 14.71
+ },
+ "console_errors": [
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  },
+  {
+   "type": "error",
+   "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+  }
+ ],
+ "page_errors": [],
+ "load_snapshot": {
+  "console_error": 2,
+  "pageerror": 0
+ },
+ "fix1": {
+  "totalScripts": 8,
+  "inlineAppScripts": 1,
+  "appSrcReferences": 0,
+  "appScriptCount": 1,
+  "srcList": [
+   "file_uploader.bundle.76JSOOR3.js",
+   "frappe-web.bundle.NIO2MK57.js",
+   "website_script.js"
+  ],
+  "companyErrorGone": true
+ },
+ "fix2": {
+  "openERP": "function",
+  "openChainDrawer": "function",
+  "selectorErrorGone": true
+ },
+ "dash": {
+  "heroText": "早上好，系统管理员",
+  "statCount": 4,
+  "statVals": [
+   {
+    "label": "进行中指令单",
+    "value": "1单"
+   },
+   {
+    "label": "在产工单",
+    "value": "0双"
+   },
+   {
+    "label": "待付货款",
+    "value": "0.0万元"
+   },
+   {
+    "label": "成品仓库存",
+    "value": "2,000双"
+   }
+  ]
+ },
+ "scan": {
+  "state": "已识别",
+  "item": "M-FAB-001 （面料）",
+  "pill": "已识别"
+ },
+ "orders": {
+  "rows": 1,
+  "total": 14,
+  "done": 14,
+  "hd": "指令单 FO-2026-001 全流程链路点击单号可在 ERPNext 中打开原单"
+ },
+ "frappe": {
+  "sels": {
+   "nav.navbar": "hidden",
+   ".navbar": "hidden",
+   ".page-breadcrumbs": "hidden",
+   "footer": "hidden",
+   ".web-footer": "hidden",
+   ".page-header-wrapper": "hidden",
+   ".standard-navbar": "absent",
+   ".standard-footer": "absent"
+  },
+  "visibleResidue": [],
+  "bodyPadding": "0px/0px",
+  "bodyBg": "rgb(12, 17, 24)"
+ },
+ "shots": [
+  "/workspace/shoe_erp/final-dashboard.png",
+  "/workspace/shoe_erp/final-scan.png",
+  "/workspace/shoe_erp/final-drawer.png"
+ ]
+}

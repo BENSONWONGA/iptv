@@ -1,0 +1,23 @@
+{
+ "so": "SAL-ORD-2026-00002",
+ "pp": "MFG-PP-2026-00003",
+ "wo": "MFG-WO-2026-00001",
+ "po_sub": "PUR-ORD-2026-00003",
+ "mr": "MAT-MR-2026-00001",
+ "po1": "PUR-ORD-2026-00004",
+ "po2": "PUR-ORD-2026-00005",
+ "pr_po1": "MAT-PRE-2026-00001",
+ "pr_po2": "MAT-PRE-2026-00002",
+ "sco": "SC-ORD-2026-00001",
+ "se_transfer": "MAT-STE-2026-00001",
+ "scr": "MAT-SCR-2026-00001",
+ "se_mfg_transfer": "MAT-STE-2026-00002",
+ "se_manufacture": "MAT-STE-2026-00003",
+ "pr_sub": "MAT-PRE-2026-00003",
+ "pi1": "ACC-PINV-2026-00001",
+ "pi2": "ACC-PINV-2026-00002",
+ "pi_sub": "ACC-PINV-2026-00003",
+ "pe1": "ACC-PAY-2026-00001",
+ "pe2": "ACC-PAY-2026-00002",
+ "pe_sub": "ACC-PAY-2026-00003"
+}

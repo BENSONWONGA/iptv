@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>外贸鞋业代加工 ERP 全流程使用指南 — 奥登科鞋业 ERPNext</title>
+<style>
+  :root {
+    --ink: #1c2333; --sub: #5a6478; --line: #e3e8f0; --bg: #f6f8fb; --card: #ffffff;
+    --navy: #1f3a5f; --navy2: #2d5484; --gold: #b78b2e; --green: #1d7a4f; --red: #b03a3a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.75; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  header.hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%); color: #fff; border-radius: 16px; padding: 44px 44px 38px; margin-bottom: 36px; }
+  header.hero h1 { font-size: 30px; letter-spacing: 1px; margin-bottom: 10px; }
+  header.hero p { color: #c8d6ea; font-size: 15px; }
+  .hero-meta { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 22px; font-size: 13.5px; }
+  .hero-meta span { background: rgba(255,255,255,.12); padding: 6px 14px; border-radius: 999px; color: #eef4fb; }
+
+  h2 { font-size: 21px; margin: 44px 0 16px; padding-left: 12px; border-left: 4px solid var(--gold); }
+  h3 { font-size: 16.5px; margin: 24px 0 10px; color: var(--navy); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px 28px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(28,35,51,.05); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 10px 0 6px; }
+  th { background: #eef2f8; color: var(--navy); text-align: left; padding: 9px 12px; border: 1px solid var(--line); white-space: nowrap; font-weight: 600; }
+  td { padding: 8px 12px; border: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafcfe; }
+  code { background: #eef2f8; color: var(--navy); border-radius: 4px; padding: 1px 7px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 12.5px; }
+  .pill { display: inline-block; border-radius: 999px; padding: 2px 11px; font-size: 12px; font-weight: 600; }
+  .ok  { background: #e5f4ec; color: var(--green); }
+  .pay { background: #fdf0e3; color: var(--gold); }
+  .mfg { background: #e7edf8; color: var(--navy2); }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin: 14px 0; }
+  .step { flex: 1 1 150px; background: #fbfcfe; border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px 12px; position: relative; }
+  .step b { display: block; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+  .step small { color: var(--sub); font-size: 12.2px; display: block; line-height: 1.6; }
+  .step .no { position: absolute; top: -10px; left: 12px; background: var(--gold); color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 9px; }
+  .arrow { align-self: center; color: #b6c0d0; font-size: 18px; font-weight: 700; }
+
+  .note { background: #f2f7f0; border-left: 4px solid var(--green); border-radius: 8px; padding: 12px 16px; font-size: 13.5px; margin: 12px 0; color: #2c4a3a; }
+  .warn { background: #fbf4ec; border-left: 4px solid var(--gold); border-radius: 8px; padding: 12px 16px; font-size: 13.5px; margin: 12px 0; color: #5d4a22; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 4px 0; font-size: 14px; }
+  .footer { text-align: center; color: var(--sub); font-size: 12.5px; margin-top: 48px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>外贸鞋业代加工 ERP 全流程使用指南</h1>
+  <p>基于 ERPNext v15 部署 · 以「工厂指令单 FO-2026-001 → 款号 A001 → 成品 2000 双 → 厂商对账平账」完整跑通验证</p>
+  <div class="hero-meta">
+    <span>访问地址：http://220.162.99.166:88</span>
+    <span>公司主体：奥登科鞋业有限公司</span>
+    <span>演示指令单：FO-2026-001</span>
+    <span>验证日期：2026-10-05</span>
+  </div>
+</header>
+
+<h2>一、流程总览（订单 → 成品 → 对账 全闭环）</h2>
+<div class="card">
+  <div class="flow">
+    <div class="step"><span class="no">1</span><b>销售订单 / 指令单</b><small>录入工厂指令单号、客户款号订单</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">2</span><b>生产计划 + MRP</b><small>生产计划生成工单、物料申请（MRP 运算）</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">3</span><b>采购订单</b><small>材料 PO + 委外加工 PO</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">4</span><b>采购收货入库</b><small>扫码收货入材料仓</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">5</span><b>委外发料</b><small>材料发至委外供应商仓</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">6</span><b>委外收货</b><small>帮面半成品入半成品仓</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">7</span><b>工单领料</b><small>半成品+底材领入在制品仓</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">8</span><b>MES 报工</b><small>Job Card 成型工序报工</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">9</span><b>成品入库</b><small>成品入成品仓</small></div>
+    <div class="arrow">→</div>
+    <div class="step"><span class="no">10</span><b>应付 + 对账</b><small>应付发票、付款、厂商对账</small></div>
+  </div>
+  <div class="note">本次演示实际跑通 <b>22 张单据</b>，全部提交生效；库存流转闭环：材料仓 / 半成品仓 / 在制品仓 / 委外供应商仓全部消耗清零，成品仓结存 <b>FG-A001-41-BK 2000 双</b>；三家供应商应付账款全部结平。</div>
+</div>
+
+<h2>二、本次演示单据链路（实际单号）</h2>
+<div class="card">
+<table>
+  <tr><th>环节</th><th>单据类型</th><th>单号</th><th>状态</th><th>金额/数量</th></tr>
+  <tr><td>订单</td><td>销售订单</td><td>SAL-ORD-2026-00002</td><td><span class="pill ok">已提交</span></td><td>款号 A001 / 41码黑色 2000 双</td></tr>
+  <tr><td>计划</td><td>生产计划</td><td>MFG-PP-2026-00003</td><td><span class="pill ok">Completed</span></td><td>生成工单 + 物料申请</td></tr>
+  <tr><td>计划</td><td>工单</td><td>MFG-WO-2026-00001</td><td><span class="pill ok">Completed</span></td><td>FG-A001-41-BK × 2000</td></tr>
+  <tr><td>MRP</td><td>物料申请</td><td>MAT-MR-2026-00001</td><td><span class="pill ok">Received</span></td><td>8 种材料需求</td></tr>
+  <tr><td>采购</td><td>采购订单（材料）</td><td>PUR-ORD-2026-00004 / 00005</td><td><span class="pill ok">Completed</span></td><td>面料/里布/大底/中底/五金/胶水</td></tr>
+  <tr><td>采购</td><td>采购订单（委外）</td><td>PUR-ORD-2026-00003</td><td><span class="pill ok">Completed</span></td><td>车缝加工费 12 元/双</td></tr>
+  <tr><td>入库</td><td>采购收货单</td><td>MAT-PRE-2026-00001 / 00002</td><td><span class="pill ok">Completed</span></td><td>材料入材料仓</td></tr>
+  <tr><td>委外</td><td>委外订单 SCO</td><td>SC-ORD-2026-00001</td><td><span class="pill ok">Completed</span></td><td>莆田华盛针车厂</td></tr>
+  <tr><td>委外</td><td>委外发料单</td><td>MAT-STE-2026-00001</td><td><span class="pill mfg">已提交</span></td><td>材料仓 → 委外供应商仓</td></tr>
+  <tr><td>委外</td><td>委外收货单</td><td>MAT-SCR-2026-00001</td><td><span class="pill ok">Completed</span></td><td>帮面 SF-A001 × 2000 入半成品仓</td></tr>
+  <tr><td>生产</td><td>工单领料单</td><td>MAT-STE-2026-00002</td><td><span class="pill mfg">已提交</span></td><td>帮面+底材 → 在制品仓</td></tr>
+  <tr><td>MES</td><td>工序报工单 Job Card</td><td>PO-JOB00001</td><td><span class="pill ok">Completed</span></td><td>成型工序 2000 双 / 600 分钟</td></tr>
+  <tr><td>生产</td><td>完工入库单</td><td>MAT-STE-2026-00003</td><td><span class="pill mfg">已提交</span></td><td>成品 FG-A001-41-BK × 2000 入成品仓</td></tr>
+  <tr><td>财务</td><td>采购发票</td><td>ACC-PINV-2026-00001 / 00002 / 00003</td><td><span class="pill pay">Paid</span></td><td>30600 / 55580 / 24000 元</td></tr>
+  <tr><td>财务</td><td>付款单</td><td>ACC-PAY-2026-00001 / 00002 / 00003</td><td><span class="pill pay">Submitted</span></td><td>现金付讫，厂商对账余额 0</td></tr>
+</table>
+</div>
+
+<h2>三、核心档案设计</h2>
+<div class="card">
+  <h3>1. 工厂指令单号（自定义字段）</h3>
+  <p style="font-size:14px">自定义字段 <code>custom_factory_order_no</code> 已添加到以下单据，实现按指令单跨环节追溯：</p>
+  <ul>
+    <li>销售订单、生产计划、工单、物料申请、采购订单、采购收货、采购发票</li>
+    <li>委外订单、委外发料/收货、库存单据、Job Card 报工单</li>
+  </ul>
+  <p style="font-size:14px">在列表页可按 <code>custom_factory_order_no</code> 筛选，一个指令单号即可穿透查看全部关联单据。</p>
+
+  <h3>2. 款号 / 尺码 / 颜色（变体管理）</h3>
+  <table>
+    <tr><th>层级</th><th>编码示例</th><th>说明</th></tr>
+    <tr><td>款号（模板物料）</td><td><code>FG-A001</code></td><td>款号 A001，启用变体，属性：尺码（40–43）、颜色（BK 黑）</td></tr>
+    <tr><td>成品变体</td><td><code>FG-A001-41-BK</code></td><td>A001 款 / 41 码 / 黑色，对外销售与入成品仓的最小单元</td></tr>
+    <tr><td>半成品</td><td><code>SF-A001</code></td><td>A001 款帮面（车缝完成后）</td></tr>
+    <tr><td>材料</td><td><code>M-FAB-001</code> 等</td><td>面料 / 里布 / 大底 / 中底 / 五金扣件 / 胶水 / 针车线</td></tr>
+    <tr><td>委外服务</td><td><code>SVC-STI</code></td><td>车缝加工服务（12 元/双）</td></tr>
+  </table>
+
+  <h3>3. BOM（物料清单）</h3>
+  <table>
+    <tr><th>BOM</th><th>结构</th></tr>
+    <tr><td>帮面半成品 BOM</td><td>SF-A001 = 面料 0.5 码/双 + 里布 0.35 码/双 + 五金扣件 12 个/双 + 针车线 0.2 个/双</td></tr>
+    <tr><td>成品 BOM（多层）</td><td>FG-A001-41-BK = 帮面 SF-A001 1 双 + 大底 1 双 + 中底 1 双 + 胶水 0.01 桶/双</td></tr>
+    <tr><td>委外 BOM</td><td>SVC-STI 服务 BOM，供应物料 = 帮面四件材料（发料给委外厂）</td></tr>
+  </table>
+
+  <h3>4. 仓库布局</h3>
+  <table>
+    <tr><th>仓库</th><th>用途</th></tr>
+    <tr><td>材料仓 - 奥登科</td><td>采购材料收货存放；委外发料、工单领料源头</td></tr>
+    <tr><td>委外供应商仓 - 奥登科</td><td>发料给委外厂时材料的在途/委外占用量</td></tr>
+    <tr><td>半成品仓 - 奥登科</td><td>委外收货的帮面半成品存放</td></tr>
+    <tr><td>在制品 - 奥登科（WIP）</td><td>工单领料后的在制材料</td></tr>
+    <tr><td>成品仓 - 奥登科</td><td>完工成品入库</td></tr>
+  </table>
+
+  <h3>5. 条码（扫码出入库）</h3>
+  <p style="font-size:14px">所有交易物料已配置 EAN-13 条码（如面料 <code>6901234500011</code>、帮面 <code>6901234510002</code>、成品 41 码 <code>6901234520418</code>）。在采购收货单、库存单据、委外收货单的<b>「扫描条码」输入框</b>扫码即可自动带出物料行，配合扫码枪/PDA 即可实现仓库扫描出入库。</p>
+</div>
+
+<h2>四、日常操作 SOP（新指令单从零到对账）</h2>
+<div class="card">
+  <h3>第 1 步 · 接单（业务员）</h3>
+  <ol>
+    <li>【销售订单】新建：客户、款号变体成品、数量、价格；<b>填写工厂指令单号</b>（如 FO-2026-002）。</li>
+    <li>提交后系统自动锁定该指令单的全部下游追溯。</li>
+  </ol>
+
+  <h3>第 2 步 · 计划与 MRP（计划员）</h3>
+  <ol>
+    <li>【生产计划】从销售订单拉入需求，或手动输入款号+数量，填指令单号。</li>
+    <li>点击「创建物料申请（MRP）」→ 系统按 BOM 展开计算材料净需求（已扣半成品/在库量）。</li>
+    <li>物料申请提交后，按供应商分组「创建采购订单」。</li>
+    <li>同时生成工单（Work Order）。</li>
+  </ol>
+
+  <h3>第 3 步 · 采购与材料入库（采购 + 仓管）</h3>
+  <ol>
+    <li>提交采购订单（材料 PO、委外加工费 PO）。</li>
+    <li>供应商送货，仓管在【采购收货单】<b>扫描条码</b>收货入材料仓并提交。</li>
+  </ol>
+
+  <h3>第 4 步 · 委外加工（发料 → 收帮面）</h3>
+  <ol>
+    <li>从委外 PO 生成【委外订单 SCO】，确认供应商、服务单价、供应商仓库。</li>
+    <li>SCO 提交后点击「发料给分包商」→ 生成发料单（材料仓 → 委外供应商仓），提交。</li>
+    <li>委外厂交帮面回厂：【委外收货单】录入/扫码 2000 双帮面 → 半成品仓，提交。</li>
+    <li>系统自动按 BOM 倒冲扣减委外供应商仓材料（本例 4 种材料全部消耗清零）。</li>
+  </ol>
+
+  <h3>第 5 步 · 成型生产与成品入库（车间 + 仓管）</h3>
+  <ol>
+    <li>工单（已由生产计划生成）→「开始」工单。</li>
+    <li>工单页点击「物料转移」生成领料单：帮面（半成品仓）+ 大底/中底/胶水（材料仓）→ 在制品仓，提交。</li>
+    <li>【MES 报工】打开该工单的 Job Card（工序：成型 / 工位：成型车间A线），录入员工、起止时间、完成数量，提交。</li>
+    <li>工单页点击「完工」生成完工入库单：成品 FG-A001-41-BK × 2000 → 成品仓，提交。工单自动变 Completed。</li>
+  </ol>
+
+  <h3>第 6 步 · 财务应付与厂商对账（财务）</h3>
+  <ol>
+    <li>对每张采购收货单「创建采购发票」（委外加工费由委外收货单自动生成收货单后开票）。</li>
+    <li>提交发票形成应付（债权人科目），核对品项/数量/单价与 PO 一致。</li>
+    <li>【付款单 Payment Entry】选供应商，勾选发票，现金/银行付款，提交 → 发票状态变 Paid。</li>
+    <li>厂商对账：报表「应付账款 / 供应商账簿」按供应商查看开票、付款、余额；本次验证三家供应商余额均为 <b>0.00</b>：
+      <table>
+        <tr><th>供应商</th><th>开票</th><th>已付</th><th>余额</th></tr>
+        <tr><td>泉州兴发纺织有限公司</td><td>30,600.00</td><td>30,600.00</td><td><b>0.00</b></td></tr>
+        <tr><td>东莞宏力鞋材有限公司</td><td>55,580.00</td><td>55,580.00</td><td><b>0.00</b></td></tr>
+        <tr><td>莆田华盛针车厂（委外）</td><td>24,000.00</td><td>24,000.00</td><td><b>0.00</b></td></tr>
+      </table>
+    </li>
+  </ol>
+
+  <h3>第 7 步 · 出货（可选，外贸交货）</h3>
+  <ol>
+    <li>销售订单「创建交货单」→ 成品仓扫码发货 → 提交。</li>
+    <li>「创建销售发票」向客户开票收款（应收流程与应付对称）。</li>
+  </ol>
+</div>
+
+<h2>五、常用界面入口（登录后）</h2>
+<div class="card">
+<table>
+  <tr><th>角色</th><th>常用模块</th><th>路径（模块 › 文档）</th></tr>
+  <tr><td>业务</td><td>指令单/订单</td><td>销售 › 销售订单</td></tr>
+  <tr><td>计划</td><td>MRP</td><td>制造 › 生产计划 / 物料申请</td></tr>
+  <tr><td>采购</td><td>PO / 供应商</td><td>采购 › 采购订单 / 供应商</td></tr>
+  <tr><td>仓库</td><td>扫码出入库</td><td>库存 › 库存录入（Stock Entry）/ 采购收货单 / 委外收货单</td></tr>
+  <tr><td>车间</td><td>MES 报工</td><td>制造 › 工单 › Job Card / 工作站看板</td></tr>
+  <tr><td>委外</td><td>委外全流程</td><td>分包（Subcontracting）› 委外订单 / 委外收货单</td></tr>
+  <tr><td>财务</td><td>应付/付款/对账</td><td>会计 › 采购发票 / 付款 / 应付账款报表 / 供应商账簿</td></tr>
+  <tr><td>质检</td><td>入库质检（可选）</td><td>质量 › 质检（需在 BOM 勾选检验要求）</td></tr>
+</table>
+<div class="warn">提示：所有单据录入时务必填写<b>工厂指令单号</b>，保证按单穿透追溯；单据须「提交」后才影响库存与账务，草稿不生效。</div>
+</div>
+
+<h2>六、库存与账务终态（本次验证结果）</h2>
+<div class="card">
+<table>
+  <tr><th>仓库</th><th>结存</th></tr>
+  <tr><td>材料仓</td><td>0（全部消耗至委外/工单）</td></tr>
+  <tr><td>委外供应商仓</td><td>0（委外收货倒冲消耗）</td></tr>
+  <tr><td>半成品仓</td><td>0（工单领料消耗）</td></tr>
+  <tr><td>在制品仓</td><td>0（完工入库倒冲消耗）</td></tr>
+  <tr><td>成品仓</td><td><b>FG-A001-41-BK × 2000 双</b></td></tr>
+</table>
+<table>
+  <tr><th>财务科目</th><th>结果</th></tr>
+  <tr><td>债权人（应付账款）</td><td>三家供应商余额全部 0.00</td></tr>
+  <tr><td>现金账户</td><td>累计付款支出 110,180.00 元</td></tr>
+  <tr><td>存货</td><td>成品 2000 双（帮面/材料已结转生产成本）</td></tr>
+</table>
+</div>
+
+<p class="footer">奥登科鞋业有限公司 · ERPNext v15 · 部署于宝塔面板 Docker 环境 · 2026-10</p>
+
+</div>
+</body>
+</html>

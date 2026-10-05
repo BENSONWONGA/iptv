@@ -424,6 +424,28 @@ table.tbl .num { font-family: var(--num-font); font-size: 14px; letter-spacing: 
 .fm-node.done .fm-step { color: #1A1206; background: linear-gradient(180deg, #FFC455, var(--amber) 60%, var(--amber-2)); border: none;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 3px 12px rgba(255, 176, 32, .4); }
 
+/* ============ 流程图中心（Tab + SVG 流程图） ============ */
+.flow-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.flow-tabs button { border: 1px solid var(--line-2); background: transparent; color: var(--sub);
+  padding: 8px 18px; border-radius: 10px; font-size: 13.5px; font-family: inherit; font-weight: 600;
+  cursor: pointer; transition: all .18s var(--ease); }
+.flow-tabs button:hover { color: var(--ink); border-color: rgba(255, 176, 32, .4); }
+.flow-tabs button.active { color: #1A1206; border: none;
+  background: linear-gradient(180deg, #FFC455, var(--amber) 55%, var(--amber-2));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(160,100,0,.3), 0 4px 14px rgba(255,176,32,.3); }
+.flow-legend { display: flex; gap: 14px; flex-wrap: wrap; padding: 10px 16px; margin-bottom: 14px;
+  border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); }
+.flow-legend span { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--sub); }
+.flow-legend i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.flow-svg-wrap { border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  box-shadow: var(--lift); }
+.flow-svg-wrap svg { display: block; width: 100%; height: auto; }
+.flow-svg-wrap .fnode { cursor: default; }
+.flow-svg-wrap .fnode rect { transition: filter .18s; }
+.flow-svg-wrap .fnode:hover rect { filter: brightness(1.6); }
+.flow-note { font-size: 12px; color: var(--faint); margin-top: 10px; text-align: center; }
+
 /* ============ 财务对账 ============ */
 .recon-total td { background: rgba(255, 176, 32, .06) !important; font-weight: 700; color: var(--ink); }
 table.tbl td.bal-zero { color: var(--amber); font-weight: 700; text-shadow: 0 0 18px rgba(255, 176, 32, .3); }
@@ -551,7 +573,7 @@ nav.navbar, .navbar, .page-breadcrumbs, footer, .web-footer,
       <a href="#/warehouse" data-page="warehouse" title="仓库管理"><svg><use href="#i-wh"/></svg><span class="tn-l">仓库管理</span></a>
       <a href="#/scan" data-page="scan" title="扫码出入库"><svg><use href="#i-scan"/></svg><span class="tn-l">扫码出入库</span></a>
       <a href="#/finance" data-page="finance" title="应付对账"><svg><use href="#i-fin"/></svg><span class="tn-l">应付对账</span></a>
-      <a href="#/flow" data-page="flow" title="流程链路图"><svg><use href="#i-link"/></svg><span class="tn-l">流程链路</span></a>
+      <a href="#/flow" data-page="flow" title="流程图中心"><svg><use href="#i-link"/></svg><span class="tn-l">流程图中心</span></a>
     </nav>
     <div class="tnav-right">
       <div class="top-search">
@@ -744,7 +766,7 @@ function enterApp() {
 /* ---------------- 路由 ---------------- */
 const TITLES = {
   dashboard: "工作台", orders: "指令单中心", purchase: "采购管理", subcontract: "委外加工",
-  production: "生产制造", warehouse: "仓库管理", scan: "扫码出入库", finance: "应付对账", flow: "流程链路图",
+  production: "生产制造", warehouse: "仓库管理", scan: "扫码出入库", finance: "应付对账", flow: "流程图中心",
 };
 const PAGES = {};
 function currentRoute() {
@@ -1447,27 +1469,227 @@ PAGES.finance = async function (box) {
     </div>`;
 };
 
-/* ---------------- 流程链路图 ---------------- */
+/* ---------------- SVG 流程图引擎 ---------------- */
+const FLOW_COLORS = {
+  cyan:   ["rgba(79,209,197,.12)", "#4FD1C5"],
+  blue:   ["rgba(127,168,232,.12)", "#7FA8E8"],
+  purple: ["rgba(167,139,250,.12)", "#A78BFA"],
+  orange: ["rgba(255,176,32,.12)", "#FFB020"],
+  green:  ["rgba(110,213,146,.12)", "#6ED592"],
+  peach:  ["rgba(255,138,112,.10)", "#FF8A70"],
+  yellow: ["rgba(255,196,85,.13)", "#FFC455"],
+  gray:   ["rgba(255,255,255,.035)", "#8B96A8"],
+  white:  ["rgba(255,255,255,.05)", "#E8EDF6"],
+};
+
+/* 渲染 SVG 流程图：nodes[{id,x,y,w,h,t,c,small}] edges[{f,t,key,dash,label}] groups[{x,y,t}] */
+function flowRender(cfg) {
+  const byId = {};
+  for (const n of cfg.nodes) byId[n.id] = { ...n, cx: n.x + n.w / 2, cy: n.y + n.h / 2 };
+  const clip = (x1, y1, x2, y2, n) => {
+    const dx = x2 - x1, dy = y2 - y1;
+    const hw = n.w / 2 + 5, hh = n.h / 2 + 5;
+    const sx = dx ? hw / Math.abs(dx) : Infinity;
+    const sy = dy ? hh / Math.abs(dy) : Infinity;
+    const t = Math.min(sx, sy);
+    return [x1 + dx * t, y1 + dy * t];
+  };
+  let edges = "";
+  for (const e of cfg.edges) {
+    const a = byId[e.f], b = byId[e.t];
+    if (!a || !b) continue;
+    const [x1, y1] = clip(a.cx, a.cy, b.cx, b.cy, a);
+    const [x2, y2] = clip(b.cx, b.cy, a.cx, a.cy, b);
+    const c = e.key ? "rgba(255,176,32,.55)" : "rgba(139,150,168,.42)";
+    const label = e.label
+      ? `<text x="${(x1 + x2) / 2}" y="${(y1 + y2) / 2 - 6}" fill="#8B96A8" font-size="10" text-anchor="middle">${e.label}</text>` : "";
+    edges += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${e.key ? 2 : 1.4}"${e.dash ? ' stroke-dasharray="5 4"' : ""} marker-end="url(#farrow)"/>${label}`;
+  }
+  let nodes = "";
+  for (const n of cfg.nodes) {
+    const [fill, stroke] = FLOW_COLORS[n.c || "gray"];
+    const fs = n.small ? 11.5 : 13;
+    nodes += `<g class="fnode"><rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="10" fill="${fill}" stroke="${stroke}" stroke-opacity=".55" stroke-width="1.2"/><text x="${n.cx}" y="${n.cy + fs * 0.36}" fill="#E8EDF6" font-size="${fs}" font-weight="600" text-anchor="middle">${n.t}</text></g>`;
+  }
+  const groups = (cfg.groups || []).map(g =>
+    `<text x="${g.x}" y="${g.y}" fill="#5A6577" font-size="12" font-weight="700" letter-spacing="3">${g.t}</text>`).join("");
+  return `<div class="flow-svg-wrap"><svg viewBox="0 0 ${cfg.w} ${cfg.h}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"><defs><marker id="farrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(139,150,168,.75)"/></marker></defs>${groups}${edges}${nodes}</svg></div>`;
+}
+
+/* 图一：ERP 总体业务流程（型体→BOM→订单→生产/采购→仓储→财务） */
+const FLOW_MAIN = {
+  w: 1440, h: 920,
+  nodes: [
+    { id: "style",  x: 40,   y: 140, w: 130, h: 44, t: "型体产品库", c: "blue" },
+    { id: "sample", x: 40,   y: 240, w: 130, h: 44, t: "样品单 3.0", c: "blue" },
+    { id: "bom",    x: 40,   y: 340, w: 130, h: 44, t: "量产 BOM", c: "blue" },
+    { id: "order",  x: 260,  y: 60,  w: 130, h: 44, t: "订单资料", c: "purple" },
+    { id: "calc",   x: 260,  y: 170, w: 130, h: 44, t: "订单用量计算", c: "purple" },
+    { id: "plan",     x: 470, y: 60,  w: 130, h: 44, t: "生产计划", c: "orange" },
+    { id: "sop",      x: 660, y: 16,  w: 120, h: 40, t: "工艺 SOP", c: "orange", small: 1 },
+    { id: "dispatch", x: 660, y: 120, w: 130, h: 44, t: "车间派工单", c: "orange" },
+    { id: "workstat", x: 830, y: 180, w: 130, h: 44, t: "部件工位派工", c: "orange" },
+    { id: "rework",   x: 1010, y: 240, w: 110, h: 40, t: "生产补单", c: "orange", small: 1 },
+    { id: "mrp",   x: 260, y: 300, w: 130, h: 44, t: "采购需求计划", c: "green" },
+    { id: "quote", x: 260, y: 390, w: 130, h: 44, t: "物料报价", c: "green" },
+    { id: "apply", x: 260, y: 480, w: 130, h: 44, t: "申购管理", c: "green" },
+    { id: "po",    x: 470, y: 390, w: 150, h: 44, t: "采购单 / 加工单", c: "green" },
+    { id: "temp",    x: 680, y: 390, w: 110, h: 44, t: "暂收单", c: "peach" },
+    { id: "qc",      x: 830, y: 390, w: 110, h: 44, t: "检验单", c: "peach" },
+    { id: "grn",     x: 980, y: 390, w: 110, h: 44, t: "入库单", c: "peach" },
+    { id: "pickreq", x: 680, y: 500, w: 110, h: 44, t: "领料申请", c: "peach" },
+    { id: "pick",    x: 830, y: 500, w: 110, h: 44, t: "领料出库", c: "peach" },
+    { id: "ap",      x: 1150, y: 390, w: 120, h: 44, t: "应付账款", c: "yellow" },
+    { id: "cost",    x: 980, y: 500, w: 110, h: 44, t: "订单成本", c: "yellow" },
+    { id: "fee",     x: 470, y: 640, w: 140, h: 44, t: "费用报销管理", c: "yellow" },
+    { id: "costhub", x: 660, y: 640, w: 120, h: 44, t: "成本归集", c: "yellow" },
+    { id: "voucher", x: 660, y: 730, w: 120, h: 44, t: "凭证管理", c: "yellow" },
+    { id: "bs", x: 470, y: 830, w: 120, h: 40, t: "资产负债表", c: "yellow", small: 1 },
+    { id: "pl", x: 640, y: 830, w: 100, h: 40, t: "利润表", c: "yellow", small: 1 },
+    { id: "cf", x: 790, y: 830, w: 120, h: 40, t: "现金流量表", c: "yellow", small: 1 },
+    { id: "oa",    x: 40,  y: 760, w: 130, h: 38, t: "OA 在线签核", c: "cyan", small: 1 },
+    { id: "esg",   x: 190, y: 760, w: 130, h: 38, t: "ESG 耗能管理", c: "cyan", small: 1 },
+    { id: "mes",   x: 40,  y: 822, w: 130, h: 38, t: "MES 看板管理", c: "cyan", small: 1 },
+    { id: "alert", x: 190, y: 822, w: 130, h: 38, t: "预警通知管理", c: "cyan", small: 1 },
+  ],
+  groups: [
+    { x: 40, y: 118, t: "产品数据基础" },
+    { x: 40, y: 736, t: "辅助支撑层" },
+  ],
+  edges: [
+    { f: "style", t: "sample", key: 1 }, { f: "sample", t: "bom", key: 1 },
+    { f: "bom", t: "calc" },
+    { f: "order", t: "plan", key: 1 }, { f: "calc", t: "plan" },
+    { f: "calc", t: "mrp", key: 1 },
+    { f: "plan", t: "dispatch", key: 1 },
+    { f: "sop", t: "workstat" },
+    { f: "dispatch", t: "workstat", key: 1 },
+    { f: "workstat", t: "rework", dash: 1, label: "" }, { f: "rework", t: "dispatch", dash: 1, label: "补单回流" },
+    { f: "mrp", t: "po", key: 1 }, { f: "quote", t: "po" }, { f: "apply", t: "po" },
+    { f: "po", t: "temp", key: 1 },
+    { f: "temp", t: "qc", key: 1 }, { f: "qc", t: "grn", key: 1 },
+    { f: "grn", t: "ap", key: 1 },
+    { f: "dispatch", t: "pickreq", key: 1 },
+    { f: "pickreq", t: "pick", key: 1 },
+    { f: "pick", t: "cost" },
+    { f: "fee", t: "costhub" }, { f: "ap", t: "costhub" }, { f: "cost", t: "costhub" },
+    { f: "costhub", t: "voucher", key: 1 },
+    { f: "voucher", t: "bs", key: 1 }, { f: "voucher", t: "pl", key: 1 }, { f: "voucher", t: "cf", key: 1 },
+  ],
+};
+
+/* 图二：基础资料与物料编码流程 */
+const FLOW_MASTER = {
+  w: 1440, h: 880,
+  nodes: [
+    { id: "g1n1", x: 40,  y: 90,  w: 130, h: 40, t: "公用基础资料", c: "cyan", small: 1 },
+    { id: "g1n2", x: 40,  y: 150, w: 130, h: 40, t: "厂别资料", c: "cyan", small: 1 },
+    { id: "g1n3", x: 40,  y: 210, w: 130, h: 40, t: "部门资料", c: "cyan", small: 1 },
+    { id: "g1n4", x: 40,  y: 270, w: 130, h: 40, t: "车间资料", c: "gray", small: 1 },
+    { id: "g2n1", x: 210, y: 90,  w: 130, h: 40, t: "客户资料", c: "yellow", small: 1 },
+    { id: "g2n2", x: 210, y: 150, w: 130, h: 40, t: "供应商资料", c: "yellow", small: 1 },
+    { id: "g2n3", x: 210, y: 210, w: 150, h: 40, t: "供应商资料(成品)", c: "yellow", small: 1 },
+    { id: "g2n4", x: 210, y: 270, w: 130, h: 40, t: "尺码资料", c: "yellow", small: 1 },
+    { id: "g2n5", x: 210, y: 330, w: 130, h: 40, t: "部位资料", c: "yellow", small: 1 },
+    { id: "g3n1", x: 410, y: 90,  w: 130, h: 40, t: "发票资料", c: "gray", small: 1 },
+    { id: "g3n2", x: 410, y: 150, w: 130, h: 40, t: "付款条件", c: "gray", small: 1 },
+    { id: "g3n3", x: 410, y: 210, w: 130, h: 40, t: "货币资料", c: "gray", small: 1 },
+    { id: "g3n4", x: 410, y: 270, w: 130, h: 40, t: "汇率资料", c: "gray", small: 1 },
+    { id: "g3n5", x: 410, y: 330, w: 130, h: 40, t: "单据规则", c: "gray", small: 1 },
+    { id: "g3n6", x: 410, y: 390, w: 130, h: 40, t: "采购单位", c: "gray", small: 1 },
+    { id: "g4n1", x: 590, y: 90,  w: 150, h: 40, t: "集团分组权限", c: "gray", small: 1 },
+    { id: "g4n2", x: 590, y: 150, w: 150, h: 40, t: "数据权限", c: "gray", small: 1 },
+    { id: "g4n3", x: 590, y: 210, w: 150, h: 40, t: "代理人", c: "gray", small: 1 },
+    { id: "g4n4", x: 590, y: 270, w: 150, h: 40, t: "产品部位结构", c: "gray", small: 1 },
+    { id: "g4n5", x: 590, y: 330, w: 150, h: 40, t: "发EMAIL通知人", c: "gray", small: 1 },
+    { id: "k1", x: 560,  y: 490, w: 130, h: 46, t: "物料大类", c: "cyan" },
+    { id: "k2", x: 560,  y: 580, w: 130, h: 46, t: "加工方法", c: "cyan" },
+    { id: "k3", x: 770,  y: 445, w: 130, h: 46, t: "物料品名", c: "blue" },
+    { id: "k4", x: 770,  y: 545, w: 130, h: 46, t: "物料规格", c: "blue" },
+    { id: "k5", x: 770,  y: 645, w: 130, h: 46, t: "物料颜色", c: "blue" },
+    { id: "k6", x: 990,  y: 545, w: 140, h: 50, t: "物料编码", c: "white" },
+    { id: "k7", x: 1190, y: 548, w: 150, h: 46, t: "采购管理 3.0", c: "green" },
+    { id: "lang1", x: 560, y: 760, w: 150, h: 40, t: "界面多语言维护", c: "purple", small: 1 },
+    { id: "lang2", x: 770, y: 760, w: 150, h: 40, t: "基础资料多语言", c: "purple", small: 1 },
+  ],
+  groups: [
+    { x: 40,  y: 66, t: "基础组织资料" },
+    { x: 210, y: 66, t: "业务伙伴与产品属性" },
+    { x: 410, y: 66, t: "财务与单据规则" },
+    { x: 590, y: 66, t: "权限与通知" },
+    { x: 560, y: 460, t: "物料编码生成" },
+    { x: 560, y: 736, t: "多语言扩展" },
+  ],
+  edges: [
+    { f: "k1", t: "k3", key: 1 },
+    { f: "k2", t: "k4", key: 1 },
+    { f: "k3", t: "k6", key: 1 },
+    { f: "k4", t: "k6", key: 1 },
+    { f: "k5", t: "k6", key: 1 },
+    { f: "k6", t: "k7", key: 1 },
+    { f: "lang1", t: "lang2" },
+  ],
+};
+
+/* ---------------- 流程图中心（三 Tab） ---------------- */
 PAGES.flow = async function (box) {
   const sos = await API.list("Sales Order", ["name", "custom_factory_order_no"], [["docstatus", "=", 1]], 10);
   const fo = sos[0]?.custom_factory_order_no;
-  if (!fo) { box.innerHTML = `<div class="card card-bd empty">暂无已提交订单，无法生成链路图</div>`; return; }
-  const chain = await buildChain(fo);
-  const nodes = CHAIN_STEPS.map((st, i) => {
-    const docs = chain.steps[st.key] || [];
-    const cls = chainStepState({ docs });
-    const main = docs[0];
-    return `<div class="fm-node ${cls === "done" ? "done" : ""}" style="animation-delay:${i * 60}ms">
-      <span class="fm-step">${String(i + 1).padStart(2, "0")} ${st.label}</span>
-      <b>${esc(st.name)}</b>
-      ${docs.length ? docs.map(d => `<span class="mono">${esc(d.name)}</span>`).join("") : `<small style="color:var(--faint)">— 无单据 —</small>`}
-      <small>${docs.length ? `${docs.length} 张 · ${docs.every(d => d.docstatus === 1) ? "全部已提交" : "含草稿"}` : "待该环节执行"}</small>
-      ${main ? `<small>${esc(main.supplier || main.customer || main.purpose || "")}${main.grand_total ? " · " + fmtMoney(main.grand_total) : ""}</small>` : ""}
-    </div>`;
-  }).join("");
+  let chainHTML = "";
+  if (fo) {
+    const chain = await buildChain(fo);
+    chainHTML = `<div class="flowmap">${CHAIN_STEPS.map((st, i) => {
+      const docs = chain.steps[st.key] || [];
+      const cls = chainStepState({ docs });
+      const main = docs[0];
+      return `<div class="fm-node ${cls === "done" ? "done" : ""}" style="animation-delay:${i * 60}ms">
+        <span class="fm-step">${String(i + 1).padStart(2, "0")} ${st.label}</span>
+        <b>${esc(st.name)}</b>
+        ${docs.length ? docs.map(d => `<span class="mono">${esc(d.name)}</span>`).join("") : `<small style="color:var(--faint)">— 无单据 —</small>`}
+        <small>${docs.length ? `${docs.length} 张 · ${docs.every(d => d.docstatus === 1) ? "全部已提交" : "含草稿"}` : "待该环节执行"}</small>
+        ${main ? `<small>${esc(main.supplier || main.customer || main.purpose || "")}${main.grand_total ? " · " + fmtMoney(main.grand_total) : ""}</small>` : ""}
+      </div>`;
+    }).join("")}</div>`;
+  } else {
+    chainHTML = `<div class="card card-bd empty">暂无已提交订单，无法生成链路图</div>`;
+  }
+
+  const legendMain = `<div class="flow-legend">
+    <span><i style="background:#7FA8E8"></i>产品数据</span><span><i style="background:#A78BFA"></i>订单处理</span>
+    <span><i style="background:#FFB020"></i>生产执行</span><span><i style="background:#6ED592"></i>采购管理</span>
+    <span><i style="background:#FF8A70"></i>仓储质检</span><span><i style="background:#FFC455"></i>财务核算</span>
+    <span><i style="background:#4FD1C5"></i>辅助支撑</span></div>`;
+  const legendMaster = `<div class="flow-legend">
+    <span><i style="background:#4FD1C5"></i>编码上游基础</span><span><i style="background:#7FA8E8"></i>编码要素</span>
+    <span><i style="background:#E8EDF6"></i>编码结果</span><span><i style="background:#6ED592"></i>业务应用</span>
+    <span><i style="background:#FFC455"></i>业务伙伴资料</span><span><i style="background:#A78BFA"></i>系统扩展</span>
+    <span><i style="background:#8B96A8"></i>规则资料</span></div>`;
+
   box.innerHTML = `
-    ${pageHeader("i-link", "流程链路图", `指令单 ${esc(fo)}：从接单到付款的 14 步全流程穿透`, `<span class="pill ok">14 / 14 已完成</span>`)}
-    <div class="flowmap">${nodes}</div>`;
+    ${pageHeader("i-link", "流程图中心", "指令单链路穿透 + ERP 全景业务流程 + 基础资料与物料编码",
+      `<span class="pill run">共 3 张流程图</span>`)}
+    <div class="flow-tabs">
+      <button data-tab="chain" class="active">指令单链路穿透</button>
+      <button data-tab="main">ERP 总体业务流程</button>
+      <button data-tab="master">基础资料与物料编码</button>
+    </div>
+    <div id="flow-tab-body"></div>`;
+
+  const body = $("#flow-tab-body");
+  const renderTab = (tab) => {
+    if (tab === "chain") {
+      body.innerHTML = `<p class="flow-note" style="text-align:left">指令单 ${esc(fo || "—")} 的 14 步单据链路，金色节点为已完成环节</p>${chainHTML}`;
+    } else if (tab === "main") {
+      body.innerHTML = legendMain + flowRender(FLOW_MAIN) +
+        `<p class="flow-note">从型体产品库到财务三大报表的全景业务流：BOM 驱动订单用量 → 生产派工 / 采购 → 暂收-检验-入库 → 领料出库 → 应付与成本 → 凭证与报表</p>`;
+    } else {
+      body.innerHTML = legendMaster + flowRender(FLOW_MASTER) +
+        `<p class="flow-note">四组基础资料为全系统主数据底座；物料编码由「大类 + 品名 + 规格 + 颜色」四要素生成，直达采购管理</p>`;
+    }
+    $$(".flow-tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+  };
+  renderTab("chain");
+  $$(".flow-tabs button").forEach(b => b.addEventListener("click", () => renderTab(b.dataset.tab)));
 };
 
 /* ---------------- 全局搜索 ---------------- */

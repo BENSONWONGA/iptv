@@ -300,6 +300,17 @@ function chainStepState(step) {
   return "done";
 }
 
+/* 统一页面头部（渐变图标块 + 标题 + 操作区） */
+function pageHeader(iconId, title, sub, right = "") {
+  return `<div class="page-hd">
+    <div class="ph-l">
+      <span class="ph-ic"><svg><use href="#${iconId}"/></svg></span>
+      <h2>${title}<small>${sub}</small></h2>
+    </div>
+    <div class="ph-r">${right}</div>
+  </div>`;
+}
+
 /* ---------------- 抽屉 ---------------- */
 function closeDrawer() { $$(".drawer,.drawer-mask").forEach(el => el.remove()); }
 function openChainDrawer(fo) {
@@ -356,15 +367,29 @@ PAGES.dashboard = async function (box) {
   const unpaidAmt = unpaid.reduce((a, b) => a + (b.grand_total || 0), 0);
   const fgQty = bins.filter(b => b.warehouse === WAREHOUSES["成品仓"]).reduce((a, b) => a + b.actual_qty, 0);
 
+  const now = new Date();
+  const hour = now.getHours();
+  const greet = hour < 9 ? "早上好" : hour < 12 ? "中午好" : hour < 18 ? "下午好" : "晚上好";
+  const dateStr = now.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "long" });
+  const user = localStorage.getItem("odk_user") || "Administrator";
+  const displayName = user === "Administrator" ? "系统管理员" : user;
+
   // 最近指令单链路进度
   const fo = sos[0]?.custom_factory_order_no || activeSO[0]?.custom_factory_order_no;
   let flowbarHTML = "";
   if (fo) {
     const chain = await buildChain(fo);
+    const doneSteps = CHAIN_STEPS.filter(st => chainStepState({ docs: chain.steps[st.key] }) === "done").length;
     flowbarHTML = `
-      <div class="card" style="margin-bottom:14px">
-        <div class="card-hd"><h3>指令单 ${esc(fo)} · 流程进度</h3>
-          <button class="btn-sm amber" onclick="openChainDrawer('${esc(fo)}')">查看完整链路</button></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hd">
+          <h3>指令单 ${esc(fo)} · 全流程进度</h3>
+          <div class="fc-sum">
+            <b class="fc-num"><i>${doneSteps}</i> / ${CHAIN_STEPS.length}</b>
+            ${doneSteps === CHAIN_STEPS.length ? '<span class="pill ok">已全部完成</span>' : '<span class="pill wait">进行中</span>'}
+            <button class="btn-sm amber" onclick="openChainDrawer('${esc(fo)}')">查看完整链路</button>
+          </div>
+        </div>
         <div class="card-bd"><div class="flowbar">${CHAIN_STEPS.map(st => {
           const cls = chainStepState({ docs: chain.steps[st.key] });
           return `<div class="fb-step"><div class="fb-chip ${cls === "done" ? "done" : cls === "run" ? "run" : ""}">
@@ -385,31 +410,53 @@ PAGES.dashboard = async function (box) {
     const total = bins.filter(b => b.warehouse === WAREHOUSES[k]).reduce((a, b) => a + b.actual_qty, 0);
     const cnt = bins.filter(b => b.warehouse === WAREHOUSES[k] && b.actual_qty > 0).length;
     return `<div class="wh-chip"><span class="dot" style="background:${WH_COLORS[k]}"></span>
-      <b>${k}<small style="color:var(--sub);font-weight:400">（${cnt} 种料件）</small></b>
+      <b>${k}<small style="color:var(--sub);font-weight:400;margin-left:6px">${cnt} 种料件</small></b>
       <span class="qty">${fmtNum(total)}</span></div>`;
   }).join("");
 
   box.innerHTML = `
-    <div class="page-hd"><h2>早上好，欢迎回来<small>${new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric", weekday: "long" })} · 数据实时同步自 ERPNext</small></h2></div>
-    <div class="grid g4" style="margin-bottom:14px">
-      <div class="card stat-card"><div class="stat-label">进行中指令单</div>
-        <div class="stat-value">${fmtNum(activeSO.length)}<small>单</small></div>
-        <div class="stat-foot">累计接单 ${sos.length} 单</div></div>
-      <div class="card stat-card"><div class="stat-label">在产工单</div>
-        <div class="stat-value">${fmtNum(activeWO.reduce((a, b) => a + (b.qty || 0), 0))}<small>双</small></div>
-        <div class="stat-foot">${activeWO.length} 张工单生产中</div></div>
-      <div class="card stat-card amber"><div class="stat-label">待付货款</div>
-        <div class="stat-value">${fmtNum(unpaidAmt / 10000, 1)}<small>万元</small></div>
-        <div class="stat-foot">${unpaid.length} 张发票待付</div></div>
-      <div class="card stat-card"><div class="stat-label">成品仓库存</div>
-        <div class="stat-value">${fmtNum(fgQty)}<small>双</small></div>
-        <div class="stat-foot">即时库存快照</div></div>
+    <div class="hero-banner">
+      <div class="hb-l">
+        <h2>${greet}，${esc(displayName)}</h2>
+        <p>${dateStr} · 鞋业代工全流程运转正常，数据实时同步自 ERPNext</p>
+      </div>
+      <div class="hb-r">
+        <div class="hb-chip"><b>${fmtNum(sos.length)}</b><span>累计接单</span></div>
+        <div class="hb-chip"><b>${fmtNum(fgQty)}</b><span>成品库存（双）</span></div>
+        <div class="hb-chip"><b>${fmtNum(unpaidAmt, 0)}</b><span>未结货款（元）</span></div>
+      </div>
+    </div>
+    <div class="grid g4" style="margin-bottom:16px">
+      <div class="card stat-card">
+        <span class="stat-ic blue"><svg><use href="#i-order"/></svg></span>
+        <div class="stat-body"><div class="stat-label">进行中指令单</div>
+          <div class="stat-value">${fmtNum(activeSO.length)}<small>单</small></div>
+          <div class="stat-foot">累计接单 ${sos.length} 单</div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic cyan"><svg><use href="#i-mfg"/></svg></span>
+        <div class="stat-body"><div class="stat-label">在产工单</div>
+          <div class="stat-value">${fmtNum(activeWO.reduce((a, b) => a + (b.qty || 0), 0))}<small>双</small></div>
+          <div class="stat-foot">${activeWO.length} 张工单生产中</div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic amber"><svg><use href="#i-fin"/></svg></span>
+        <div class="stat-body"><div class="stat-label">待付货款</div>
+          <div class="stat-value">${fmtNum(unpaidAmt / 10000, 1)}<small>万元</small></div>
+          <div class="stat-foot">${unpaid.length} 张发票待付</div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic green"><svg><use href="#i-wh"/></svg></span>
+        <div class="stat-body"><div class="stat-label">成品仓库存</div>
+          <div class="stat-value">${fmtNum(fgQty)}<small>双</small></div>
+          <div class="stat-foot">即时库存快照</div></div>
+      </div>
     </div>
     ${flowbarHTML}
     <div class="grid g2">
-      <div class="card"><div class="card-hd"><h3>待办事项</h3></div>
+      <div class="card"><div class="card-hd"><h3>待办事项</h3><span class="pill draft">共 ${drafts.length} 条</span></div>
         <div class="card-bd">${todoRows}</div></div>
-      <div class="card"><div class="card-hd"><h3>库存概览</h3></div>
+      <div class="card"><div class="card-hd"><h3>库存概览</h3><button class="btn-sm ghost" onclick="location.hash='#/warehouse'">仓库明细</button></div>
         <div class="card-bd">${whRows}</div></div>
     </div>`;
 };
@@ -426,9 +473,9 @@ PAGES.orders = async function (box) {
     return { ...so, items };
   }));
   box.innerHTML = `
-    <div class="page-hd"><h2>指令单中心<small>以工厂指令单号为主线，点击行查看全流程链路穿透</small></h2></div>
+    ${pageHeader("i-order", "指令单中心", "以工厂指令单号为主线，点击行查看全流程链路穿透", `<span class="pill run">共 ${rows.length} 单</span>`)}
     <div class="card">
-      <div class="card-hd"><h3>订单列表</h3><span style="font-size:12.5px;color:var(--sub)">共 ${rows.length} 单</span></div>
+      <div class="card-hd"><h3>订单列表</h3><span style="font-size:12.5px;color:var(--sub)">点击任意行展开链路抽屉</span></div>
       <table class="tbl">
         <thead><tr><th>指令单号</th><th>销售订单</th><th>客户</th><th>款号明细</th><th>订单金额</th><th>日期</th><th>状态</th><th></th></tr></thead>
         <tbody>${rows.map(so => `
@@ -455,7 +502,7 @@ PAGES.purchase = async function (box) {
     API.list("Supplier", ["name", "supplier_name", "supplier_group", "country"], [], 100),
   ]);
   box.innerHTML = `
-    <div class="page-hd"><h2>采购管理<small>材料采购订单与到货收料全程跟踪</small></h2></div>
+    ${pageHeader("i-buy", "采购管理", "材料采购订单与到货收料全程跟踪", `<span class="pill run">采购总额 ${fmtMoney(pos.reduce((a, b) => a + (b.grand_total || 0), 0))}</span>`)}
     <div class="grid g2" style="margin-bottom:14px">
       <div class="card"><div class="card-hd"><h3>供应商（${sups.length}）</h3></div><div class="card-bd" style="padding:8px 18px">
         ${sups.map(s => `<div class="wh-chip"><span class="dot" style="background:${s.supplier_group === "委外加工厂" ? "#E8871E" : "#2C5A97"}"></span>
@@ -498,11 +545,20 @@ PAGES.subcontract = async function (box) {
     API.list("Stock Entry", ["name", "purpose", "posting_date", "docstatus"], [["purpose", "=", "Material Transfer for Manufacture"], ["docstatus", "!=", 2]], 100),
   ]);
   box.innerHTML = `
-    <div class="page-hd"><h2>委外加工<small>发料给委外厂 → 帮面收货 → 加工费结算</small></h2></div>
+    ${pageHeader("i-sub", "委外加工", "发料给委外厂 → 帮面收货 → 加工费结算", `<span class="pill run">${scos.length} 张委外订单</span>`)}
     <div class="grid g3" style="margin-bottom:14px">
-      <div class="card stat-card"><div class="stat-label">委外订单</div><div class="stat-value">${scos.length}<small>单</small></div></div>
-      <div class="card stat-card"><div class="stat-label">累计发料</div><div class="stat-value">${seOut.length}<small>笔</small></div></div>
-      <div class="card stat-card"><div class="stat-label">帮面到货</div><div class="stat-value">${scrs.length}<small>单</small></div></div>
+      <div class="card stat-card">
+        <span class="stat-ic blue"><svg><use href="#i-sub"/></svg></span>
+        <div class="stat-body"><div class="stat-label">委外订单</div><div class="stat-value">${scos.length}<small>单</small></div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic cyan"><svg><use href="#i-scan"/></svg></span>
+        <div class="stat-body"><div class="stat-label">累计发料</div><div class="stat-value">${seOut.length}<small>笔</small></div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic green"><svg><use href="#i-wh"/></svg></span>
+        <div class="stat-body"><div class="stat-label">帮面到货</div><div class="stat-value">${scrs.length}<small>单</small></div></div>
+      </div>
     </div>
     <div class="card" style="margin-bottom:14px">
       <div class="card-hd"><h3>委外订单（SCO）</h3></div>
@@ -538,7 +594,7 @@ PAGES.production = async function (box) {
     API.list("Job Card", ["name", "work_order", "operation", "workstation", "for_quantity", "total_completed_qty", "status", "docstatus"], [["docstatus", "!=", 2]], 100),
   ]);
   box.innerHTML = `
-    <div class="page-hd"><h2>生产制造<small>工单进度与 MES 工序报工</small></h2></div>
+    ${pageHeader("i-mfg", "生产制造", "工单进度与 MES 工序报工", `<span class="pill run">${wos.length} 张工单</span>`)}
     <div class="grid g2" style="margin-bottom:14px">
       ${wos.map(w => {
         const pct = w.qty ? Math.round((w.produced_qty || 0) / w.qty * 100) : 0;
@@ -588,7 +644,7 @@ PAGES.warehouse = async function (box) {
       </div></div>`;
   }).join("");
   box.innerHTML = `
-    <div class="page-hd"><h2>仓库管理<small>五大仓位实时库存 · 扫码出入库请用左侧「扫码出入库」</small></h2></div>
+    ${pageHeader("i-wh", "仓库管理", "五大仓位实时库存 · 出入库请用顶部「扫码出入库」", `<button class="btn-sm amber" onclick="location.hash='#/scan'">去扫码出入库</button>`)}
     <div class="grid g3">${rows}</div>`;
 };
 
@@ -610,7 +666,7 @@ function scanReset() {
 }
 PAGES.scan = async function (box) {
   box.innerHTML = `
-    <div class="page-hd"><h2>扫码出入库<small>USB 扫码枪即扫即录 · 自动创建库存调拨单并提交</small></h2></div>
+    ${pageHeader("i-scan", "扫码出入库", "USB 扫码枪即扫即录 · 自动创建库存调拨单并提交", `<span class="pill run">识别即建单 · 提交生效</span>`)}
     <div class="scan-layout">
       <div>
         <div class="scan-hero">
@@ -759,11 +815,20 @@ PAGES.finance = async function (box) {
   const totalInv = rows.reduce((a, r) => a + r.invAmt, 0);
   const totalPay = rows.reduce((a, r) => a + r.payAmt, 0);
   box.innerHTML = `
-    <div class="page-hd"><h2>应付对账<small>供应商开票、付款与往来余额一表看清</small></h2></div>
+    ${pageHeader("i-fin", "应付对账", "供应商开票、付款与往来余额一表看清", `<span class="pill ${Math.abs(rows.reduce((a, r) => a + r.bal, 0)) < 0.01 ? "ok" : "wait"}">${rows.length} 家供应商</span>`)}
     <div class="grid g3" style="margin-bottom:14px">
-      <div class="card stat-card"><div class="stat-label">累计开票</div><div class="stat-value">${fmtNum(totalInv / 10000, 1)}<small>万元</small></div></div>
-      <div class="card stat-card"><div class="stat-label">累计付款</div><div class="stat-value">${fmtNum(totalPay / 10000, 1)}<small>万元</small></div></div>
-      <div class="card stat-card amber"><div class="stat-label">未结清余额</div><div class="stat-value">${fmtNum(rows.reduce((a, r) => a + r.bal, 0) / 10000, 2)}<small>万元</small></div></div>
+      <div class="card stat-card">
+        <span class="stat-ic blue"><svg><use href="#i-order"/></svg></span>
+        <div class="stat-body"><div class="stat-label">累计开票</div><div class="stat-value">${fmtNum(totalInv / 10000, 1)}<small>万元</small></div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic cyan"><svg><use href="#i-fin"/></svg></span>
+        <div class="stat-body"><div class="stat-label">累计付款</div><div class="stat-value">${fmtNum(totalPay / 10000, 1)}<small>万元</small></div></div>
+      </div>
+      <div class="card stat-card">
+        <span class="stat-ic ${Math.abs(rows.reduce((a, r) => a + r.bal, 0)) < 0.01 ? "green" : "amber"}"><svg><use href="#i-chip"/></svg></span>
+        <div class="stat-body"><div class="stat-label">未结清余额</div><div class="stat-value">${fmtNum(rows.reduce((a, r) => a + r.bal, 0) / 10000, 2)}<small>万元</small></div></div>
+      </div>
     </div>
     <div class="card" style="margin-bottom:14px">
       <div class="card-hd"><h3>厂商对账单</h3></div>
@@ -811,7 +876,7 @@ PAGES.flow = async function (box) {
     </div>`;
   }).join("");
   box.innerHTML = `
-    <div class="page-hd"><h2>流程链路图<small>指令单 ${esc(fo)}：从接单到付款的 14 步全流程穿透</small></h2></div>
+    ${pageHeader("i-link", "流程链路图", `指令单 ${esc(fo)}：从接单到付款的 14 步全流程穿透`, `<span class="pill ok">14 / 14 已完成</span>`)}
     <div class="flowmap">${nodes}</div>`;
 };
 

@@ -1,0 +1,821 @@
+{
+ "meta": {
+  "base": "http://127.0.0.1:3333",
+  "viewport": "1440x900",
+  "cache_disabled": true,
+  "duration_s": 13.5,
+  "chrome": "/root/.cache/puppeteer/chrome/linux-151.0.7922.71/chrome-linux64/chrome"
+ },
+ "login": {
+  "vw": 1440,
+  "gridCols": "662.391px 777.594px",
+  "leftW": 662.4,
+  "leftRatio": 0.46,
+  "rightW": 777.6,
+  "rightRatio": 0.54,
+  "rightX": 662.4,
+  "cardW": 400,
+  "cardX": 851.2,
+  "cardCx": 1051.2,
+  "rightCx": 1051.2,
+  "cardOffset": 0,
+  "leftBg": "linear-gradient(160deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 40%, rgb(14, 66, 210) 100%)",
+  "baseValue": "http://127.0.0.1:3333",
+  "tokenValue": "77455c7d4b3a8fe:f36c1a4b10e8b5e",
+  "btnText": "登 录",
+  "errText": "",
+  "overflowX": 0
+ },
+ "dashboard": {
+  "heroExists": true,
+  "heroRadius": "16px",
+  "heroBg": "linear-gradient(120deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 48%, rgb(14, 66, 210) 100%)",
+  "heroColor": "rgb(255, 255, 255)",
+  "heroW": 1384,
+  "heroAfterW": "300px",
+  "heroAfterH": "300px",
+  "heroAfterRadius": "50%",
+  "heroAfterBg": "rgba(0, 0, 0, 0) radial-gradient(circle, rgba(255, 255, 255,",
+  "heroH2": "早上好，系统管理员",
+  "heroH2Color": "rgb(255, 255, 255)",
+  "heroH2Size": "22px",
+  "heroP": "2026年10月5日星期一 · 鞋业代工全流程运转正常，数据实时同步自 ERPNext",
+  "chipCount": 3,
+  "chips": [
+   "1累计接单",
+   "2,000成品库存（双）",
+   "0未结货款（元）"
+  ],
+  "chipBg": "rgba(255, 255, 255, 0.14)",
+  "chipBorder": "rgba(255, 255, 255, 0.28)",
+  "chipRadius": "12px",
+  "statCount": 4,
+  "statCards": [
+   {
+    "icClass": "blue",
+    "icW": 46,
+    "icH": 46,
+    "icRadius": "13px",
+    "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 21",
+    "label": "进行中指令单",
+    "value": "1单",
+    "valueSize": "30px",
+    "foot": "累计接单 1 单"
+   },
+   {
+    "icClass": "cyan",
+    "icW": 46,
+    "icH": 46,
+    "icRadius": "13px",
+    "icBg": "linear-gradient(160deg, rgb(34, 195, 246), rgb(11, 165, 216) 55%, rgb(2, 134, 18",
+    "label": "在产工单",
+    "value": "0双",
+    "valueSize": "30px",
+    "foot": "0 张工单生产中"
+   },
+   {
+    "icClass": "amber",
+    "icW": 46,
+    "icH": 46,
+    "icRadius": "13px",
+    "icBg": "linear-gradient(160deg, rgb(255, 184, 77), rgb(255, 159, 26) 55%, rgb(240, 134, ",
+    "label": "待付货款",
+    "value": "0.0万元",
+    "valueSize": "30px",
+    "foot": "0 张发票待付"
+   },
+   {
+    "icClass": "green",
+    "icW": 46,
+    "icH": 46,
+    "icRadius": "13px",
+    "icBg": "linear-gradient(160deg, rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(14, 124, 56",
+    "label": "成品仓库存",
+    "value": "2,000双",
+    "valueSize": "30px",
+    "foot": "即时库存快照"
+   }
+  ],
+  "fcNum": "14 / 14",
+  "fcNumSize": "24px",
+  "fcNumIColor": "rgb(22, 163, 74)",
+  "pillOk": "已全部完成",
+  "pillOkBg": "rgb(232, 248, 238)",
+  "pillOkColor": "rgb(22, 163, 74)",
+  "flowBtn": "查看完整链路",
+  "dotW": 32,
+  "dotH": 32,
+  "todoHds": [
+   "指令单 FO-2026-001 · 全流程进度 14 / 14 已全部完成 查看完整链路",
+   "待办事项共 0 条",
+   "库存概览仓库明细"
+  ],
+  "todoPill": "已全部完成",
+  "whBtn": "仓库明细",
+  "skelInPage": false,
+  "loadFail": false,
+  "overflowX": 0
+ },
+ "pages": {
+  "orders": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "指令单中心",
+   "titleSize": "20px",
+   "sub": "以工厂指令单号为主线，点击行查看全流程链路穿透",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "共 1 单",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "orders"
+  },
+  "purchase": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "采购管理",
+   "titleSize": "20px",
+   "sub": "材料采购订单与到货收料全程跟踪",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "采购总额 ¥110,180.00",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "purchase"
+  },
+  "subcontract": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "委外加工",
+   "titleSize": "20px",
+   "sub": "发料给委外厂 → 帮面收货 → 加工费结算",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "1 张委外订单",
+   "statCount": 3,
+   "statCards": [
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(",
+     "display": "flex",
+     "gap": "15px",
+     "label": "委外订单"
+    },
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(34, 195, 246), rgb(11, 165, 216) 55%, rgb(",
+     "display": "flex",
+     "gap": "15px",
+     "label": "累计发料"
+    },
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(1",
+     "display": "flex",
+     "gap": "15px",
+     "label": "帮面到货"
+    }
+   ],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "subcontract"
+  },
+  "production": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "生产制造",
+   "titleSize": "20px",
+   "sub": "工单进度与 MES 工序报工",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "1 张工单",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "production"
+  },
+  "warehouse": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "仓库管理",
+   "titleSize": "20px",
+   "sub": "五大仓位实时库存 · 出入库请用顶部「扫码出入库」",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "去扫码出入库",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "warehouse"
+  },
+  "scan": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "扫码出入库",
+   "titleSize": "20px",
+   "sub": "USB 扫码枪即扫即录 · 自动创建库存调拨单并提交",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "识别即建单 · 提交生效",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "scan"
+  },
+  "finance": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "应付对账",
+   "titleSize": "20px",
+   "sub": "供应商开票、付款与往来余额一表看清",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "3 家供应商",
+   "statCount": 3,
+   "statCards": [
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(",
+     "display": "flex",
+     "gap": "15px",
+     "label": "累计开票"
+    },
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(34, 195, 246), rgb(11, 165, 216) 55%, rgb(",
+     "display": "flex",
+     "gap": "15px",
+     "label": "累计付款"
+    },
+    {
+     "hasIc": true,
+     "icW": 46,
+     "icH": 46,
+     "icBg": "linear-gradient(160deg, rgb(62, 219, 119), rgb(22, 163, 74) 60%, rgb(1",
+     "display": "flex",
+     "gap": "15px",
+     "label": "未结清余额"
+    }
+   ],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "finance"
+  },
+  "flow": {
+   "exists": true,
+   "icW": 44,
+   "icH": 44,
+   "icRadius": "13px",
+   "icBg": "linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))",
+   "title": "流程链路图",
+   "titleSize": "20px",
+   "sub": "指令单 FO-2026-001：从接单到付款的 14 步全流程穿透",
+   "subColor": "rgb(107, 122, 144)",
+   "subSize": "12.5px",
+   "rightHasPillOrBtn": true,
+   "rightText": "14 / 14 已完成",
+   "statCount": 0,
+   "statCards": [],
+   "skelInPage": false,
+   "loadFail": false,
+   "overflowX": 0,
+   "activeNav": "flow"
+  }
+ },
+ "scan": {
+  "state": "已识别",
+  "count": "0",
+  "detailHasForm": true,
+  "detailText": "M-FAB-001 （面料） 牛巴戈面料(黑色) · 单位 码 · 条码 6901234500011 已识别 材料仓半成品仓委外仓在制品成品仓 → 材料仓半成品仓委外仓在制品成品仓 提交出入库 常用方向：材料入库选「材料仓→材料仓」以外的组",
+  "inputValue": "6901234500011"
+ },
+ "regression": {
+  "console_errors": [],
+  "console_warnings": [],
+  "pageerrors": [],
+  "net_err": []
+ },
+ "checks": [
+  {
+   "phase": "login",
+   "name": "左侧品牌区宽度 ≈46% (662px @1440)",
+   "ok": true,
+   "detail": "leftW=662.4px ratio=0.46 gridCols=662.391px 777.594px"
+  },
+  {
+   "phase": "login",
+   "name": "右侧表单区 54%",
+   "ok": true,
+   "detail": "rightW=777.6px ratio=0.54"
+  },
+  {
+   "phase": "login",
+   "name": "表单在右侧区域内居中（无 400px 右留白）",
+   "ok": true,
+   "detail": "cardCx=1051.2 rightCx=1051.2 offset=0px cardW=400"
+  },
+  {
+   "phase": "login",
+   "name": "左侧品牌蓝渐变背景",
+   "ok": true,
+   "detail": "linear-gradient(160deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 40%, rgb(14, 66, 210) 100%"
+  },
+  {
+   "phase": "login",
+   "name": "演示令牌已自动预填",
+   "ok": true,
+   "detail": "77455c7d4b3a8fe:f36c1a4b10e8b5e"
+  },
+  {
+   "phase": "login",
+   "name": "登录页无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "dash",
+   "name": "欢迎横幅存在且圆角16px",
+   "ok": true,
+   "detail": "radius=16px w=1384"
+  },
+  {
+   "phase": "dash",
+   "name": "横幅为品牌蓝渐变",
+   "ok": true,
+   "detail": "linear-gradient(120deg, rgb(30, 116, 255) 0%, rgb(22, 104, 252) 48%, rgb(14, 66, 210) 100%)"
+  },
+  {
+   "phase": "dash",
+   "name": "横幅白字（h2 + 副标题）",
+   "ok": true,
+   "detail": "h2='早上好，系统管理员' color=rgb(255, 255, 255) p='2026年10月5日星期一 · 鞋业代工全流程运转正常，数据实时同步自 ERPN'"
+  },
+  {
+   "phase": "dash",
+   "name": "日期副标题含 2026",
+   "ok": true,
+   "detail": "2026年10月5日星期一 · 鞋业代工全流程运转正常，数据实时同步自 ERPNext"
+  },
+  {
+   "phase": "dash",
+   "name": "右侧 3 个半透明白胶囊数字卡",
+   "ok": true,
+   "detail": "chips=['1累计接单', '2,000成品库存（双）', '0未结货款（元）'] bg=rgba(255, 255, 255, 0.14) border=rgba(255, 255, 255, 0.28)"
+  },
+  {
+   "phase": "dash",
+   "name": "胶囊为半透明白背景",
+   "ok": true,
+   "detail": "bg=rgba(255, 255, 255, 0.14)"
+  },
+  {
+   "phase": "dash",
+   "name": "横幅右上角大圆形淡光装饰(::after 300px 圆)",
+   "ok": true,
+   "detail": "after=300px/300px r=50% bg=rgba(0, 0, 0, 0) radial-gradient(circle, rgba(255, 255, 255,"
+  },
+  {
+   "phase": "dash",
+   "name": "4 张横向统计卡",
+   "ok": true,
+   "detail": "count=4"
+  },
+  {
+   "phase": "dash",
+   "name": "统计卡图标块 46px 且蓝/青/琥珀/绿渐变",
+   "ok": true,
+   "detail": "ic=[('blue', 46), ('cyan', 46), ('amber', 46), ('green', 46)]"
+  },
+  {
+   "phase": "dash",
+   "name": "统计卡含 标签+大数字+小字说明",
+   "ok": true,
+   "detail": "cards=[('进行中指令单', '1单', '累计接单 1 单'), ('在产工单', '0双', '0 张工单生产中'), ('待付货款', '0.0万元', '0 张发票待付'), ('成品仓库存', '2,000双', '即时库存快照')]"
+  },
+  {
+   "phase": "dash",
+   "name": "流程卡头部 14 / 14 大数字（绿色14）",
+   "ok": true,
+   "detail": "fcNum='14 / 14' iColor=rgb(22, 163, 74) size=24px"
+  },
+  {
+   "phase": "dash",
+   "name": "「已全部完成」绿 pill + 「查看完整链路」按钮",
+   "ok": true,
+   "detail": "pill='已全部完成' btn='查看完整链路' pillBg=rgb(232, 248, 238) pillColor=rgb(22, 163, 74)"
+  },
+  {
+   "phase": "dash",
+   "name": "步骤圆点 32px",
+   "ok": true,
+   "detail": "dot=32x32"
+  },
+  {
+   "phase": "dash",
+   "name": "待办卡头部 pill 徽章",
+   "ok": true,
+   "detail": "pill='已全部完成' hds=['指令单 FO-2026-001 · 全流程进度 14 / 14 已全部完成 查看完整链路', '待办事项共 0 条', '库存概览仓库明细']"
+  },
+  {
+   "phase": "dash",
+   "name": "库存卡头部「仓库明细」按钮",
+   "ok": true,
+   "detail": "btn='仓库明细'"
+  },
+  {
+   "phase": "dash",
+   "name": "工作台无骨架卡死/加载失败",
+   "ok": true,
+   "detail": "skel=False fail=False"
+  },
+  {
+   "phase": "dash",
+   "name": "工作台无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='指令单中心' activeNav='orders'"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='指令单中心' size=20px sub='以工厂指令单号为主线，点击行查看全流程链路穿透' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='共 1 单'"
+  },
+  {
+   "phase": "pages",
+   "name": "指令单中心 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='采购管理' activeNav='purchase'"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='采购管理' size=20px sub='材料采购订单与到货收料全程跟踪' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='采购总额 ¥110,180.00'"
+  },
+  {
+   "phase": "pages",
+   "name": "采购管理 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='委外加工' activeNav='subcontract'"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='委外加工' size=20px sub='发料给委外厂 → 帮面收货 → 加工费结算' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='1 张委外订单'"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 统计卡为横向图标块样式(46px)",
+   "ok": true,
+   "detail": "count=3 cards=[(True, 46, '委外订单'), (True, 46, '累计发料'), (True, 46, '帮面到货')]"
+  },
+  {
+   "phase": "pages",
+   "name": "委外加工 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='生产制造' activeNav='production'"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='生产制造' size=20px sub='工单进度与 MES 工序报工' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='1 张工单'"
+  },
+  {
+   "phase": "pages",
+   "name": "生产制造 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='仓库管理' activeNav='warehouse'"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='仓库管理' size=20px sub='五大仓位实时库存 · 出入库请用顶部「扫码出入库」' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='去扫码出入库'"
+  },
+  {
+   "phase": "pages",
+   "name": "仓库管理 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='扫码出入库' activeNav='scan'"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='扫码出入库' size=20px sub='USB 扫码枪即扫即录 · 自动创建库存调拨单并提交' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='识别即建单 · 提交生效'"
+  },
+  {
+   "phase": "pages",
+   "name": "扫码出入库 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "scan",
+   "name": "输入 6901234500011 回车后状态=已识别",
+   "ok": true,
+   "detail": "state='已识别' count='0'"
+  },
+  {
+   "phase": "scan",
+   "name": "识别后展示物料出入库表单",
+   "ok": true,
+   "detail": "detail='M-FAB-001 （面料） 牛巴戈面料(黑色) · 单位 码 · 条码 6901234500011 已识别 材料仓半成品仓委外仓在制品成品仓 → 材料仓半成品仓委外仓在制品成品仓 提交出入库 常用方'"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='应付对账' activeNav='finance'"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='应付对账' size=20px sub='供应商开票、付款与往来余额一表看清' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='3 家供应商'"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 统计卡为横向图标块样式(46px)",
+   "ok": true,
+   "detail": "count=3 cards=[(True, 46, '累计开票'), (True, 46, '累计付款'), (True, 46, '未结清余额')]"
+  },
+  {
+   "phase": "pages",
+   "name": "应付对账 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 页面渲染完成（无骨架卡死/加载失败）",
+   "ok": true,
+   "detail": "loadFail=False skel=False"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 页面头存在且标题/导航激活正确",
+   "ok": true,
+   "detail": "title='流程链路图' activeNav='flow'"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 44px 品牌蓝渐变图标块",
+   "ok": true,
+   "detail": "ic=44x44 radius=13px bg=linear-gradient(160deg, rgb(62, 134, 255), rgb(22, 104, 252) 55%, rgb(14, 66, 210))"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 大标题+灰色副标题",
+   "ok": true,
+   "detail": "title='流程链路图' size=20px sub='指令单 FO-2026-001：从接单到付款的 14 步全流程穿透' subColor=rgb(107, 122, 144)"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 右侧统计 pill 或按钮",
+   "ok": true,
+   "detail": "right='14 / 14 已完成'"
+  },
+  {
+   "phase": "pages",
+   "name": "流程链路图 无横向溢出",
+   "ok": true,
+   "detail": "overflowX=0"
+  },
+  {
+   "phase": "regression",
+   "name": "0 console error",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "phase": "regression",
+   "name": "0 pageerror",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "console": [],
+ "pageerrors": [],
+ "net_err": [],
+ "summary": {
+  "pass": 77,
+  "fail": 0
+ }
+}

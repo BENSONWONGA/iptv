@@ -3,7 +3,7 @@
   {
    "name": "全部单据页类型按钮（25 种）",
    "ok": true,
-   "detail": "n=25"
+   "detail": "n=43"
   },
   {
    "name": "Stock Entry 列表加载",
@@ -13,12 +13,12 @@
   {
    "name": "Stock Entry 保存并提交",
    "ok": true,
-   "detail": "MAT-STE-2026-00012 已保存并提交 ✓"
+   "detail": "MAT-STE-2026-00017 已保存并提交 ✓"
   },
   {
    "name": "列表出现新调拨单",
    "ok": true,
-   "detail": "MAT-STE-2026-00012"
+   "detail": "MAT-STE-2026-00017"
   },
   {
    "name": "Customer 按钮为「保存」（不可提交单据）",
@@ -28,7 +28,7 @@
   {
    "name": "Customer 保存",
    "ok": true,
-   "detail": "测试客户GDE - 6 已保存 ✓"
+   "detail": "测试客户GDE - 8 已保存 ✓"
   },
   {
    "name": "已提交单只读查看",
@@ -49,7 +49,7 @@
  "created": [
   [
    "Stock Entry",
-   "MAT-STE-2026-00012"
+   "MAT-STE-2026-00017"
   ],
   [
    "Customer",

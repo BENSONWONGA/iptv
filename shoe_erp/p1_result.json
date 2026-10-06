@@ -1,0 +1,45 @@
+{
+ "checks": [
+  {
+   "name": "单据目录 40 种",
+   "ok": true,
+   "detail": "n=43"
+  },
+  {
+   "name": "目录搜索「科目」命中会计科目",
+   "ok": true,
+   "detail": "hits=1"
+  },
+  {
+   "name": "列表工具栏（排序+筛选）",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "排序=编号升序后首行为 00001",
+   "ok": true,
+   "detail": "MAT-STE-2026-00001"
+  },
+  {
+   "name": "筛选「物料调拨」后行数一致",
+   "ok": true,
+   "detail": "[\"生产领料（制造调拨）\", \"物料调拨\", \"物料调拨\"]"
+  },
+  {
+   "name": "已提交单有「打印PDF / 复制新建」",
+   "ok": true,
+   "detail": "{\"print\": true, \"dup\": true, \"title\": \"查看 MAT-STE-2026-00001已提交单据（只读）\"}"
+  },
+  {
+   "name": "复制新建打开可编辑预填表单",
+   "ok": true,
+   "detail": "{\"title\": \"复制新建 Stock Entry已预填原单内容，核对无误后保存\", \"enabled\": 84, \"total\": 84, \"firstItem\": \"M-FAB-001\"}"
+  },
+  {
+   "name": "无页面 JS 异常",
+   "ok": true,
+   "detail": "[]"
+  }
+ ],
+ "errors": []
+}

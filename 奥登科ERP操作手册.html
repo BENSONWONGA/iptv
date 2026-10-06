@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>奥登科鞋业 ERP 操作手册（中文傻瓜版）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+         background: #f5f6f8; color: #22262e; line-height: 1.75; font-size: 15px; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
+  header.cover { background: #16233a; color: #fff; border-radius: 14px; padding: 34px 30px; margin-bottom: 22px; }
+  header.cover h1 { font-size: 26px; letter-spacing: 1px; }
+  header.cover p { color: #b8c4d8; margin-top: 8px; font-size: 14px; }
+  header.cover .meta { margin-top: 14px; font-size: 13px; color: #8fa0ba; }
+  .addr { display: inline-block; background: #fff; color: #16233a; font-weight: 700;
+          padding: 3px 10px; border-radius: 6px; margin: 4px 6px 0 0; font-size: 14px; }
+  h2 { font-size: 20px; margin: 40px 0 12px; padding-left: 12px; border-left: 5px solid #e8a020; }
+  h3 { font-size: 16.5px; margin: 24px 0 8px; color: #16233a; }
+  p { margin: 8px 0; }
+  .card { background: #fff; border: 1px solid #e3e6ea; border-radius: 12px; padding: 18px 20px; margin: 12px 0; }
+  .tip { background: #fff8e8; border: 1px solid #f0d890; border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 14px; }
+  .warn { background: #fdeeee; border: 1px solid #f0b4b4; border-radius: 10px; padding: 12px 16px; margin: 12px 0; font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: #fff; font-size: 14px; }
+  th, td { border: 1px solid #e0e3e8; padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: #f0f2f5; font-weight: 700; }
+  ol.steps { counter-reset: step; list-style: none; margin: 10px 0; }
+  ol.steps li { counter-increment: step; position: relative; padding: 10px 14px 10px 52px;
+                background: #fff; border: 1px solid #e3e6ea; border-radius: 10px; margin: 8px 0; }
+  ol.steps li::before { content: counter(step); position: absolute; left: 12px; top: 10px;
+                width: 28px; height: 28px; border-radius: 50%; background: #e8a020; color: #fff;
+                font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  kbd { background: #16233a; color: #ffe9c0; padding: 2px 9px; border-radius: 6px;
+        font-family: inherit; font-weight: 700; font-size: 13.5px; white-space: nowrap; }
+  .mono { font-family: "SF Mono", Consolas, monospace; font-size: 13px; color: #0b6; }
+  .tag { display: inline-block; background: #eef4ff; color: #23549c; border-radius: 5px;
+         padding: 1px 8px; font-size: 12.5px; font-weight: 600; margin: 0 2px; }
+  .roster td:first-child { font-weight: 700; white-space: nowrap; }
+  footer { margin-top: 44px; color: #98a0ab; font-size: 12.5px; text-align: center; }
+  @media print {
+    body { background: #fff; font-size: 12.5px; }
+    .wrap { max-width: 100%; padding: 0; }
+    .card, .tip, .warn { border-color: #ccc; }
+    h2 { page-break-after: avoid; }
+    .card, ol.steps li { page-break-inside: avoid; }
+    header.cover { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="cover">
+  <h1>奥登科鞋业 ERP 操作手册</h1>
+  <p>中文傻瓜版 · 照着点就会 · 不需要懂任何 ERP 知识</p>
+  <div class="meta">
+    系统地址：<span class="addr">http://220.162.99.166:88/odk</span>
+    （手机、电脑浏览器都能开，推荐 Chrome / Edge）<br>
+    适用版本：鞋业智造协同平台（新界面） · 2026-10
+  </div>
+</header>
+
+<h2>一、3 分钟入门：只用懂 3 件事</h2>
+<div class="card">
+  <p><b>① 系统里一切都是「单据」。</b>接一张客户订单是一张单，买一批面料是一张单，把鞋从材料仓搬到成品仓也是一张单。干活 = 填单 + 提交。</p>
+  <p><b>② 单据只有三种状态，规则很简单：</b></p>
+  <table>
+    <tr><th>状态</th><th>意思</th><th>能不能改</th></tr>
+    <tr><td><span class="tag">草稿</span></td><td>还没生效，只是记了个底稿</td><td>能改、能删</td></tr>
+    <tr><td><span class="tag">已提交</span></td><td><b>正式生效</b>：库存、欠款、生产计划从此刻开始计算</td><td>锁死，不能再改；填错了走「取消」</td></tr>
+    <tr><td><span class="tag">已取消</span></td><td>作废（保留痕迹，方便对账追查）</td><td>—</td></tr>
+  </table>
+  <p><b>③ 表单里两个小规矩：</b>带 <b style="color:#c00">*</b> 的必须填；选客户/物料/仓库的输入框，<b>直接打字</b>（如"外贸"）会自动弹出候选，点一个即可，不用手输全名。</p>
+</div>
+<div class="tip">每个列表页右上角都有一个橙色按钮 <kbd>＋ 新建×××</kbd>，所有新业务都从这里开始。每张单据旁的 <kbd>后台</kbd> 按钮会打开原版系统的同一张单——不影响数据，老板可以放心随便点、随便看。</div>
+
+<h2>二、每天开机 3 步</h2>
+<ol class="steps">
+  <li><b>登录：</b>打开系统地址，登录页会自动填好令牌，直接点 <kbd>登 录</kbd> 按钮即可。</li>
+  <li><b>看工作台：</b>进来先看顶部三个数字 —— <b>进行中指令单</b>（手上还有几单在生产）、<b>待付货款</b>（还欠供应商多少钱）、<b>成品仓库存</b>（成品还剩多少双）。中间横条是最近一单「接单 → 付款」的全流程进度。</li>
+  <li><b>处理待办：</b>「待办事项」卡片会列出<b>还没提交的销售订单</b>，点 <kbd>去处理</kbd> 检查无误后提交——不提交的订单不进入排产算料，等于白接。</li>
+</ol>
+
+<h2>三、岗位速查表（我是谁？我去哪个页面？）</h2>
+<table class="roster">
+  <tr><th style="width:120px">岗位</th><th>打开的页面</th><th>高频动作</th></tr>
+  <tr><td>接单 / 业务</td><td>指令单中心</td><td>新建指令单、查订单进度</td></tr>
+  <tr><td>生管 / 采购</td><td>物料管理、采购管理</td><td>MRP 算料、下采购单、收货</td></tr>
+  <tr><td>仓库 / 车间</td><td>扫码出入库、仓库管理</td><td>扫条码进出仓、查库存</td></tr>
+  <tr><td>委外跟单</td><td>委外加工</td><td>开委外单、发料、收货</td></tr>
+  <tr><td>生产 / 厂长</td><td>生产制造</td><td>看工单、报工、完工入库</td></tr>
+  <tr><td>财务 / 老板</td><td>应付对账、流程图中心</td><td>登记付款、对账、看每单全链路</td></tr>
+</table>
+<div class="tip">找不到某个功能时，去 <b>「全部单据」</b> 页——25 种单据（销售、采购、生产、委外、财务、物料资料）都能在这里新建 / 查看 / 提交 / 取消。</div>
+
+<h2>四、分岗位操作指引</h2>
+
+<h3>4.1 接单员：新建指令单（最常用的操作）</h3>
+<ol class="steps">
+  <li>点导航 <kbd>指令单中心</kbd>，进入订单列表。</li>
+  <li>点右上角橙色 <kbd>＋ 新建指令单</kbd>，右侧弹出表单。</li>
+  <li>填<b>客户</b>（打字选）、<b>厂令号</b>（自己编的生产单号，如 <span class="mono">FO-2608-01</span>）、<b>交货日期</b>。</li>
+  <li>填<b>鞋款物料</b>（打字选编码）、<b>数量</b>（双），单价可填可不填。</li>
+  <li>点 <kbd>保存并提交</kbd>。绿色提示出现单号（如 <span class="mono">SAL-ORD-2026-00012</span>）即生效。</li>
+  <li>提交后这单自动出现在<b>工作台进度条</b>和<b>MRP 算料</b>的候选里，点列表行的「链路」可随时看它走到哪一步。</li>
+</ol>
+<div class="warn">注意：填错内容先别慌——单号旁边有 <b>取消</b> 按钮，作废后重新建一张就行，不要在已提交的单上硬改。</div>
+
+<h3>4.2 生管 / 采购：MRP 算料（很多人问"MRP 在哪"——在「物料管理」页）</h3>
+<ol class="steps">
+  <li>点导航 <kbd>物料管理</kbd>，右上角有三个按钮：<kbd>＋ 新建物料</kbd>、<kbd>＋ 新建 BOM</kbd>、<kbd>⚙ MRP 采购申请</kbd>。</li>
+  <li>点 <kbd>⚙ MRP 采购申请</kbd>，先<b>选择指令单</b>（哪张订单要算料）。</li>
+  <li>点 <kbd>⚙ 计算净需求</kbd>——系统自动展开这款鞋的 BOM，扣除材料仓现有库存，算出<b>真正要买多少</b>。</li>
+  <li>确认明细无误后点提交，生成采购申请（单号 <span class="mono">MAT-MR-2026-000xx</span>）。</li>
+  <li>再到 <kbd>采购管理</kbd> 页，点 <kbd>＋ 新建采购单</kbd> 向面料 / 底料供应商下单；供应商送货后在同一页做<b>收货</b>，材料自动进材料仓。</li>
+</ol>
+<div class="tip">要算料先得有 <b>BOM</b>（一双鞋用多少料）：物料管理页点 <kbd>＋ 新建 BOM</kbd> → 选成品款号 → 逐行添加组件物料和用量 → 提交。BOM 建一次，以后算料 / 生产 / 委外全用它。</div>
+
+<h3>4.3 仓库 / 车间：扫码出入库（最好用的功能）</h3>
+<ol class="steps">
+  <li>点导航 <kbd>扫码出入库</kbd>。</li>
+  <li>用<b>扫码枪</b>扫物料条码（或手动输入编码后按回车）。</li>
+  <li>屏幕显示物料信息即<b>已识别</b>。然后选三样：<b>从哪个仓 → 到哪个仓</b>、<b>数量</b>。</li>
+  <li>（可选）填<b>工厂指令单号</b>，方便日后按单追溯。</li>
+  <li>点 <kbd>提交出入库</kbd>，立刻生成库存调拨单（<span class="mono">MAT-STE-2026-000xx</span>）并生效，下方日志栏会记录每次操作。</li>
+</ol>
+<table>
+  <tr><th>业务场景</th><th>选仓方向</th></tr>
+  <tr><td>发料给委外厂</td><td>材料仓 → 委外仓</td></tr>
+  <tr><td>车间领料投产</td><td>半成品仓 → 在制品</td></tr>
+  <tr><td>成品完工移仓</td><td>在制品 → 成品仓</td></tr>
+  <tr><td>其他内部调拨</td><td>按实际从哪到哪选</td></tr>
+</table>
+<p>想查某仓现存多少料：去 <kbd>仓库管理</kbd> 页看库存表，或在工作台「库存概览」卡看各仓总数。</p>
+
+<h3>4.4 委外跟单：一步开委外</h3>
+<ol class="steps">
+  <li>点导航 <kbd>委外加工</kbd>，点 <kbd>＋ 新建委外单</kbd>。</li>
+  <li>填<b>加工厂供应商</b>、<b>加工服务项目</b>（如"针车加工费"）、<b>产出成品/半成品款号</b>、<b>数量</b>、<b>加工单价</b>。</li>
+  <li>提交后系统<b>自动连开两张单</b>：委外采购单 + 委外加工单（都会自动提交生效），不用自己再去后台配。</li>
+  <li>发料给加工厂走 <b>4.3 扫码</b>（材料仓 → 委外仓）；加工品回来在委外加工页做<b>委外收货</b>。</li>
+</ol>
+
+<h3>4.5 生产 / 厂长：工单与报工</h3>
+<ol class="steps">
+  <li>点导航 <kbd>生产制造</kbd>，能看到生产计划和生产工单进度（已投产多少双、完成多少双）。</li>
+  <li>裁断 / 针车 / 成型每道工序完工后，在对应工单里<b>报工登记</b>数量。</li>
+  <li>整单完工后做<b>完工入库</b>，成品进入成品仓，工作台「成品仓库存」数字随之更新。</li>
+</ol>
+
+<h3>4.6 财务 / 老板：付款与对账</h3>
+<ol class="steps">
+  <li>付供应商货款 / 加工费：点 <kbd>应付对账</kbd> → <kbd>＋ 登记付款</kbd> → 选供应商、填金额、写上摘要（如"10 月针车加工费"）→ 提交，财务分录自动生成。</li>
+  <li>每家供应商的<b>欠款余额</b>直接显示在应付对账列表里，付款后实时减少。</li>
+  <li>想看某张客户订单从头到尾的全链路（接单→采购→委外→生产→出货→收款）：点 <kbd>流程图中心</kbd>，按厂令号穿透查每一步对应的单据。</li>
+</ol>
+
+<h2>五、常见问题</h2>
+<div class="card">
+  <p><b>Q：找不到我的单据了？</b>　在对应页面顶部搜索框输入<b>单号片段</b>（如 00012）回车即可。单号规则见附录。</p>
+  <p><b>Q：提交错了想改？</b>　已提交的单不能改，点 <kbd>取消</kbd> 作废，重新建一张正确的。系统保留作废痕迹，账目可追溯。</p>
+  <p><b>Q：提示"无法读取 / 没权限"？</b>　这是权限保护（例如门户账号看不到固定资产），找管理员开通对应权限即可，不是系统坏了。</p>
+  <p><b>Q：页面一直转圈或白屏？</b>　刷新页面；还不行就退出重新登录。你看到的数据都在服务器上，不会丢。</p>
+  <p><b>Q：还想要打印、修订等高级操作？</b>　点单据旁的 <kbd>后台</kbd> 按钮进入原版系统做，两边是同一份数据，随便切换。</p>
+</div>
+
+<h2>附录：速查卡</h2>
+<h3>单号规则</h3>
+<table>
+  <tr><th>单号开头</th><th>是什么</th><th>在哪建</th></tr>
+  <tr><td class="mono">SAL-ORD-</td><td>指令单（销售订单）</td><td>指令单中心</td></tr>
+  <tr><td class="mono">MAT-MR-</td><td>采购申请（MRP 算料结果）</td><td>物料管理</td></tr>
+  <tr><td class="mono">PUR-ORD-</td><td>采购订单</td><td>采购管理</td></tr>
+  <tr><td class="mono">MAT-PRE-</td><td>采购收货单</td><td>采购管理</td></tr>
+  <tr><td class="mono">SC-ORD-</td><td>委外加工单</td><td>委外加工</td></tr>
+  <tr><td class="mono">MFG-WO-</td><td>生产工单</td><td>生产制造</td></tr>
+  <tr><td class="mono">MAT-STE-</td><td>库存调拨单（扫码出入库生成）</td><td>扫码出入库 / 全部单据</td></tr>
+  <tr><td class="mono">ACC-PAY-</td><td>付款单</td><td>应付对账</td></tr>
+</table>
+<h3>仓库对照</h3>
+<table>
+  <tr><th>名字</th><th>放什么</th></tr>
+  <tr><td>材料仓</td><td>面料、底料等采购进来的原材料</td></tr>
+  <tr><td>委外仓</td><td>发给委外加工厂的料</td></tr>
+  <tr><td>在制品</td><td>车间正在生产的东西</td></tr>
+  <tr><td>半成品仓</td><td>做完面/帮等待配套的半成品</td></tr>
+  <tr><td>成品仓</td><td>完工待发货的成品鞋</td></tr>
+</table>
+
+<footer>奥登科鞋业 · 鞋业智造协同平台 · 本手册依据 2026-10 系统实际界面编写，系统更新后以实际按钮为准</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 扫码出入库独立页面（QWeb）：深色 PDA 风格，扫码枪/手动输入均可 -->
+    <template id="odk_scan.scan_page" name="奥登科·扫码出入库">
+        <div id="odk-scan-root">
+            <style>
+                #odk-scan-root { font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+                    background: #0C1118; color: #E8ECF3; min-height: 100vh; padding: 20px; }
+                #odk-scan-root .wrap { max-width: 720px; margin: 0 auto; }
+                #odk-scan-root h1 { font-size: 20px; color: #FFB020; margin-bottom: 4px; }
+                #odk-scan-root .sub { color: #8FA0BA; font-size: 13px; margin-bottom: 18px; }
+                #odk-scan-root .card { background: #141C29; border: 1px solid #232F42;
+                    border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+                #odk-scan-root input, #odk-scan-root select { background: #0C1118;
+                    border: 1px solid #2A3950; border-radius: 8px; padding: 12px 14px;
+                    color: #E8ECF3; font-size: 16px; width: 100%; outline: none; }
+                #odk-scan-root input:focus, #odk-scan-root select:focus { border-color: #FFB020; }
+                #odk-scan-root label { display: block; font-size: 13px; color: #8FA0BA; margin: 12px 0 6px; }
+                #odk-scan-root .row { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 10px; align-items: end; }
+                #odk-scan-root .arrow { color: #FFB020; font-size: 20px; text-align: center; }
+                #odk-scan-root button { background: #FFB020; color: #141C29; border: 0;
+                    border-radius: 10px; padding: 13px 22px; font-size: 15px; font-weight: 700;
+                    cursor: pointer; width: 100%; margin-top: 14px; }
+                #odk-scan-root button:disabled { opacity: .5; }
+                #odk-scan-root .pill { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: 13px; }
+                #odk-scan-root .ok { background: rgba(110,213,146,.15); color: #6ED592; }
+                #odk-scan-root .err { background: rgba(240,120,120,.15); color: #F08888; }
+                #odk-scan-root .empty { color: #5D6C82; font-size: 13px; padding: 14px 0; text-align: center; }
+                #odk-scan-root .log { font-size: 13px; color: #B8C4D8; border-bottom: 1px solid #232F42; padding: 8px 0; }
+                #odk-scan-root .log b { color: #FFB020; }
+                #odk-scan-root .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+                #odk-scan-root .head a { color: #FFB020; font-size: 13px; text-decoration: none; }
+            </style>
+            <div class="wrap">
+                <div class="head">
+                    <h1>扫码出入库</h1>
+                    <a href="/odoo/apps">返回 Odoo</a>
+                </div>
+                <div class="sub">扫物料条码 → 选源仓 → 目标仓 → 提交，自动生成并过账库存调拨单</div>
+
+                <div class="card">
+                    <label>扫描 / 输入条码（扫码枪扫入或手输后回车）</label>
+                    <input id="scan-input" autocomplete="off" placeholder="条码或物料编码"/>
+                    <div class="pill err" id="state">待扫描</div>
+                    <div id="item-box" style="display:none">
+                        <label>已识别物料</label>
+                        <div id="item-info" style="font-size:15px;line-height:1.6"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="row">
+                        <div>
+                            <label>源仓库（从哪出）</label>
+                            <select id="wh-from"></select>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div>
+                            <label>目标仓库（到哪进）</label>
+                            <select id="wh-to"></select>
+                        </div>
+                    </div>
+                    <label>数量</label>
+                    <input id="qty" type="number" min="0.01" step="0.01" value="1"/>
+                    <label>工厂指令单号（可选，用于追溯）</label>
+                    <input id="fo-ref" placeholder="如 237单"/>
+                    <button id="submit-btn" disabled="">提交出入库</button>
+                </div>
+
+                <div class="card">
+                    <label>本次会话操作记录</label>
+                    <div id="log"><div class="empty">暂无记录</div></div>
+                </div>
+            </div>
+            <script><![CDATA[
+                var RPC = function(model, method, kwargs) {
+                    return fetch("/web/dataset/call_kw", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest"},
+                        body: JSON.stringify({jsonrpc: "2.0", method: "call",
+                            params: {model: model, method: method, args: [], kwargs: kwargs || {}}}),
+                    }).then(function(r) { return r.json(); }).then(function(j) {
+                        if (j.error) { throw new Error((j.error.data && j.error.data.message) || j.error.message); }
+                        return j.result;
+                    });
+                };
+                var root = document.getElementById("odk-scan-root");
+                var state = root.querySelector("#state");
+                var logBox = root.querySelector("#log");
+                var logCount = 0;
+                var current = null;
+                var setState = function(t, cls) { state.textContent = t; state.className = "pill " + (cls || "err"); };
+
+                RPC("odk.scan", "act_warehouses", {}).then(function(ws) {
+                    var fill = function(sel, defIdx) {
+                        sel.innerHTML = "";
+                        ws.forEach(function(w) {
+                            var o = document.createElement("option");
+                            o.value = w.id; o.textContent = w.name + " (" + w.code + ")";
+                            sel.appendChild(o);
+                        });
+                        if (ws.length > defIdx) sel.selectedIndex = defIdx;
+                    };
+                    fill(root.querySelector("#wh-from"), 0);
+                    fill(root.querySelector("#wh-to"), Math.min(1, ws.length - 1));
+                }).catch(function(e) { setState("仓库加载失败：" + e.message); });
+
+                root.querySelector("#scan-input").addEventListener("keydown", function(ev) {
+                    if (ev.key !== "Enter") return;
+                    var code = ev.target.value.trim();
+                    if (!code) return;
+                    setState("识别中…");
+                    RPC("odk.scan", "act_lookup", {barcode: code}).then(function(item) {
+                        if (!item || !item.id) {
+                            setState("未识别");
+                            current = null;
+                            root.querySelector("#item-box").style.display = "none";
+                            root.querySelector("#submit-btn").disabled = true;
+                            return;
+                        }
+                        current = item;
+                        setState("已识别", "ok");
+                        root.querySelector("#item-box").style.display = "block";
+                        root.querySelector("#item-info").innerHTML =
+                            "<b>" + item.code + "</b> " + item.name + "<br/>单位：" + item.uom + " · 条码 " + item.barcode;
+                        root.querySelector("#submit-btn").disabled = false;
+                        var qty = root.querySelector("#qty");
+                        qty.focus(); qty.select();
+                    }).catch(function(e) { setState("识别失败：" + e.message); });
+                });
+
+                root.querySelector("#submit-btn").addEventListener("click", function() {
+                    var btn = this;
+                    if (!current) return;
+                    var qty = parseFloat(root.querySelector("#qty").value || "0");
+                    var fromId = root.querySelector("#wh-from").value;
+                    var toId = root.querySelector("#wh-to").value;
+                    var foRef = root.querySelector("#fo-ref").value.trim();
+                    if (qty <= 0) { setState("数量必须大于 0"); return; }
+                    btn.disabled = true; btn.textContent = "提交中…";
+                    RPC("odk.scan", "act_transfer", {
+                        barcode: current.code || current.barcode,
+                        qty: qty, from_id: parseInt(fromId), to_id: parseInt(toId), fo_ref: foRef,
+                    }).then(function(res) {
+                        logCount++;
+                        if (logCount === 1) logBox.innerHTML = "";
+                        var d = new Date();
+                        var row = document.createElement("div");
+                        row.className = "log";
+                        row.innerHTML = "<b>" + res.name + "</b> 已过账 · " + current.code + " ×" + qty + (foRef ? " · " + foRef : "");
+                        logBox.insertBefore(row, logBox.firstChild);
+                        setState("出入库成功：" + res.name, "ok");
+                        var si = root.querySelector("#scan-input");
+                        si.value = ""; si.focus();
+                        current = null;
+                        root.querySelector("#item-box").style.display = "none";
+                        btn.disabled = true;
+                    }).catch(function(e) {
+                        setState("提交失败：" + e.message);
+                        btn.disabled = false;
+                    }).then(function() { btn.textContent = "提交出入库"; });
+                });
+                root.querySelector("#scan-input").focus();
+            ]]></script>
+        </div>
+    </template>
+</odoo>

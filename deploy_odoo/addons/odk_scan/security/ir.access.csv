@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+access_odk_scan_user,odk.scan.user,odk.scan,base.group_user,crud,

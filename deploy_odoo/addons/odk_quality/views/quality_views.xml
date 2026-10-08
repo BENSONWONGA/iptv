@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 质检单：列表 -->
+    <record id="view_odk_quality_check_list" model="ir.ui.view">
+        <field name="name">odk.quality.check.list</field>
+        <field name="model">odk.quality.check</field>
+        <field name="arch" type="xml">
+            <list decoration-success="result == 'pass'" decoration-danger="result == 'fail'">
+                <field name="name"/>
+                <field name="date_check"/>
+                <field name="check_type"/>
+                <field name="product_id"/>
+                <field name="product_qty" sum="抽检合计"/>
+                <field name="qty_passed" sum="合格合计"/>
+                <field name="qty_failed" sum="不合格合计"/>
+                <field name="result" widget="badge"
+                       decoration-success="result == 'pass'"
+                       decoration-warning="result == 'partial'"
+                       decoration-danger="result == 'fail'"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="inspector_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 质检单：表单 -->
+    <record id="view_odk_quality_check_form" model="ir.ui.view">
+        <field name="name">odk.quality.check.form</field>
+        <field name="model">odk.quality.check</field>
+        <field name="arch" type="xml">
+            <form string="质检单">
+                <header>
+                    <button name="action_create_alert" type="object" string="生成异常单"
+                            class="oe_highlight" invisible="qty_failed &lt;= 0"
+                            confirm="按本单不合格情况创建质量异常单？"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="检验信息">
+                            <field name="check_type" widget="radio" options="{'horizontal': true}"/>
+                            <field name="date_check"/>
+                            <field name="inspector_id"/>
+                            <field name="picking_id" placeholder="选关联收货/调拨/生产单（可空）"/>
+                            <field name="partner_id" placeholder="来料/委外厂家（可空）"/>
+                        </group>
+                        <group string="检验结果">
+                            <field name="product_id" placeholder="被检物料"/>
+                            <field name="product_qty"/>
+                            <field name="qty_passed"/>
+                            <field name="qty_failed"/>
+                            <field name="result"/>
+                            <field name="alert_count" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="检验描述" name="note">
+                            <field name="note" placeholder="检验项目、执行标准、不良现象（如：同面差色、溢胶、断线）"/>
+                        </page>
+                        <page string="异常单" name="alerts">
+                            <field name="alert_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="alert_type"/>
+                                    <field name="qty_bad"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"
+                                           decoration-danger="state == 'open'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- 质检单：搜索 -->
+    <record id="view_odk_quality_check_search" model="ir.ui.view">
+        <field name="name">odk.quality.check.search</field>
+        <field name="model">odk.quality.check</field>
+        <field name="arch" type="xml">
+            <search string="质检单">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="picking_id"/>
+                <field name="partner_id"/>
+                <filter name="type_iqc" string="来料 IQC" domain="[('check_type', '=', 'iqc')]"/>
+                <filter name="type_ipqc" string="制程 IPQC" domain="[('check_type', '=', 'ipqc')]"/>
+                <filter name="type_fqc" string="成品 FQC" domain="[('check_type', '=', 'fqc')]"/>
+                <filter name="type_oqc" string="出货 OQC" domain="[('check_type', '=', 'oqc')]"/>
+                <separator/>
+                <filter name="has_failed" string="有不合格" domain="[('qty_failed', '>', 0)]"/>
+                <separator/>
+                <filter name="fail" string="不合格" domain="[('result', '=', 'fail')]"/>
+                <group>
+                    <filter name="group_product" string="物料" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_type" string="检验类型" domain="[]" context="{'group_by': 'check_type'}"/>
+                    <filter name="group_partner" string="供应商" domain="[]" context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 异常单：列表 -->
+    <record id="view_odk_quality_alert_list" model="ir.ui.view">
+        <field name="name">odk.quality.alert.list</field>
+        <field name="model">odk.quality.alert</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'open'" decoration-muted="state == 'done'">
+                <field name="name"/>
+                <field name="date_alert"/>
+                <field name="alert_type"/>
+                <field name="product_id"/>
+                <field name="qty_bad" sum="不良合计"/>
+                <field name="partner_id" optional="show"/>
+                <field name="user_id" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-danger="state == 'open'"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 异常单：表单 -->
+    <record id="view_odk_quality_alert_form" model="ir.ui.view">
+        <field name="name">odk.quality.alert.form</field>
+        <field name="model">odk.quality.alert</field>
+        <field name="arch" type="xml">
+            <form string="质量异常单">
+                <header>
+                    <button name="action_open" type="object" string="开始处理"
+                            class="oe_highlight" invisible="state != 'open'"/>
+                    <button name="action_close" type="object" string="关闭"
+                            class="oe_highlight" invisible="state == 'done'"
+                            confirm="确认已填写处理措施并关闭该异常单？"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,in_progress,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="异常信息">
+                            <field name="alert_type" widget="radio" options="{'horizontal': true}"/>
+                            <field name="date_alert"/>
+                            <field name="product_id"/>
+                            <field name="qty_bad"/>
+                            <field name="partner_id" placeholder="责任厂家（可空）"/>
+                            <field name="user_id"/>
+                            <field name="check_id" placeholder="来源质检单（可空）"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="闭环处理">
+                            <field name="description" placeholder="不良现象、影响范围"/>
+                            <field name="solution" placeholder="退货/返工/让步接收/索赔…（关闭前必填）"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- 异常单：搜索 -->
+    <record id="view_odk_quality_alert_search" model="ir.ui.view">
+        <field name="name">odk.quality.alert.search</field>
+        <field name="model">odk.quality.alert</field>
+        <field name="arch" type="xml">
+            <search string="质量异常单">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <filter name="open" string="待处理" domain="[('state', '=', 'open')]"/>
+                <filter name="in_progress" string="处理中" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="done" string="已关闭" domain="[('state', '=', 'done')]"/>
+                <group>
+                    <filter name="group_product" string="物料" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_type" string="不良类型" domain="[]" context="{'group_by': 'alert_type'}"/>
+                    <filter name="group_partner" string="责任厂家" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="状态" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 动作与菜单 -->
+    <record id="action_odk_quality_check" model="ir.actions.act_window">
+        <field name="name">质检单</field>
+        <field name="res_model">odk.quality.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_quality_check_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张质检单</p>
+            <p>记录来料/制程/成品的抽检结果，不合格一键生成异常单闭环处理。</p>
+        </field>
+    </record>
+
+    <record id="action_odk_quality_alert" model="ir.actions.act_window">
+        <field name="name">质量异常单</field>
+        <field name="res_model">odk.quality.alert</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_quality_alert_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">没有质量异常单</p>
+            <p>从质检单生成，或在生产中发现问题时手工登记。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_odk_quality_root" name="质量管理"
+              parent="mrp.menu_mrp_root" sequence="20"/>
+    <menuitem id="menu_odk_quality_check" name="质检单"
+              parent="menu_odk_quality_root" action="action_odk_quality_check" sequence="10"/>
+    <menuitem id="menu_odk_quality_alert" name="质量异常单"
+              parent="menu_odk_quality_root" action="action_odk_quality_alert" sequence="20"/>
+</odoo>

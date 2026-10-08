@@ -1,0 +1,3 @@
+id,name,model_id,group_id/id,operation,domain
+access_odk_quality_check_user,odk.quality.check.user,odk.quality.check,base.group_user,crud,
+access_odk_quality_alert_user,odk.quality.alert.user,odk.quality.alert,base.group_user,crud,

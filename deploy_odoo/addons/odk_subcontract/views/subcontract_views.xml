@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 列表视图 -->
+    <record id="view_odk_subcontract_order_tree" model="ir.ui.view">
+        <field name="name">odk.subcontract.order.tree</field>
+        <field name="model">odk.subcontract.order</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-warning="state == 'confirmed'"
+                  decoration-muted="state == 'cancel'" multi_edit="1">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="product_qty"/>
+                <field name="uom_id" optional="show"/>
+                <field name="date_order" optional="hide"/>
+                <field name="date_due" optional="show"/>
+                <field name="price_unit" optional="hide"/>
+                <field name="amount_total" sum="加工金额合计"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"/>
+                <field name="warehouse_id" optional="hide" groups="stock.group_stock_multi_warehouses"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 表单视图 -->
+    <record id="view_odk_subcontract_order_form" model="ir.ui.view">
+        <field name="name">odk.subcontract.order.form</field>
+        <field name="model">odk.subcontract.order</field>
+        <field name="arch" type="xml">
+            <form string="委外加工单">
+                <header>
+                    <button name="action_confirm" type="object" string="确认发料"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_receive" type="object" string="成品收货"
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state not in ('draft', 'confirmed')" confirm="确认取消该委外加工单？"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_picking_out" type="object" class="oe_stat_button" icon="fa-sign-out"
+                                invisible="not picking_out_id">
+                            <field name="picking_out_id"/>
+                        </button>
+                        <button name="action_view_picking_in" type="object" class="oe_stat_button" icon="fa-sign-in"
+                                invisible="not picking_in_id">
+                            <field name="picking_in_id"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="委外信息">
+                            <field name="partner_id" placeholder="例：宏达针车厂"/>
+                            <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
+                            <field name="date_order"/>
+                            <field name="date_due"/>
+                        </group>
+                        <group string="加工内容">
+                            <field name="product_id" placeholder="例：男鞋 237 白色"/>
+                            <field name="product_tmpl_id" invisible="1"/>
+                            <field name="product_qty"/>
+                            <field name="uom_id" readonly="1"/>
+                            <field name="bom_id" placeholder="选 BOM 自动带出组件"/>
+                            <field name="price_unit"/>
+                            <field name="amount_total"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="组件明细" name="components">
+                            <field name="component_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_qty" sum="合计"/>
+                                    <field name="uom_id" readonly="1"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="product_id"/>
+                                        <field name="product_qty"/>
+                                        <field name="uom_id" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="单据" name="pickings">
+                            <group>
+                                <field name="picking_out_id" readonly="1"/>
+                                <field name="picking_in_id" readonly="1"/>
+                            </group>
+                        </page>
+                        <page string="备注" name="note">
+                            <field name="note" placeholder="工艺要求、耗损约定、结算方式等"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- 搜索视图 -->
+    <record id="view_odk_subcontract_order_search" model="ir.ui.view">
+        <field name="name">odk.subcontract.order.search</field>
+        <field name="model">odk.subcontract.order</field>
+        <field name="arch" type="xml">
+            <search string="委外加工单">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="已发料" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="done" string="已收货" domain="[('state', '=', 'done')]"/>
+                <filter name="cancel" string="已取消" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter name="my_orders" string="我的单据" domain="[('partner_id', '!=', False)]"/>
+                <group>
+                    <filter name="group_partner" string="委外供应商" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_product" string="成品" domain="[]" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_state" string="状态" domain="[]" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 动作 + 菜单（挂在制造模块下） -->
+    <record id="action_odk_subcontract_order" model="ir.actions.act_window">
+        <field name="name">委外加工单</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张委外加工单</p>
+            <p>选委外供应商和成品，按 BOM 自动带出组件；确认即发料出库，收货即成品入库。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_odk_subcontract_root"
+              name="委外加工"
+              parent="mrp.menu_mrp_root"
+              action="action_odk_subcontract_order"
+              sequence="15"/>
+</odoo>

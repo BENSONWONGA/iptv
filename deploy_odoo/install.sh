@@ -2,8 +2,9 @@
 # ============================================================
 # 奥登科鞋业 ERP · Odoo 20 一键部署脚本（宝塔/Docker 环境）
 # 用法：cd 进入本目录后执行  bash install.sh
-# 默认动作：起 PostgreSQL + Odoo（含三个自研模块）→ 停旧 ERPNext → 切 nginx 88 端口
-# 只装 Odoo 不切站点：SKIP_NGINX=1 bash install.sh
+# 默认动作：起 PostgreSQL + Odoo（含三个自研模块）→ 切 nginx 88 端口 → 验证后删除旧 ERPNext
+# 只装 Odoo 不动旧站：SKIP_NGINX=1 bash install.sh
+# 保留旧 ERPNext 不删：SKIP_CLEANUP=1 bash install.sh
 # ============================================================
 set -e
 cd "$(dirname "$0")"
@@ -64,13 +65,17 @@ for i in $(seq 1 30); do
 done
 curl -s -o /dev/null http://127.0.0.1:8069/web/login || DIE "Odoo 启动异常"
 
-# 6) 停旧 ERPNext 容器（不删除，可随时 docker start 恢复）
+# 6) 切换 88 端口 → Odoo；验证通过后删除旧 ERPNext（用户已确认数据可删）
 if [ "${SKIP_NGINX}" != "1" ]; then
-  LOG "停止旧 ERPNext 容器"
-  docker ps --format '{{.Names}}' | grep -iE 'frappe|erpnext|bench' \
-    | xargs -r -n1 docker stop || true
   LOG "切换 nginx 88 端口 → Odoo"
-  bash switch_nginx.sh
+  if bash switch_nginx.sh; then
+    if [ "${SKIP_CLEANUP}" != "1" ]; then
+      LOG "删除旧 ERPNext（容器+数据卷，用户已确认）"
+      bash cleanup_erpnext.sh
+    fi
+  else
+    echo "!! nginx 切换未成功，保留旧 ERPNext 容器以便回滚" >&2
+  fi
 fi
 
 LOG "完成"
@@ -83,5 +88,5 @@ echo " 三个模块入口："
 echo "   扫码出入库：应用 → 奥登科·扫码出入库"
 echo "   委外加工  ：制造 → 委外加工"
 echo "   质量管理  ：制造 → 质量管理"
-echo " 旧站备份   : switch_nginx.sh 运行时自动备份并打印路径"
+echo " 旧 ERPNext 已按指示删除（nginx 原配置备份路径见上方输出）"
 echo "------------------------------------------------------------"

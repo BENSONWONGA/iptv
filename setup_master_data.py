@@ -5,8 +5,8 @@ import json
 import sys
 import urllib.request
 
-URL = 'http://220.162.99.166:88'
-DB, USER, PWD = 'odk_erp', 'admin', 'admin'
+URL = 'http://127.0.0.1:8069'
+DB, USER, PWD = 'odoo20', 'admin', 'admin'
 
 
 def call(service, method, *args, **kw):
@@ -134,10 +134,13 @@ else:
 def ensure_product(name, code, categ, uom, cost, is_sale=False, price=0.0, attrs=None):
     ids = find('product.template', [('default_code', '=', code)])
     if ids:
+        # Odoo 20：历史数据兜底——库存商品必须 is_storable=True，否则 quant 视图不统计
+        ex('product.template', 'write', ids, {'is_storable': True})
         return ids[0]
     vals = {
         'name': name, 'default_code': code, 'categ_id': categ, 'uom_id': uom,
         'standard_price': cost, 'purchase_ok': not is_sale, 'sale_ok': is_sale,
+        'is_storable': True,
     }
     if prod_type:
         vals['type'] = prod_type
@@ -207,7 +210,7 @@ try:
         ex('account.payment.term', 'create', {
             'name': '月结30天',
             'line_ids': [(0, 0, {'value': 'percent', 'value_amount': 100,
-                                 'days': 30, 'option': 'day_after_invoice_date'})]})
+                                 'nb_days': 30, 'delay_type': 'days_after'})]})
     print('[OK] 付款条件：月结30天')
 except Exception as e:
     print('[跳过] 付款条件:', str(e)[:100])

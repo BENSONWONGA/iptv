@@ -89,7 +89,9 @@ class OdkSubcontractOrder(models.Model):
             raise UserError(_("加工数量必须大于 0"))
         bom = self.bom_id
         factor = self.product_qty / (bom.product_qty or 1.0)
-        lines = []
+        # (5,0,0) 先清空旧组件行：One2many 赋值命令列表不会自动替换已有行，
+        # 不清空会导致改数量/重选 BOM 时重复追加组件，发料时双倍扣料
+        lines = [(5, 0, 0)]
         for line in bom.bom_line_ids:
             if not line.product_id:
                 continue

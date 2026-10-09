@@ -3,7 +3,7 @@
 import json
 import urllib.request
 
-URL = 'http://220.162.99.166:88'
+URL = 'http://127.0.0.1:8069'
 
 
 def call(service, method, *args):
@@ -18,12 +18,12 @@ def call(service, method, *args):
     return out['result']
 
 
-uid = call('common', 'authenticate', 'odk_erp', 'admin', 'admin', {})
+uid = call('common', 'authenticate', 'odoo20', 'admin', 'admin', {})
 print('登录 uid=%s' % uid)
 
 
 def ex(model, method, *args, **kw):
-    return call('object', 'execute_kw', 'odk_erp', uid, 'admin',
+    return call('object', 'execute_kw', 'odoo20', uid, 'admin',
                 model, method, list(args), kw)
 
 

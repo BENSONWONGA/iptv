@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_odk_mrp_calc" model="ir.sequence">
+            <field name="name">物料需求运算单</field>
+            <field name="code">odk.mrp.calc</field>
+            <field name="prefix">MRP-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

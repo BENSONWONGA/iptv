@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 运算单列表 ================= -->
+    <record id="view_mrp_calc_list" model="ir.ui.view">
+        <field name="name">odk.mrp.calc.list</field>
+        <field name="model">odk.mrp.calc</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'draft'">
+                <field name="name"/>
+                <field name="product_id" string="款号"/>
+                <field name="product_qty" string="订单数量" sum="合计"/>
+                <field name="uom_id" string="单位" optional="show"/>
+                <field name="bom_id" string="量产BOM" optional="hide"/>
+                <field name="date_run" optional="show"/>
+                <field name="shortage_count" string="欠料行"
+                       decoration-danger="shortage_count &gt; 0"/>
+                <field name="purchase_count" string="已转采购" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 搜索视图 ================= -->
+    <record id="view_mrp_calc_search" model="ir.ui.view">
+        <field name="name">odk.mrp.calc.search</field>
+        <field name="model">odk.mrp.calc</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="单号"/>
+                <field name="product_id" string="款号"/>
+                <filter name="filter_shortage" string="有欠料"
+                        domain="[('line_ids.shortage_qty', '&gt;', 0)]"/>
+                <filter name="filter_draft" string="草稿"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_done" string="已运算"
+                        domain="[('state', '=', 'done')]"/>
+                <group>
+                    <filter name="group_by_product" string="款号" domain="[]"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="group_by_state" string="状态" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 运算单表单 ================= -->
+    <record id="view_mrp_calc_form" model="ir.ui.view">
+        <field name="name">odk.mrp.calc.form</field>
+        <field name="model">odk.mrp.calc</field>
+        <field name="arch" type="xml">
+            <form string="物料需求运算">
+                <header>
+                    <button name="action_calculate" type="object"
+                            string="物料需求计算" class="oe_highlight" icon="fa-cogs"
+                            confirm="按量产BOM每双用量重新运算？勾选状态、损耗%、采购比将保留。"/>
+                    <button name="action_to_purchase" type="object"
+                            string="转采购单（勾选行）" icon="fa-shopping-cart"
+                            invisible="not line_ids"
+                            confirm="按建议量生成采购询价单（草稿），确认执行？"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_purchase_orders" type="object"
+                                class="oe_stat_button" icon="fa-shopping-cart"
+                                invisible="purchase_count == 0">
+                            <field name="purchase_count" widget="statinfo"
+                                   string="已转采购"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="运算参数">
+                            <field name="product_id"
+                                   placeholder="选择鞋款（如 A-001）"/>
+                            <field name="product_qty"/>
+                            <field name="uom_id"/>
+                            <field name="bom_id"/>
+                        </group>
+                        <group string="运算结果">
+                            <field name="date_run"/>
+                            <field name="shortage_count"
+                                   decoration-danger="shortage_count &gt; 0"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="product_tmpl_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="所有材料" name="lines">
+                            <field name="line_ids" readonly="state != 'done'">
+                                <list editable="bottom" create="false" delete="false"
+                                      decoration-danger="shortage_qty &gt; 0">
+                                    <field name="select" string="勾选" width="30"/>
+                                    <field name="default_code" string="材料编号" readonly="1" width="80"/>
+                                    <field name="product_id" string="材料名称" readonly="1" width="120"/>
+                                    <field name="supplier_id" string="厂商名称" readonly="1" width="130"/>
+                                    <field name="uom_id" string="单位" readonly="1" width="50"/>
+                                    <field name="per_unit_qty" string="每双用量" readonly="1" width="70"/>
+                                    <field name="required_qty" string="需求数量" readonly="1" sum="需求合计"/>
+                                    <field name="shortage_qty" string="采购欠量" readonly="1" sum="欠量合计"/>
+                                    <field name="loss_pct" string="损耗%" width="60"/>
+                                    <field name="purchase_ratio" string="采购比" width="60"/>
+                                    <field name="suggested_qty" string="建议量" sum="建议合计"/>
+                                    <field name="ordered_qty" string="已订量" readonly="1" optional="show"/>
+                                    <field name="unconfirmed_qty" string="未确认" readonly="1" optional="show"/>
+                                    <field name="received_qty" string="采购入库" readonly="1" optional="hide"/>
+                                    <field name="stock_qty" string="实际库存" readonly="1" optional="show"/>
+                                    <field name="free_qty" string="可用库存" readonly="1" optional="show"/>
+                                    <field name="occupied_qty" string="占用库存" readonly="1" optional="hide"/>
+                                    <field name="incoming_qty" string="在途量" readonly="1" optional="show"/>
+                                    <field name="categ_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="欠料明细" name="shortage">
+                            <field name="shortage_line_ids" readonly="1">
+                                <list create="false" delete="false"
+                                      decoration-danger="shortage_qty &gt; 0">
+                                    <field name="default_code" string="材料编号" width="80"/>
+                                    <field name="product_id" string="材料名称" width="120"/>
+                                    <field name="supplier_id" string="厂商名称" width="130"/>
+                                    <field name="uom_id" string="单位" width="50"/>
+                                    <field name="required_qty" string="需求数量"/>
+                                    <field name="shortage_qty" string="采购欠量"/>
+                                    <field name="suggested_qty" string="建议量"/>
+                                    <field name="free_qty" string="可用库存"/>
+                                    <field name="incoming_qty" string="在途量"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <group string="备注">
+                        <field name="note" nolabel="1" colspan="2"
+                               placeholder="运算说明、扣料口径、注意事项…"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 动作与菜单 ================= -->
+    <record id="action_odk_mrp_calc" model="ir.actions.act_window">
+        <field name="name">物料需求运算</field>
+        <field name="res_model">odk.mrp.calc</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_mrp_calc_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张物料需求运算单</p>
+            <p>选择款号和订单数量 → 点「物料需求计算」<br/>
+               系统按量产 BOM 每双用量自动算料，扣可用库存 / 在途 / 已订得出采购欠量，<br/>
+               欠料行标红，勾选后一键转采购询价单（对齐旧系统 P11 物料需求计算）。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_mrp_calc_root" name="物料需求运算" sequence="42"/>
+    <menuitem id="menu_mrp_calc_doc" name="需求运算单" parent="menu_mrp_calc_root"
+              sequence="10" action="action_odk_mrp_calc"/>
+
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id,group_id/id,operation,domain
+access_odk_tech_confirm_user,odk.tech.confirm.user,odk.tech.confirm,base.group_user,crud,
+access_odk_tech_change_user,odk.tech.change.user,odk.tech.change,base.group_user,crud,
+access_odk_tech_routing_user,odk.tech.routing.user,odk.tech.routing,base.group_user,crud,
+access_odk_tech_routing_line_user,odk.tech.routing.line.user,odk.tech.routing.line,base.group_user,crud,
+access_odk_tech_sop_user,odk.tech.sop.user,odk.tech.sop,base.group_user,crud,
+access_odk_tech_last_user,odk.tech.last.user,odk.tech.last,base.group_user,crud,
+access_odk_tech_substitute_user,odk.tech.substitute.user,odk.tech.substitute,base.group_user,crud,
+access_odk_tech_trial_user,odk.tech.trial.user,odk.tech.trial,base.group_user,crud,
+access_odk_tech_progress_user,odk.tech.progress.user,odk.tech.progress,base.group_user,crud,

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_tech_confirm" model="ir.sequence">
+            <field name="name">量产确认单</field>
+            <field name="code">odk.tech.confirm</field>
+            <field name="prefix">QRS-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_tech_change" model="ir.sequence">
+            <field name="name">确认变更单</field>
+            <field name="code">odk.tech.change</field>
+            <field name="prefix">ECN-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_tech_routing" model="ir.sequence">
+            <field name="name">部件工艺流程单</field>
+            <field name="code">odk.tech.routing</field>
+            <field name="prefix">GY-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_tech_substitute" model="ir.sequence">
+            <field name="name">材料替换单</field>
+            <field name="code">odk.tech.substitute</field>
+            <field name="prefix">TR-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_tech_trial" model="ir.sequence">
+            <field name="name">量产试做单</field>
+            <field name="code">odk.tech.trial</field>
+            <field name="prefix">SZ-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

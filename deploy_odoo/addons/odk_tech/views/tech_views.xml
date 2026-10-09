@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 量产确认单 D01 ================= -->
+    <record id="view_tech_confirm_list" model="ir.ui.view">
+        <field name="name">odk.tech.confirm.list</field>
+        <field name="model">odk.tech.confirm</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-success="state == 'frozen'">
+                <field name="name"/>
+                <field name="style_id"/>
+                <field name="customer_id"/>
+                <field name="date_confirm" optional="show"/>
+                <field name="bom_id" optional="hide"/>
+                <field name="change_count" string="变更" optional="show"/>
+                <field name="trial_count" string="试做" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'frozen'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_confirm_form" model="ir.ui.view">
+        <field name="name">odk.tech.confirm.form</field>
+        <field name="model">odk.tech.confirm</field>
+        <field name="arch" type="xml">
+            <form string="量产确认单">
+                <header>
+                    <button name="action_confirm" type="object" string="技术确认"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_freeze" type="object" string="冻结(可量产)"
+                            class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,frozen"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="确认信息">
+                            <field name="style_id" placeholder="选择鞋款（如 A-001）"/>
+                            <field name="customer_id"/>
+                            <field name="date_confirm"/>
+                        </group>
+                        <group string="技术资料">
+                            <field name="bom_id" context="{'default_product_tmpl_id': style_id}"/>
+                            <field name="routing_id" context="{'default_style_id': style_id}"/>
+                            <field name="sop_id" context="{'default_style_id': style_id}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="确认变更单" name="changes">
+                            <field name="change_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="change_type"/>
+                                    <field name="date_change"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'applied'"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="change_type"/>
+                                        <field name="date_change"/>
+                                        <field name="reason"/>
+                                        <field name="content"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="材料替换" name="substitutes">
+                            <field name="substitute_ids">
+                                <list editable="bottom">
+                                    <field name="name" readonly="1"/>
+                                    <field name="orig_product_id"/>
+                                    <field name="new_product_id"/>
+                                    <field name="qty"/>
+                                    <field name="reason"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'approved'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="试做单" name="trials">
+                            <field name="trial_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="product_id"/>
+                                    <field name="product_qty"/>
+                                    <field name="date_planned"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'done'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="备注" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 确认变更单 D02 ================= -->
+    <record id="view_tech_change_list" model="ir.ui.view">
+        <field name="name">odk.tech.change.list</field>
+        <field name="model">odk.tech.change</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'draft'">
+                <field name="name"/>
+                <field name="confirm_id"/>
+                <field name="change_type"/>
+                <field name="date_change"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'applied'"
+                       decoration-warning="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_change_form" model="ir.ui.view">
+        <field name="name">odk.tech.change.form</field>
+        <field name="model">odk.tech.change</field>
+        <field name="arch" type="xml">
+            <form string="确认变更单">
+                <header>
+                    <button name="action_approve" type="object" string="审批"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_apply" type="object" string="执行变更"
+                            class="oe_highlight" invisible="state != 'approved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="confirm_id"/>
+                            <field name="change_type"/>
+                            <field name="date_change"/>
+                        </group>
+                        <group>
+                            <field name="reason" placeholder="变更原因（必填）"/>
+                            <field name="content" placeholder="变更前 → 变更后"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 部件工艺流程单 D09 / 工序设置 D06 ================= -->
+    <record id="view_tech_routing_list" model="ir.ui.view">
+        <field name="name">odk.tech.routing.list</field>
+        <field name="model">odk.tech.routing</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="style_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_routing_form" model="ir.ui.view">
+        <field name="name">odk.tech.routing.form</field>
+        <field name="model">odk.tech.routing</field>
+        <field name="arch" type="xml">
+            <form string="部件工艺流程单">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="style_id"/>
+                            <field name="confirm_id"/>
+                        </group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="工序明细" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="component"/>
+                                    <field name="process" placeholder="如：前帮机钳帮"/>
+                                    <field name="work_center" placeholder="工位/设备"/>
+                                    <field name="cycle_time"/>
+                                    <field name="description"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 鞋款SOP D04 ================= -->
+    <record id="view_tech_sop_list" model="ir.ui.view">
+        <field name="name">odk.tech.sop.list</field>
+        <field name="model">odk.tech.sop</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="style_id"/>
+                <field name="version"/>
+                <field name="date_effective"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_sop_form" model="ir.ui.view">
+        <field name="name">odk.tech.sop.form</field>
+        <field name="model">odk.tech.sop</field>
+        <field name="arch" type="xml">
+            <form string="鞋款SOP">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="如：A-001 成型SOP"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="style_id"/>
+                            <field name="version"/>
+                            <field name="date_effective"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="作业指导" name="content">
+                            <field name="content" placeholder="填写各工序作业要点、品质要求、注意事项"/>
+                        </page>
+                        <page string="备注" name="note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 楦模档案 ================= -->
+    <record id="view_tech_last_list" model="ir.ui.view">
+        <field name="name">odk.tech.last.list</field>
+        <field name="model">odk.tech.last</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'scrapped'">
+                <field name="name"/>
+                <field name="style_id"/>
+                <field name="size_range"/>
+                <field name="material" optional="show"/>
+                <field name="supplier_id" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'in_use'"
+                       decoration-danger="state == 'scrapped'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_last_form" model="ir.ui.view">
+        <field name="name">odk.tech.last.form</field>
+        <field name="model">odk.tech.last</field>
+        <field name="arch" type="xml">
+            <form string="楦模档案">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="楦模编号，如 LAST-A001-41"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="style_id"/>
+                            <field name="size_range"/>
+                        </group>
+                        <group>
+                            <field name="material"/>
+                            <field name="supplier_id"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 材料替换单 D07 ================= -->
+    <record id="view_tech_substitute_list" model="ir.ui.view">
+        <field name="name">odk.tech.substitute.list</field>
+        <field name="model">odk.tech.substitute</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'draft'">
+                <field name="name"/>
+                <field name="confirm_id"/>
+                <field name="orig_product_id" string="原材料"/>
+                <field name="new_product_id" string="替换为"/>
+                <field name="qty"/>
+                <field name="reason" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_substitute_form" model="ir.ui.view">
+        <field name="name">odk.tech.substitute.form</field>
+        <field name="model">odk.tech.substitute</field>
+        <field name="arch" type="xml">
+            <form string="材料替换单">
+                <header>
+                    <button name="action_approve" type="object" string="审批通过"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="confirm_id"/>
+                            <field name="date_sub"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="orig_product_id"/>
+                            <field name="new_product_id"/>
+                            <field name="qty"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 量产试做单 ================= -->
+    <record id="view_tech_trial_list" model="ir.ui.view">
+        <field name="name">odk.tech.trial.list</field>
+        <field name="model">odk.tech.trial</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'doing'">
+                <field name="name"/>
+                <field name="confirm_id" optional="show"/>
+                <field name="product_id"/>
+                <field name="product_qty" sum="试做数量合计"/>
+                <field name="uom_id" optional="hide"/>
+                <field name="date_planned"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'doing'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_tech_trial_form" model="ir.ui.view">
+        <field name="name">odk.tech.trial.form</field>
+        <field name="model">odk.tech.trial</field>
+        <field name="arch" type="xml">
+            <form string="量产试做单">
+                <header>
+                    <button name="action_start" type="object" string="开始试做"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="试做完成"
+                            class="oe_highlight" invisible="state != 'doing'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,doing,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="confirm_id"/>
+                            <field name="date_planned"/>
+                        </group>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="product_qty"/>
+                            <field name="uom_id"/>
+                        </group>
+                    </group>
+                    <field name="result_note" placeholder="试做结果记录：尺楦合适度、工艺问题、用量差异等"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 产前试做进度（含AOK） ================= -->
+    <record id="view_tech_progress_kanban" model="ir.ui.view">
+        <field name="name">odk.tech.progress.kanban</field>
+        <field name="model">odk.tech.progress</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage" class="o_kanban_small_column">
+                <field name="stage"/>
+                <templates>
+                    <t t-name="card-template">
+                        <div class="oe_kanban_global_click">
+                            <strong class="fw-bold"><field name="style_id"/></strong>
+                            <div><field name="customer_id"/></div>
+                            <div class="text-muted"><field name="season"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_tech_progress_form" model="ir.ui.view">
+        <field name="name">odk.tech.progress.form</field>
+        <field name="model">odk.tech.progress</field>
+        <field name="arch" type="xml">
+            <form string="产前试做进度">
+                <header>
+                    <button name="action_next_stage" type="object" string="推进到下一阶段"
+                            class="oe_highlight"/>
+                    <field name="stage" widget="statusbar"
+                           statusbar_visible="dev,trial,aok,approved,ready"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="style_id"/>
+                            <field name="customer_id"/>
+                            <field name="season"/>
+                        </group>
+                        <group>
+                            <field name="date_dev"/>
+                            <field name="date_trial"/>
+                            <field name="date_aok"/>
+                            <field name="date_approved"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="进度备注"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 动作 ================= -->
+    <record id="action_tech_confirm" model="ir.actions.act_window">
+        <field name="name">量产确认单</field>
+        <field name="res_model">odk.tech.confirm</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_change" model="ir.actions.act_window">
+        <field name="name">确认变更单</field>
+        <field name="res_model">odk.tech.change</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_routing" model="ir.actions.act_window">
+        <field name="name">部件工艺流程单</field>
+        <field name="res_model">odk.tech.routing</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_sop" model="ir.actions.act_window">
+        <field name="name">鞋款SOP</field>
+        <field name="res_model">odk.tech.sop</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_last" model="ir.actions.act_window">
+        <field name="name">楦模档案</field>
+        <field name="res_model">odk.tech.last</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_substitute" model="ir.actions.act_window">
+        <field name="name">材料替换单</field>
+        <field name="res_model">odk.tech.substitute</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_trial" model="ir.actions.act_window">
+        <field name="name">量产试做单</field>
+        <field name="res_model">odk.tech.trial</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tech_progress" model="ir.actions.act_window">
+        <field name="name">产前试做进度</field>
+        <field name="res_model">odk.tech.progress</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+
+    <!-- ================= 菜单 ================= -->
+    <menuitem id="menu_tech_root" name="技转管理" sequence="45"/>
+    <menuitem id="menu_tech_confirm" name="量产确认" parent="menu_tech_root" sequence="10"/>
+    <menuitem id="menu_tech_confirm_doc" name="量产确认单" parent="menu_tech_confirm"
+              action="action_tech_confirm" sequence="10"/>
+    <menuitem id="menu_tech_change" name="确认变更单" parent="menu_tech_confirm"
+              action="action_tech_change" sequence="20"/>
+    <menuitem id="menu_tech_substitute" name="材料替换单" parent="menu_tech_confirm"
+              action="action_tech_substitute" sequence="30"/>
+    <menuitem id="menu_tech_standard" name="工艺标准" parent="menu_tech_root" sequence="20"/>
+    <menuitem id="menu_tech_routing" name="部件工艺流程单" parent="menu_tech_standard"
+              action="action_tech_routing" sequence="10"/>
+    <menuitem id="menu_tech_sop" name="鞋款SOP" parent="menu_tech_standard"
+              action="action_tech_sop" sequence="20"/>
+    <menuitem id="menu_tech_last" name="楦模档案" parent="menu_tech_standard"
+              action="action_tech_last" sequence="30"/>
+    <menuitem id="menu_tech_trial" name="试做管理" parent="menu_tech_root" sequence="30"/>
+    <menuitem id="menu_tech_trial_doc" name="量产试做单" parent="menu_tech_trial"
+              action="action_tech_trial" sequence="10"/>
+    <menuitem id="menu_tech_progress" name="产前试做进度(含AOK)" parent="menu_tech_trial"
+              action="action_tech_progress" sequence="20"/>
+
+</odoo>

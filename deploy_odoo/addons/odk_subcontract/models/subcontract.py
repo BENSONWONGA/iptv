@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""奥登科·委外加工：委外加工单 = BOM 自动发料 + 成品收货，两步过账联动库存"""
+"""奥登科·委外加工：委外加工单 = BOM 自动发料 + 成品收货，两步过账联动库存
+v2：按旧系统架构扩展——材料合成/部件/制程/补耗/外采 五类单据、
+制程工艺报价、补耗关联、发料/收货日期追踪、超期预警"""
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 from odoo.tools import float_round
@@ -18,7 +20,31 @@ class OdkSubcontractOrder(models.Model):
         ("done", "已收货"),
         ("cancel", "已取消"),
     ], string="状态", default="draft", tracking=True, copy=False,
-        help="草稿 → 确认发料（组件出库给委外供应商）→ 成品收货（成品入库）")
+        help="草稿(外采=指令单) → 确认发料（组件出库给委外供应商）→ 成品收货（成品入库）")
+
+    order_type = fields.Selection([
+        ("material", "材料合成加工"),
+        ("part", "部件外发加工"),
+        ("process", "制程外发加工"),
+        ("loss", "制程补耗加工"),
+        ("purchase", "外采加工"),
+    ], string="单据类型", required=True, default="process", tracking=True, copy=False,
+        help="材料合成加工单 / 部件外发加工 / 制程外发加工 / 补耗加工 / 外采订单")
+    process_name = fields.Char(
+        "工序/制程", tracking=True,
+        help="如：针车、冷粘成型、热切、电绣")
+    quote_id = fields.Many2one(
+        "odk.subcontract.quote", string="工艺报价",
+        check_company=True, tracking=True,
+        help="关联制程工艺报价，自动带出供应商/成品/单价")
+    supplement_of_id = fields.Many2one(
+        "odk.subcontract.order", string="补耗来源单",
+        domain=[("order_type", "in", ("part", "process", "purchase")),
+                ("state", "!=", "cancel")],
+        help="该补耗单对应的外发加工单（损耗/超领补料）")
+    supplement_ids = fields.One2many(
+        "odk.subcontract.order", "supplement_of_id", string="补耗单")
+    supplement_count = fields.Integer("补耗单数", compute="_compute_supplement_count")
 
     partner_id = fields.Many2one(
         "res.partner", string="委外供应商", required=True,
@@ -29,6 +55,13 @@ class OdkSubcontractOrder(models.Model):
         help="组件从该仓发出，成品收回该仓")
     date_order = fields.Datetime("下单日期", default=fields.Datetime.now)
     date_due = fields.Date("约定交期", tracking=True)
+    date_sent = fields.Datetime("发料日期", copy=False, readonly=True,
+                                help="确认发料的时间（外采=领料时间）")
+    date_received = fields.Datetime("收货日期", copy=False, readonly=True,
+                                     help="成品收货入库的时间（外采=收货时间）")
+    is_overdue = fields.Boolean("已超期", compute="_compute_overdue",
+                                help="交期已过仍未收货")
+    days_overdue = fields.Integer("超期天数", compute="_compute_overdue")
     product_id = fields.Many2one(
         "product.product", string="成品", required=True, check_company=True,
         domain=[("type", "=", "consu")], tracking=True,
@@ -65,6 +98,52 @@ class OdkSubcontractOrder(models.Model):
     def _compute_component_count(self):
         for order in self:
             order.component_count = len(order.component_ids)
+
+    @api.depends("supplement_ids")
+    def _compute_supplement_count(self):
+        for order in self:
+            order.supplement_count = len(order.supplement_ids)
+
+    @api.depends("date_due", "state")
+    def _compute_overdue(self):
+        today = fields.Date.context_today(self)
+        for order in self:
+            overdue = (order.date_due and order.state in ("draft", "confirmed")
+                       and order.date_due < today)
+            order.is_overdue = bool(overdue)
+            order.days_overdue = (today - order.date_due).days if overdue else 0
+
+    @api.onchange("order_type")
+    def _onchange_order_type(self):
+        """切换类型时清空不适用的关联"""
+        if self.order_type != "loss":
+            self.supplement_of_id = False
+        if self.order_type != "process":
+            self.quote_id = False
+
+    @api.onchange("quote_id")
+    def _onchange_quote_id(self):
+        """选工艺报价 → 自动带出供应商/成品/单价/工序"""
+        if self.quote_id:
+            quote = self.quote_id
+            self.partner_id = quote.partner_id
+            if quote.product_id:
+                self.product_id = quote.product_id
+            self.price_unit = quote.price_unit
+            self.process_name = quote.process_name
+
+    @api.onchange("supplement_of_id")
+    def _onchange_supplement_of_id(self):
+        """选补耗来源单 → 带出供应商/成品/BOM/仓库，加工费清零"""
+        if self.supplement_of_id:
+            src = self.supplement_of_id
+            self.partner_id = src.partner_id
+            self.warehouse_id = src.warehouse_id
+            self.product_id = src.product_id
+            self.bom_id = src.bom_id
+            self.product_qty = src.product_qty
+            self.price_unit = 0.0
+            self.note = "补耗来源：%s" % src.name
 
     @api.onchange("product_id")
     def _onchange_product_id(self):
@@ -194,6 +273,7 @@ class OdkSubcontractOrder(models.Model):
                 raise UserError(_("组件明细为空，无法发料：%s") % order.name)
             order.picking_out_id = order._make_picking(
                 "internal", order.warehouse_id.lot_stock_id, order._sub_loc(), moves, "委外发料")
+            order.date_sent = fields.Datetime.now()
             order.state = "confirmed"
         return True
 
@@ -215,6 +295,7 @@ class OdkSubcontractOrder(models.Model):
             order.picking_in_id = order._make_picking(
                 "incoming", order._sub_loc(), order.warehouse_id.lot_stock_id,
                 moves, "委外收货")
+            order.date_received = fields.Datetime.now()
             order.state = "done"
         return True
 
@@ -256,6 +337,17 @@ class OdkSubcontractOrder(models.Model):
         """智能按钮：打开收货单"""
         self.ensure_one()
         return self._picking_action(self.picking_in_id)
+
+    def action_view_supplements(self):
+        """智能按钮：查看该外发单的补耗单"""
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("补耗加工单"),
+            "res_model": "odk.subcontract.order",
+            "view_mode": "list,form",
+            "domain": [("id", "in", self.supplement_ids.ids)],
+        }
 
     @api.model_create_multi
     def create(self, vals_list):

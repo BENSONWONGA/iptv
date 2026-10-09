@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- 列表视图 -->
+
+    <!-- ================= 委外加工单：列表 ================= -->
     <record id="view_odk_subcontract_order_tree" model="ir.ui.view">
         <field name="name">odk.subcontract.order.tree</field>
         <field name="model">odk.subcontract.order</field>
         <field name="arch" type="xml">
-            <list decoration-info="state == 'draft'" decoration-warning="state == 'confirmed'"
+            <list decoration-info="state == 'draft'" decoration-warning="is_overdue"
                   decoration-muted="state == 'cancel'" multi_edit="1">
                 <field name="name"/>
+                <field name="order_type" widget="badge"
+                       decoration-info="order_type in ('material', 'purchase')"
+                       decoration-success="order_type == 'part'"/>
                 <field name="partner_id"/>
                 <field name="product_id"/>
-                <field name="product_qty"/>
+                <field name="process_name" optional="show"/>
+                <field name="product_qty" sum="加工数量合计"/>
                 <field name="uom_id" optional="show"/>
                 <field name="date_order" optional="hide"/>
+                <field name="date_sent" optional="show"/>
                 <field name="date_due" optional="show"/>
+                <field name="date_received" optional="hide"/>
                 <field name="price_unit" optional="hide"/>
                 <field name="amount_total" sum="加工金额合计"/>
+                <field name="is_overdue" column_invisible="1"/>
                 <field name="state" widget="badge"
                        decoration-success="state == 'done'"
                        decoration-info="state == 'draft'"/>
@@ -25,7 +33,7 @@
         </field>
     </record>
 
-    <!-- 表单视图 -->
+    <!-- ================= 委外加工单：表单 ================= -->
     <record id="view_odk_subcontract_order_form" model="ir.ui.view">
         <field name="name">odk.subcontract.order.form</field>
         <field name="model">odk.subcontract.order</field>
@@ -39,7 +47,8 @@
                     <button name="action_draft" type="object" string="退回草稿"
                             invisible="state != 'cancel'"/>
                     <button name="action_cancel" type="object" string="取消"
-                            invisible="state not in ('draft', 'confirmed')" confirm="确认取消该委外加工单？"/>
+                            invisible="state not in ('draft', 'confirmed')"
+                            confirm="确认取消该委外加工单？"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
                 </header>
                 <sheet>
@@ -52,16 +61,28 @@
                                 invisible="not picking_in_id">
                             <field name="picking_in_id"/>
                         </button>
+                        <button name="action_view_supplements" type="object" class="oe_stat_button" icon="fa-refresh"
+                                invisible="supplement_count == 0">
+                            <field name="supplement_count" widget="statinfo" string="补耗单"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
                     <group>
                         <group string="委外信息">
+                            <field name="order_type"/>
+                            <field name="process_name"
+                                   invisible="order_type not in ('process', 'loss')"
+                                   placeholder="如：针车、冷粘成型、热切"/>
+                            <field name="quote_id" invisible="order_type != 'process'"/>
+                            <field name="supplement_of_id" invisible="order_type != 'loss'"/>
                             <field name="partner_id" placeholder="例：宏达针车厂"/>
                             <field name="warehouse_id" groups="stock.group_stock_multi_warehouses"/>
                             <field name="date_order"/>
                             <field name="date_due"/>
+                            <field name="date_sent" readonly="1"/>
+                            <field name="date_received" readonly="1"/>
                         </group>
                         <group string="加工内容">
                             <field name="product_id" placeholder="例：男鞋 237 白色"/>
@@ -112,7 +133,7 @@
         </field>
     </record>
 
-    <!-- 搜索视图 -->
+    <!-- ================= 委外加工单：搜索 ================= -->
     <record id="view_odk_subcontract_order_search" model="ir.ui.view">
         <field name="name">odk.subcontract.order.search</field>
         <field name="model">odk.subcontract.order</field>
@@ -121,14 +142,23 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="product_id"/>
-                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
-                <filter name="confirmed" string="已发料" domain="[('state', '=', 'confirmed')]"/>
+                <field name="process_name"/>
+                <filter name="draft" string="草稿/指令单" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="在途(已发料)" domain="[('state', '=', 'confirmed')]"/>
                 <filter name="done" string="已收货" domain="[('state', '=', 'done')]"/>
                 <filter name="cancel" string="已取消" domain="[('state', '=', 'cancel')]"/>
                 <separator/>
-                <filter name="my_orders" string="我的单据" domain="[('partner_id', '!=', False)]"/>
+                <filter name="overdue" string="已超期"
+                        domain="[('date_due', '&lt;', 'today'), ('state', 'in', ('draft', 'confirmed'))]"/>
+                <separator/>
+                <filter name="type_material" string="材料合成加工" domain="[('order_type', '=', 'material')]"/>
+                <filter name="type_part" string="部件外发加工" domain="[('order_type', '=', 'part')]"/>
+                <filter name="type_process" string="制程外发加工" domain="[('order_type', '=', 'process')]"/>
+                <filter name="type_loss" string="补耗加工" domain="[('order_type', '=', 'loss')]"/>
+                <filter name="type_purchase" string="外采" domain="[('order_type', '=', 'purchase')]"/>
                 <group>
                     <filter name="group_partner" string="委外供应商" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_type" string="单据类型" domain="[]" context="{'group_by': 'order_type'}"/>
                     <filter name="group_product" string="成品" domain="[]" context="{'group_by': 'product_id'}"/>
                     <filter name="group_state" string="状态" domain="[]" context="{'group_by': 'state'}"/>
                 </group>
@@ -136,7 +166,46 @@
         </field>
     </record>
 
-    <!-- 动作 + 菜单（挂在制造模块下） -->
+    <!-- ================= 外发加工追踪表（列表视图） ================= -->
+    <record id="view_odk_subcontract_trace" model="ir.ui.view">
+        <field name="name">odk.subcontract.order.trace</field>
+        <field name="model">odk.subcontract.order</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="is_overdue" decoration-muted="state == 'cancel'"
+                  create="false" edit="false" delete="false">
+                <field name="name"/>
+                <field name="order_type" widget="badge"/>
+                <field name="partner_id" string="厂商"/>
+                <field name="product_id" string="加工品"/>
+                <field name="process_name" string="工序"/>
+                <field name="product_qty" string="数量" sum="数量合计"/>
+                <field name="uom_id" optional="show"/>
+                <field name="date_order" string="下单日期"/>
+                <field name="date_sent" string="发料日期"/>
+                <field name="date_due" string="约定交期"/>
+                <field name="date_received" string="回仓日期"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <field name="state" string="状态" widget="badge"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 委外执行状况表（透视图） ================= -->
+    <record id="view_odk_subcontract_pivot" model="ir.ui.view">
+        <field name="name">odk.subcontract.order.pivot</field>
+        <field name="model">odk.subcontract.order</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="partner_id" type="row"/>
+                <field name="order_type" type="col"/>
+                <field name="product_qty" type="measure"/>
+                <field name="amount_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ================= 动作：委外加工单（全部） ================= -->
     <record id="action_odk_subcontract_order" model="ir.actions.act_window">
         <field name="name">委外加工单</field>
         <field name="res_model">odk.subcontract.order</field>
@@ -148,9 +217,164 @@
         </field>
     </record>
 
-    <menuitem id="menu_odk_subcontract_root"
-              name="委外加工"
-              parent="mrp.menu_mrp_root"
-              action="action_odk_subcontract_order"
-              sequence="15"/>
+    <!-- ================= 动作：按类型 ================= -->
+    <record id="action_odk_sub_material" model="ir.actions.act_window">
+        <field name="name">材料合成加工</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'material')]</field>
+        <field name="context">{'default_order_type': 'material'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+    <record id="action_odk_sub_part" model="ir.actions.act_window">
+        <field name="name">部件外发加工</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'part')]</field>
+        <field name="context">{'default_order_type': 'part'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+    <record id="action_odk_sub_process" model="ir.actions.act_window">
+        <field name="name">制程外发加工</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'process')]</field>
+        <field name="context">{'default_order_type': 'process'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+    <record id="action_odk_sub_loss" model="ir.actions.act_window">
+        <field name="name">制程补耗加工</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'loss')]</field>
+        <field name="context">{'default_order_type': 'loss'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+
+    <!-- ================= 动作：外采（指令单/订单/进度表） ================= -->
+    <record id="action_odk_sub_purchase_cmd" model="ir.actions.act_window">
+        <field name="name">外采指令单</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'purchase'), ('state', '=', 'draft')]</field>
+        <field name="context">{'default_order_type': 'purchase'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建外采指令单</p>
+            <p>外采草稿即指令单：向供应商下达「带料外采」指令；确认发料 = 外采领料，收货 = 外采收货。</p>
+        </field>
+    </record>
+    <record id="action_odk_sub_purchase_order" model="ir.actions.act_window">
+        <field name="name">外采订单</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'purchase'), ('state', '!=', 'draft')]</field>
+        <field name="context">{'default_order_type': 'purchase'}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+    <record id="action_odk_sub_purchase_progress" model="ir.actions.act_window">
+        <field name="name">外采进度表</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('order_type', '=', 'purchase')]</field>
+        <field name="context">{'default_order_type': 'purchase', 'search_default_group_partner': True}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+
+    <!-- ================= 动作：追踪表 / 执行状况表 ================= -->
+    <record id="action_odk_subcontract_trace" model="ir.actions.act_window">
+        <field name="name">外发加工追踪表</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_odk_subcontract_trace')})]"/>
+        <field name="context">{'search_default_confirmed': True}</field>
+        <field name="search_view_id" ref="view_odk_subcontract_order_search"/>
+    </record>
+    <record id="action_odk_subcontract_pivot" model="ir.actions.act_window">
+        <field name="name">委外执行状况表</field>
+        <field name="res_model">odk.subcontract.order</field>
+        <field name="view_mode">pivot,list</field>
+    </record>
+
+    <!-- ================= 部件配套欠数查询（对齐旧系统委外入口） ================= -->
+    <record id="view_odk_shortage_query_list" model="ir.ui.view">
+        <field name="name">odk.mrp.calc.line.shortage.list</field>
+        <field name="model">odk.mrp.calc.line</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="shortage_qty &gt; 0" create="false" edit="false" delete="false">
+                <field name="calc_id" string="运算单号" width="110"/>
+                <field name="default_code" string="材料编号" width="80"/>
+                <field name="product_id" string="材料名称"/>
+                <field name="supplier_id" string="厂商名称"/>
+                <field name="uom_id" string="单位" width="50"/>
+                <field name="required_qty" string="需求数量" sum="需求合计"/>
+                <field name="free_qty" string="可用库存"/>
+                <field name="incoming_qty" string="在途量"/>
+                <field name="shortage_qty" string="欠数" sum="欠数合计"/>
+                <field name="suggested_qty" string="建议量" sum="建议合计"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_odk_shortage_query_search" model="ir.ui.view">
+        <field name="name">odk.mrp.calc.line.shortage.search</field>
+        <field name="model">odk.mrp.calc.line</field>
+        <field name="arch" type="xml">
+            <search string="部件配套欠数查询">
+                <field name="default_code" string="材料编号"/>
+                <field name="product_id" string="材料名称"/>
+                <field name="supplier_id" string="厂商"/>
+                <filter name="shortage_only" string="仅欠料" domain="[('shortage_qty', '&gt;', 0)]"/>
+                <group>
+                    <filter name="group_calc" string="运算单" domain="[]" context="{'group_by': 'calc_id'}"/>
+                    <filter name="group_supplier" string="厂商" domain="[]" context="{'group_by': 'supplier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_odk_shortage_query" model="ir.actions.act_window">
+        <field name="name">部件配套欠数查询</field>
+        <field name="res_model">odk.mrp.calc.line</field>
+        <field name="view_mode">list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_odk_shortage_query_list')})]"/>
+        <field name="domain">[('shortage_qty', '&gt;', 0)]</field>
+        <field name="search_view_id" ref="view_odk_shortage_query_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">暂无欠料数据</p>
+            <p>去「物料需求运算」跑一次运算，欠料行会自动出现在这里，作为委外/采购的配套依据。</p>
+        </field>
+    </record>
+
+    <!-- ================= 菜单：独立「委外管理」应用 ================= -->
+    <menuitem id="menu_odk_subcontract_root" name="委外管理" sequence="44"/>
+    <menuitem id="menu_odk_sub_all" name="委外加工单" parent="menu_odk_subcontract_root"
+              sequence="10" action="action_odk_subcontract_order"/>
+    <menuitem id="menu_odk_sub_material" name="材料合成加工" parent="menu_odk_subcontract_root"
+              sequence="11" action="action_odk_sub_material"/>
+    <menuitem id="menu_odk_sub_part_menu" name="部件外发加工" parent="menu_odk_subcontract_root"
+              sequence="12" action="action_odk_sub_part"/>
+    <menuitem id="menu_odk_sub_process_menu" name="制程外发加工" parent="menu_odk_subcontract_root"
+              sequence="13" action="action_odk_sub_process"/>
+    <menuitem id="menu_odk_sub_loss_menu" name="补耗加工单" parent="menu_odk_subcontract_root"
+              sequence="14" action="action_odk_sub_loss"/>
+    <menuitem id="menu_odk_sub_purchase" name="外采管理" parent="menu_odk_subcontract_root"
+              sequence="20"/>
+    <menuitem id="menu_odk_sub_purchase_cmd" name="外采指令单" parent="menu_odk_sub_purchase"
+              sequence="21" action="action_odk_sub_purchase_cmd"/>
+    <menuitem id="menu_odk_sub_purchase_order" name="外采订单" parent="menu_odk_sub_purchase"
+              sequence="22" action="action_odk_sub_purchase_order"/>
+    <menuitem id="menu_odk_sub_purchase_progress" name="外采进度表" parent="menu_odk_sub_purchase"
+              sequence="23" action="action_odk_sub_purchase_progress"/>
+    <menuitem id="menu_odk_sub_quote_menu" name="制程工艺报价" parent="menu_odk_subcontract_root"
+              sequence="30" action="action_odk_subcontract_quote"/>
+    <menuitem id="menu_odk_sub_reports" name="查询报表" parent="menu_odk_subcontract_root"
+              sequence="40"/>
+    <menuitem id="menu_odk_sub_shortage" name="部件配套欠数查询" parent="menu_odk_sub_reports"
+              sequence="41" action="action_odk_shortage_query"/>
+    <menuitem id="menu_odk_sub_trace" name="外发加工追踪表" parent="menu_odk_sub_reports"
+              sequence="42" action="action_odk_subcontract_trace"/>
+    <menuitem id="menu_odk_sub_report" name="委外执行状况表" parent="menu_odk_sub_reports"
+              sequence="43" action="action_odk_subcontract_pivot"/>
+
 </odoo>

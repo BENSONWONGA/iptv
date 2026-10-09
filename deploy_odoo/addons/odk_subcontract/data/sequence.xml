@@ -8,5 +8,12 @@
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>
+        <record id="seq_odk_subcontract_quote" model="ir.sequence">
+            <field name="name">制程工艺报价</field>
+            <field name="code">odk.subcontract.quote</field>
+            <field name="prefix">GYB-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

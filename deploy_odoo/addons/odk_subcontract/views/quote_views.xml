@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 制程工艺报价：列表 ================= -->
+    <record id="view_odk_subcontract_quote_tree" model="ir.ui.view">
+        <field name="name">odk.subcontract.quote.tree</field>
+        <field name="model">odk.subcontract.quote</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancel'" decoration-danger="is_expired">
+                <field name="name"/>
+                <field name="partner_id" string="委外供应商"/>
+                <field name="process_name" string="工序/制程"/>
+                <field name="product_id" optional="show"/>
+                <field name="price_unit" string="加工单价"/>
+                <field name="date_quote" optional="show"/>
+                <field name="date_valid_to" optional="show"/>
+                <field name="is_expired" column_invisible="1"/>
+                <field name="order_count" string="已下单词数" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 制程工艺报价：表单 ================= -->
+    <record id="view_odk_subcontract_quote_form" model="ir.ui.view">
+        <field name="name">odk.subcontract.quote.form</field>
+        <field name="model">odk.subcontract.quote</field>
+        <field name="arch" type="xml">
+            <form string="制程工艺报价">
+                <header>
+                    <button name="action_confirm" type="object" string="确认报价"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_draft" type="object" string="恢复草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="作废"
+                            invisible="state == 'cancel'"
+                            confirm="确认作废该报价单？"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button"
+                                icon="fa-external-link" invisible="order_count == 0">
+                            <field name="order_count" widget="statinfo" string="已下委外单"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="报价信息">
+                            <field name="partner_id" placeholder="例：宏达针车厂"/>
+                            <field name="process_name" placeholder="如：针车、冷粘成型、热切"/>
+                            <field name="price_unit"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="适用范围与有效期">
+                            <field name="product_id"
+                                   placeholder="留空表示该工序通用报价"/>
+                            <field name="product_tmpl_id" invisible="1"/>
+                            <field name="date_quote"/>
+                            <field name="date_valid_to"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="备注">
+                        <field name="note" nolabel="1" colspan="2"
+                               placeholder="工艺说明、含税口径、结算方式等"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 制程工艺报价：搜索（报价查询） ================= -->
+    <record id="view_odk_subcontract_quote_search" model="ir.ui.view">
+        <field name="name">odk.subcontract.quote.search</field>
+        <field name="model">odk.subcontract.quote</field>
+        <field name="arch" type="xml">
+            <search string="制程工艺报价查询">
+                <field name="name" string="报价单号"/>
+                <field name="partner_id" string="委外供应商"/>
+                <field name="process_name" string="工序"/>
+                <field name="product_id" string="成品"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="已确认" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="cancel" string="已作废" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter name="valid" string="有效报价"
+                        domain="[('state', '=', 'confirmed'), '|', ('date_valid_to', '=', False), ('date_valid_to', '&gt;=', 'today')]"/>
+                <filter name="expired" string="已过期"
+                        domain="[('date_valid_to', '!=', False), ('date_valid_to', '&lt;', 'today')]"/>
+                <group>
+                    <filter name="group_partner" string="委外供应商" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_process" string="工序" domain="[]"
+                            context="{'group_by': 'process_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 动作 ================= -->
+    <record id="action_odk_subcontract_quote" model="ir.actions.act_window">
+        <field name="name">制程工艺报价</field>
+        <field name="res_model">odk.subcontract.quote</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_subcontract_quote_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一份制程工艺报价</p>
+            <p>登记委外供应商各工序的加工单价；下委外单时关联报价，自动带出供应商/成品/单价。</p>
+        </field>
+    </record>
+
+</odoo>

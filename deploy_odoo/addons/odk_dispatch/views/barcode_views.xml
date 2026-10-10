@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 指令部件条码：列表 ================= -->
+    <record id="view_odk_barcode_list" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.list</field>
+        <field name="model">odk.dispatch.barcode</field>
+        <field name="arch" type="xml">
+            <list multi_edit="1">
+                <field name="name"/>
+                <field name="dispatch_id" string="派工单"/>
+                <field name="product_id" string="部件"/>
+                <field name="qty" string="每张数量" sum="数量合计"/>
+                <field name="merge_ids" widget="many2many_tags" optional="show"/>
+                <field name="scan_count" string="扫码次数" optional="show"/>
+                <field name="company_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 指令部件条码：表单 ================= -->
+    <record id="view_odk_barcode_form" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.form</field>
+        <field name="model">odk.dispatch.barcode</field>
+        <field name="arch" type="xml">
+            <form string="指令部件条码">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="条码信息">
+                            <field name="dispatch_id" readonly="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="qty" readonly="1"/>
+                        </group>
+                        <group string="归属与记录">
+                            <field name="merge_ids" widget="many2many_tags"/>
+                            <field name="scan_count" readonly="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="note" placeholder="备注…"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 指令部件条码：搜索 ================= -->
+    <record id="view_odk_barcode_search" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.search</field>
+        <field name="model">odk.dispatch.barcode</field>
+        <field name="arch" type="xml">
+            <search string="指令部件条码">
+                <field name="name" string="条码号"/>
+                <field name="dispatch_id" string="派工单"/>
+                <field name="product_id" string="部件"/>
+                <group>
+                    <filter name="group_dispatch" string="派工单" domain="[]"
+                            context="{'group_by': 'dispatch_id'}"/>
+                    <filter name="group_product" string="部件" domain="[]"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 套码（条码合并）：列表 ================= -->
+    <record id="view_odk_merge_list" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.merge.list</field>
+        <field name="model">odk.dispatch.barcode.merge</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" string="套码号"/>
+                <field name="member_count" string="成员条码数" sum="合计"/>
+                <field name="member_ids" widget="many2many_tags" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 套码：表单 ================= -->
+    <record id="view_odk_merge_form" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.merge.form</field>
+        <field name="model">odk.dispatch.barcode.merge</field>
+        <field name="arch" type="xml">
+            <form string="指令部件条码合并（套码）">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_members" type="object"
+                                class="oe_stat_button" icon="fa-list-ul">
+                            <field name="member_count" widget="statinfo"
+                                   string="成员条码"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="套码信息">
+                            <field name="member_ids" widget="many2many_tags"
+                                   placeholder="选择要合并的部件条码（同一套部件）"/>
+                        </group>
+                        <group string="备注">
+                            <field name="note" nolabel="1" colspan="2"
+                                   placeholder="套码用途，如：齐套配送至针车线…"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 扫码记录：列表 ================= -->
+    <record id="view_odk_scan_log_list" model="ir.ui.view">
+        <field name="name">odk.dispatch.scan.log.list</field>
+        <field name="model">odk.dispatch.scan.log</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="date" string="时间"/>
+                <field name="barcode" string="扫描条码"/>
+                <field name="action" widget="badge"
+                       decoration-success="action in ('in', 'out')"
+                       decoration-info="action == 'lookup'"
+                       decoration-warning="action == 'merge'"/>
+                <field name="dispatch_id" string="派工单" optional="show"/>
+                <field name="product_id" string="部件" optional="show"/>
+                <field name="qty" string="数量" sum="数量合计"/>
+                <field name="wms_order_id" string="关联仓库单据" optional="show"/>
+                <field name="user_id" string="操作员"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_odk_scan_log_search" model="ir.ui.view">
+        <field name="name">odk.dispatch.scan.log.search</field>
+        <field name="model">odk.dispatch.scan.log</field>
+        <field name="arch" type="xml">
+            <search string="扫码记录">
+                <field name="barcode" string="扫描条码"/>
+                <field name="dispatch_id" string="派工单"/>
+                <field name="user_id" string="操作员"/>
+                <filter name="a_in" string="部件入库" domain="[('action', '=', 'in')]"/>
+                <filter name="a_out" string="部件出库" domain="[('action', '=', 'out')]"/>
+                <filter name="a_merge" string="套码核对" domain="[('action', '=', 'merge')]"/>
+                <group>
+                    <filter name="group_action" string="动作" domain="[]"
+                            context="{'group_by': 'action'}"/>
+                    <filter name="group_dispatch" string="派工单" domain="[]"
+                            context="{'group_by': 'dispatch_id'}"/>
+                    <filter name="group_user" string="操作员" domain="[]"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_day" string="按天" domain="[]"
+                            context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 生成条码向导 ================= -->
+    <record id="view_odk_barcode_wizard_form" model="ir.ui.view">
+        <field name="name">odk.dispatch.barcode.wizard.form</field>
+        <field name="model">odk.dispatch.barcode.wizard</field>
+        <field name="arch" type="xml">
+            <form string="生成部件条码">
+                <group>
+                    <field name="dispatch_id" readonly="context.get('default_dispatch_id')"
+                           options="{'no_create': True}"/>
+                    <field name="label_qty"/>
+                    <field name="label_count"/>
+                </group>
+                <footer>
+                    <button name="action_generate" type="object" string="生成"
+                            class="oe_highlight"/>
+                    <button string="取消" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 动作 ================= -->
+    <record id="action_odk_barcode" model="ir.actions.act_window">
+        <field name="name">指令部件条码</field>
+        <field name="res_model">odk.dispatch.barcode</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_barcode_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">还没有部件条码</p>
+            <p>在派工单上点「部件条码」按钮生成，打印标签后即可扫码作业。</p>
+        </field>
+    </record>
+    <record id="action_odk_merge" model="ir.actions.act_window">
+        <field name="name">指令部件条码_合并</field>
+        <field name="res_model">odk.dispatch.barcode.merge</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一个套码</p>
+            <p>选择多张部件条码合并成一个套码（齐套配送/核对），打印套码标签。</p>
+        </field>
+    </record>
+    <record id="action_odk_scan_log" model="ir.actions.act_window">
+        <field name="name">扫码记录</field>
+        <field name="res_model">odk.dispatch.scan.log</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_odk_scan_log_search"/>
+    </record>
+    <record id="action_scan_parts_url" model="ir.actions.act_url">
+        <field name="name">扫码作业(PDA)</field>
+        <field name="url">/odk/dispatch/scan</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- ================= 打印报表动作 ================= -->
+    <record id="report_action_barcode_labels" model="ir.actions.report">
+        <field name="name">指令部件条码标签</field>
+        <field name="model">odk.dispatch.barcode</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odk_dispatch.report_barcode_labels</field>
+        <field name="report_file">odk_dispatch.report_barcode_labels</field>
+    </record>
+    <record id="report_action_merge_labels" model="ir.actions.report">
+        <field name="name">套码标签</field>
+        <field name="model">odk.dispatch.barcode.merge</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odk_dispatch.report_merge_labels</field>
+        <field name="report_file">odk_dispatch.report_merge_labels</field>
+    </record>
+
+    <!-- ================= 菜单：指令部件条码（H25/H27） ================= -->
+    <menuitem id="menu_dispatch_barcode" name="指令部件条码"
+              parent="menu_odk_dispatch_root" sequence="35"/>
+    <menuitem id="menu_barcode_list" name="指令部件条码" parent="menu_dispatch_barcode"
+              sequence="36" action="action_odk_barcode"/>
+    <menuitem id="menu_barcode_merge" name="指令部件条码_合并" parent="menu_dispatch_barcode"
+              sequence="37" action="action_odk_merge"/>
+    <menuitem id="menu_scan_log" name="扫码记录" parent="menu_dispatch_barcode"
+              sequence="38" action="action_odk_scan_log"/>
+    <menuitem id="menu_scan_url" name="扫码作业(PDA)" parent="menu_dispatch_barcode"
+              sequence="39" action="action_scan_parts_url"/>
+
+</odoo>

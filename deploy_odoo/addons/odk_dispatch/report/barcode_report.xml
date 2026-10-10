@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============ 指令部件条码标签（每行 3 张，含 Code128 条码图） ============ -->
+    <template id="odk_dispatch.report_barcode_labels">
+        <t t-call="web.html_container">
+            <div class="article">
+                <div style="padding:12px;">
+                    <t t-foreach="docs" t-as="doc">
+                        <div style="border:1px solid #444;border-radius:8px;padding:10px 12px;
+                                    margin:6px;width:30%;display:inline-block;vertical-align:top;
+                                    text-align:center;page-break-inside:avoid;">
+                            <img t-att-src="'/report/barcode/Code128/%s?width=400&amp;height=90&amp;humanreadable=1' % doc.name"
+                                 style="width:100%;max-width:360px;"/>
+                            <div style="font-size:15px;font-weight:700;margin-top:4px;">
+                                <t t-out="doc.name"/>
+                            </div>
+                            <div style="font-size:12px;color:#333;">
+                                <t t-out="doc.dispatch_id.name"/>
+                                <t t-out="doc.dispatch_id.operation and (' · ' + doc.dispatch_id.operation) or ''"/>
+                            </div>
+                            <div style="font-size:12px;">
+                                <t t-out="doc.product_id.display_name"/>
+                                × <t t-out="'%g' % doc.qty"/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============ 套码标签（套码条码 + 成员部件清单） ============ -->
+    <template id="odk_dispatch.report_merge_labels">
+        <t t-call="web.html_container">
+            <div class="article">
+                <t t-foreach="docs" t-as="doc">
+                    <div style="padding:16px;page-break-after:always;">
+                        <div style="text-align:center;border:2px solid #444;border-radius:12px;
+                                    padding:16px;margin-bottom:16px;page-break-inside:avoid;">
+                            <img t-att-src="'/report/barcode/Code128/%s?width=500&amp;height=110&amp;humanreadable=1' % doc.name"
+                                 style="width:100%;max-width:460px;"/>
+                            <div style="font-size:20px;font-weight:700;margin-top:6px;">
+                                套码 <t t-out="doc.name"/>
+                            </div>
+                            <div style="font-size:13px;color:#333;">
+                                共 <t t-out="doc.member_count"/> 张部件条码
+                            </div>
+                        </div>
+                        <table class="table table-sm"
+                               style="width:100%;border-collapse:collapse;font-size:13px;">
+                            <thead>
+                                <tr style="border-bottom:2px solid #444;">
+                                    <th style="padding:6px;text-align:left;">部件条码</th>
+                                    <th style="padding:6px;text-align:left;">派工单</th>
+                                    <th style="padding:6px;text-align:left;">部件</th>
+                                    <th style="padding:6px;text-align:right;">数量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.member_ids" t-as="m"
+                                    style="border-bottom:1px solid #ddd;">
+                                    <td style="padding:6px;"><t t-out="m.name"/></td>
+                                    <td style="padding:6px;"><t t-out="m.dispatch_id.name"/></td>
+                                    <td style="padding:6px;"><t t-out="m.product_id.display_name"/></td>
+                                    <td style="padding:6px;text-align:right;">
+                                        <t t-out="'%g' % m.qty"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>

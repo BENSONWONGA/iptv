@@ -1,3 +1,7 @@
 id,name,model_id,group_id/id,operation,domain
 access_odk_dispatch_user,odk.dispatch.user,odk.dispatch,base.group_user,crud,
 access_odk_dispatch_report_user,odk.dispatch.report.user,odk.dispatch.report,base.group_user,crud,
+access_odk_dispatch_barcode_user,odk.dispatch.barcode.user,odk.dispatch.barcode,base.group_user,crud,
+access_odk_barcode_merge_user,odk.dispatch.barcode.merge.user,odk.dispatch.barcode.merge,base.group_user,crud,
+access_odk_scan_log_user,odk.dispatch.scan.log.user,odk.dispatch.scan.log,base.group_user,crud,
+access_odk_barcode_wizard_user,odk.dispatch.barcode.wizard.user,odk.dispatch.barcode.wizard,base.group_user,crud,

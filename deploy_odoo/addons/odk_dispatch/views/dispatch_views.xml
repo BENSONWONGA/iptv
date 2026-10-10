@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 派工单：列表 ================= -->
+    <record id="view_odk_dispatch_list" model="ir.ui.view">
+        <field name="name">odk.dispatch.list</field>
+        <field name="model">odk.dispatch</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('draft', 'assigned')"
+                  decoration-muted="state == 'cancel'" multi_edit="1">
+                <field name="name"/>
+                <field name="dispatch_type" widget="badge"
+                       decoration-info="dispatch_type == 'cutting'"
+                       decoration-warning="dispatch_type == 'manual'"
+                       decoration-success="dispatch_type == 'process'"/>
+                <field name="product_id"/>
+                <field name="qty" sum="派工合计"/>
+                <field name="qty_done" sum="完工合计"/>
+                <field name="uom_id" optional="hide"/>
+                <field name="operation" optional="show"/>
+                <field name="workcenter_id" optional="hide"/>
+                <field name="user_id" optional="show"/>
+                <field name="date_start" optional="show"/>
+                <field name="date_end" optional="show"/>
+                <field name="date_actual" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state in ('draft', 'assigned')"
+                       decoration-warning="state == 'producing'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 派工单：表单 ================= -->
+    <record id="view_odk_dispatch_form" model="ir.ui.view">
+        <field name="name">odk.dispatch.form</field>
+        <field name="model">odk.dispatch</field>
+        <field name="arch" type="xml">
+            <form string="派工单">
+                <header>
+                    <button name="action_assign" type="object" string="派工"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="开工"
+                            class="oe_highlight" invisible="state != 'assigned'"/>
+                    <button name="action_finish" type="object" string="完工"
+                            invisible="state != 'producing'"
+                            confirm="确认完工？（需已确认过日报）"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state not in ('draft', 'assigned', 'producing')"
+                            confirm="确认取消该派工单？"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,assigned,producing,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_materials" type="object"
+                                class="oe_stat_button" icon="fa-cubes">
+                            <field name="material_count" widget="statinfo"
+                                   string="领料单"/>
+                        </button>
+                        <button name="action_view_reports" type="object"
+                                class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="report_count" widget="statinfo"
+                                   string="日报"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="派工信息">
+                            <field name="dispatch_type"/>
+                            <field name="product_id"/>
+                            <field name="qty"/>
+                            <field name="uom_id" readonly="1"/>
+                            <field name="qty_done" readonly="1"/>
+                            <field name="operation" placeholder="冲裁 / 针车 / 成型…"/>
+                            <field name="workcenter_id"/>
+                        </group>
+                        <group string="计划与负责人">
+                            <field name="mo_id" placeholder="MRP/生产订单下发的指令"/>
+                            <field name="user_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="date_actual"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="note" placeholder="派工要求、工艺说明…"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 派工单：搜索 ================= -->
+    <record id="view_odk_dispatch_search" model="ir.ui.view">
+        <field name="name">odk.dispatch.search</field>
+        <field name="model">odk.dispatch</field>
+        <field name="arch" type="xml">
+            <search string="派工单">
+                <field name="name" string="单号"/>
+                <field name="product_id" string="产品/部件"/>
+                <field name="user_id" string="派工负责人"/>
+                <field name="mo_id" string="生产订单"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <filter name="assigned" string="已派工" domain="[('state', '=', 'assigned')]"/>
+                <filter name="producing" string="生产中" domain="[('state', '=', 'producing')]"/>
+                <filter name="done" string="已完成" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="t_cutting" string="冲裁类" domain="[('dispatch_type', '=', 'cutting')]"/>
+                <filter name="t_manual" string="手工类" domain="[('dispatch_type', '=', 'manual')]"/>
+                <filter name="t_process" string="工艺类" domain="[('dispatch_type', '=', 'process')]"/>
+                <group>
+                    <filter name="group_type" string="派工类型" domain="[]"
+                            context="{'group_by': 'dispatch_type'}"/>
+                    <filter name="group_product" string="产品/部件" domain="[]"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="group_user" string="派工负责人" domain="[]"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_state" string="状态" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 派工日报：列表 ================= -->
+    <record id="view_odk_dispatch_report_list" model="ir.ui.view">
+        <field name="name">odk.dispatch.report.list</field>
+        <field name="model">odk.dispatch.report</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="date_report"/>
+                <field name="dispatch_id"/>
+                <field name="product_id" optional="show"/>
+                <field name="user_id"/>
+                <field name="qty_produced" sum="合格合计"/>
+                <field name="qty_scrapped" sum="不合格合计" optional="show"/>
+                <field name="work_hours" sum="工时合计" optional="show"/>
+                <field name="rate" optional="show"/>
+                <field name="amount" sum="计件金额合计"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 派工日报：表单 ================= -->
+    <record id="view_odk_dispatch_report_form" model="ir.ui.view">
+        <field name="name">odk.dispatch.report.form</field>
+        <field name="model">odk.dispatch.report</field>
+        <field name="arch" type="xml">
+            <form string="派工日报">
+                <header>
+                    <button name="action_confirm" type="object" string="确认日报"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            confirm="确认后合格数量计入派工单完工数（报满自动完工），确认执行？"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="报工信息">
+                            <field name="date_report"/>
+                            <field name="dispatch_id"/>
+                            <field name="product_id" readonly="1"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group string="产量与计件">
+                            <field name="qty_produced"/>
+                            <field name="qty_scrapped"/>
+                            <field name="work_hours"/>
+                            <field name="rate"/>
+                            <field name="amount" readonly="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="note" placeholder="生产情况、异常说明…"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 派工日报：搜索 ================= -->
+    <record id="view_odk_dispatch_report_search" model="ir.ui.view">
+        <field name="name">odk.dispatch.report.search</field>
+        <field name="model">odk.dispatch.report</field>
+        <field name="arch" type="xml">
+            <search string="派工日报">
+                <field name="name" string="单号"/>
+                <field name="dispatch_id" string="派工单"/>
+                <field name="user_id" string="操作员"/>
+                <field name="product_id" string="产品/部件"/>
+                <filter name="confirmed" string="已确认" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <group>
+                    <filter name="group_user" string="操作员" domain="[]"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_date" string="日报日期" domain="[]"
+                            context="{'group_by': 'date_report'}"/>
+                    <filter name="group_dispatch" string="派工单" domain="[]"
+                            context="{'group_by': 'dispatch_id'}"/>
+                    <filter name="group_product" string="产品/部件" domain="[]"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============ 仓库业务单表单扩展：挂派工单 + 领料人 ============ -->
+    <record id="view_odk_wms_order_form_dispatch" model="ir.ui.view">
+        <field name="name">odk.wms.order.form.dispatch</field>
+        <field name="model">odk.wms.order</field>
+        <field name="inherit_id" ref="odk_wms.view_odk_wms_order_form"/>
+        <field name="arch" type="xml">
+            <field name="mo_id" position="after">
+                <field name="dispatch_id"
+                       placeholder="关联派工单（领料/部件出入库追溯）"/>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="picker_id" invisible="direction != 'out'"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- ============ 仓库业务单搜索扩展：领料人分组 + 领料类过滤 ============ -->
+    <record id="view_odk_wms_order_search_dispatch" model="ir.ui.view">
+        <field name="name">odk.wms.order.search.dispatch</field>
+        <field name="model">odk.wms.order</field>
+        <field name="inherit_id" ref="odk_wms.view_odk_wms_order_search"/>
+        <field name="arch" type="xml">
+            <filter name="dir_transfer" position="after">
+                <filter name="pick_out" string="领料出库类"
+                        domain="[('direction', '=', 'out')]"/>
+            </filter>
+            <filter name="group_state" position="after">
+                <filter name="group_picker" string="领料人" domain="[]"
+                        context="{'group_by': 'picker_id'}"/>
+                <filter name="group_dispatch" string="派工单" domain="[]"
+                        context="{'group_by': 'dispatch_id'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- ================= 动作 ================= -->
+    <record id="action_odk_dispatch" model="ir.actions.act_window">
+        <field name="name">派工单</field>
+        <field name="res_model">odk.dispatch</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_dispatch_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张派工单</p>
+            <p>选择派工类型（冲裁/手工/工艺），录入产品、数量、工序与负责人，<br/>
+               派工 → 开工 → 日报报工 → 报满自动完工。</p>
+        </field>
+    </record>
+    <record id="action_dispatch_cutting" model="ir.actions.act_window">
+        <field name="name">冲裁派工单</field>
+        <field name="res_model">odk.dispatch</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('dispatch_type', '=', 'cutting')]</field>
+        <field name="context">{'default_dispatch_type': 'cutting'}</field>
+        <field name="search_view_id" ref="view_odk_dispatch_search"/>
+    </record>
+    <record id="action_dispatch_manual" model="ir.actions.act_window">
+        <field name="name">手工派工单</field>
+        <field name="res_model">odk.dispatch</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('dispatch_type', '=', 'manual')]</field>
+        <field name="context">{'default_dispatch_type': 'manual'}</field>
+        <field name="search_view_id" ref="view_odk_dispatch_search"/>
+    </record>
+    <record id="action_dispatch_process" model="ir.actions.act_window">
+        <field name="name">工艺派工单</field>
+        <field name="res_model">odk.dispatch</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('dispatch_type', '=', 'process')]</field>
+        <field name="context">{'default_dispatch_type': 'process'}</field>
+        <field name="search_view_id" ref="view_odk_dispatch_search"/>
+    </record>
+
+    <!-- 派工领料（复用仓库管理单据引擎） -->
+    <record id="action_pick_mfg" model="ir.actions.act_window">
+        <field name="name">派工领料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_mfg')]</field>
+        <field name="context">{'default_doc_type': 'out_mfg'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_pick_supplement" model="ir.actions.act_window">
+        <field name="name">派工补料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_supplement')]</field>
+        <field name="context">{'default_doc_type': 'out_supplement'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_pick_return" model="ir.actions.act_window">
+        <field name="name">派工退料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_mfg_return')]</field>
+        <field name="context">{'default_doc_type': 'in_mfg_return'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_pick_extra" model="ir.actions.act_window">
+        <field name="name">派工用量追加单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_general')]</field>
+        <field name="context">{'default_doc_type': 'out_general'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_pick_confirm" model="ir.actions.act_window">
+        <field name="name">领料确认单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('direction', '=', 'out'), ('state', '=', 'confirmed')]</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_pick_account" model="ir.actions.act_window">
+        <field name="name">个人领料核算查询</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('direction', '=', 'out')]</field>
+        <field name="context">{'search_default_group_picker': 1}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+
+    <!-- 指令部件出入库 -->
+    <record id="action_part_in" model="ir.actions.act_window">
+        <field name="name">指令部件入库单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_part')]</field>
+        <field name="context">{'default_doc_type': 'in_part'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+    <record id="action_part_out" model="ir.actions.act_window">
+        <field name="name">指令部件出库单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_part')]</field>
+        <field name="context">{'default_doc_type': 'out_part'}</field>
+        <field name="search_view_id" ref="odk_wms.view_odk_wms_order_search"/>
+    </record>
+
+    <!-- 日报及报表 -->
+    <record id="action_dispatch_report" model="ir.actions.act_window">
+        <field name="name">派工日报表</field>
+        <field name="res_model">odk.dispatch.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_dispatch_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">填报第一张派工日报</p>
+            <p>录入合格/不合格数量、工时与件资单价，点「确认日报」后<br/>
+               合格数量计入派工单完工数，报满自动完工。</p>
+        </field>
+    </record>
+    <record id="action_dispatch_report_summary" model="ir.actions.act_window">
+        <field name="name">派工日报汇总/明细</field>
+        <field name="res_model">odk.dispatch.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_dispatch': 1}</field>
+        <field name="search_view_id" ref="view_odk_dispatch_report_search"/>
+    </record>
+    <record id="action_piece_rate" model="ir.actions.act_window">
+        <field name="name">件资产量汇总/明细</field>
+        <field name="res_model">odk.dispatch.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'confirmed')]</field>
+        <field name="context">{'search_default_group_user': 1}</field>
+        <field name="search_view_id" ref="view_odk_dispatch_report_search"/>
+    </record>
+
+    <!-- ================= 菜单：独立「现场派工」应用 ================= -->
+    <menuitem id="menu_odk_dispatch_root" name="现场派工" sequence="47"/>
+
+    <menuitem id="menu_dispatch_mgmt" name="派工管理"
+              parent="menu_odk_dispatch_root" sequence="10"/>
+    <menuitem id="menu_dispatch_cutting" name="冲裁派工单" parent="menu_dispatch_mgmt"
+              sequence="11" action="action_dispatch_cutting"/>
+    <menuitem id="menu_dispatch_manual" name="手工派工单" parent="menu_dispatch_mgmt"
+              sequence="12" action="action_dispatch_manual"/>
+    <menuitem id="menu_dispatch_process" name="工艺派工单" parent="menu_dispatch_mgmt"
+              sequence="13" action="action_dispatch_process"/>
+    <menuitem id="menu_dispatch_all" name="派工单总览" parent="menu_dispatch_mgmt"
+              sequence="14" action="action_odk_dispatch"/>
+
+    <menuitem id="menu_dispatch_pick" name="派工领料"
+              parent="menu_odk_dispatch_root" sequence="20"/>
+    <menuitem id="menu_pick_mfg" name="派工领料单" parent="menu_dispatch_pick"
+              sequence="21" action="action_pick_mfg"/>
+    <menuitem id="menu_pick_supplement" name="派工补料单" parent="menu_dispatch_pick"
+              sequence="22" action="action_pick_supplement"/>
+    <menuitem id="menu_pick_return" name="派工退料单" parent="menu_dispatch_pick"
+              sequence="23" action="action_pick_return"/>
+    <menuitem id="menu_pick_extra" name="派工用量追加单" parent="menu_dispatch_pick"
+              sequence="24" action="action_pick_extra"/>
+    <menuitem id="menu_pick_confirm" name="领料确认单" parent="menu_dispatch_pick"
+              sequence="25" action="action_pick_confirm"/>
+    <menuitem id="menu_pick_account" name="个人领料核算查询" parent="menu_dispatch_pick"
+              sequence="26" action="action_pick_account"/>
+
+    <menuitem id="menu_dispatch_part" name="指令部件出入库"
+              parent="menu_odk_dispatch_root" sequence="30"/>
+    <menuitem id="menu_part_in" name="指令部件入库单" parent="menu_dispatch_part"
+              sequence="31" action="action_part_in"/>
+    <menuitem id="menu_part_out" name="指令部件出库单" parent="menu_dispatch_part"
+              sequence="32" action="action_part_out"/>
+    <menuitem id="menu_part_stock" name="指令部件库存表" parent="menu_dispatch_part"
+              sequence="33" action="odk_wms.action_wms_stock_query"/>
+
+    <menuitem id="menu_dispatch_report" name="日报及报表"
+              parent="menu_odk_dispatch_root" sequence="40"/>
+    <menuitem id="menu_report_daily" name="派工日报表" parent="menu_dispatch_report"
+              sequence="41" action="action_dispatch_report"/>
+    <menuitem id="menu_report_summary" name="派工日报汇总/明细" parent="menu_dispatch_report"
+              sequence="42" action="action_dispatch_report_summary"/>
+    <menuitem id="menu_report_piece" name="件资产量汇总/明细" parent="menu_dispatch_report"
+              sequence="43" action="action_piece_rate"/>
+
+</odoo>

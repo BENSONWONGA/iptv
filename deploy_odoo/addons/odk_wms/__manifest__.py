@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "奥登科·仓库管理",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Manufacturing/Inventory",
     "summary": "独立仓库管理应用：采购入库/客供料/退料/领料/补料/试做/转卖/挪用/调拨/盘点等15类单据一键过账库存",
     "description": """对齐旧系统「材料库存管理」单据体系：

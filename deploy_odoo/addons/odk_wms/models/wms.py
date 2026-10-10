@@ -8,11 +8,11 @@ from odoo.exceptions import UserError
 # 单据类型 → 库存方向
 DOC_DIRECTION = {
     'in_purchase': 'in', 'in_customer': 'in', 'in_general': 'in',
-    'in_mfg_return': 'in', 'in_general_return': 'in',
+    'in_mfg_return': 'in', 'in_general_return': 'in', 'in_part': 'in',
     'out_mfg': 'out', 'out_supplement': 'out', 'out_trial': 'out',
     'out_general': 'out', 'out_order': 'out', 'out_purchase_return': 'out',
     'out_customer_return': 'out', 'out_resale': 'out', 'out_divert': 'out',
-    'transfer': 'transfer',
+    'out_part': 'out', 'transfer': 'transfer',
 }
 
 
@@ -44,6 +44,8 @@ class OdkWmsOrder(models.Model):
         ('out_customer_return', '客供料退货'),
         ('out_resale', '材料转卖单'),
         ('out_divert', '指令材料挪用单'),
+        ('in_part', '指令部件入库单'),
+        ('out_part', '指令部件出库单'),
         ('transfer', '物料转仓调拨单'),
     ], string='单据类型', required=True, default='in_purchase', copy=False,
         tracking=True)
@@ -125,12 +127,14 @@ class OdkWmsOrder(models.Model):
             'in_general': ('incoming', inventory, stock),
             'in_mfg_return': ('incoming', production, stock),
             'in_general_return': ('incoming', inventory, stock),
+            'in_part': ('incoming', production, stock),
             'out_mfg': ('outgoing', stock, production),
             'out_supplement': ('outgoing', stock, production),
             'out_trial': ('outgoing', stock, production),
             'out_general': ('outgoing', stock, production),
             'out_order': ('outgoing', stock, production),
             'out_divert': ('outgoing', stock, production),
+            'out_part': ('outgoing', stock, production),
             'out_purchase_return': ('outgoing', stock, suppliers),
             'out_customer_return': ('outgoing', stock, customers),
             'out_resale': ('outgoing', stock, customers),

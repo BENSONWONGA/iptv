@@ -322,32 +322,55 @@ class OdkWmsInventory(models.Model):
         return True
 
     def action_apply(self):
-        """执行盘点调整：把盘差应用到库存（生成盘盈盘亏移动）"""
-        Quant = self.env['stock.quant']
+        """执行盘点调整：按盘差生成盘盈盘亏库存移动（inventory 虚拟库位 <-> 库存库位）"""
+        StockMove = self.env['stock.move']
         for inv in self:
             if inv.state != 'draft':
                 raise UserError(_('只有草稿状态的盘点单才能执行调整：%s') % inv.name)
             if not inv.line_ids:
                 raise UserError(_('盘点明细为空：%s') % inv.name)
             loc = inv._get_location()
+            loss_loc = inv._loss_location()
             for line in inv.line_ids:
                 if line.counted_qty < 0:
                     raise UserError(_('盘点的实盘数量不能为负数：%s')
                                     % line.product_id.display_name)
-                quant = Quant.search([
-                    ('product_id', '=', line.product_id.id),
-                    ('location_id', '=', loc.id),
-                ], limit=1)
-                if not quant:
-                    quant = Quant.create({
-                        'product_id': line.product_id.id,
-                        'location_id': loc.id,
-                    })
-                quant.inventory_quantity = line.counted_qty
-                quant.apply_inventory()
+                diff = line.counted_qty - line.current_qty
+                if abs(diff) < 1e-9:
+                    continue
+                if diff > 0:
+                    src, dst = loss_loc, loc
+                else:
+                    src, dst = loc, loss_loc
+                move = StockMove.create({
+                    'description_picking': '%s %s' % (inv.name, line.product_id.display_name),
+                    'product_id': line.product_id.id,
+                    'product_uom_qty': abs(diff),
+                    'uom_id': line.product_id.uom_id.id,
+                    'location_id': src.id,
+                    'location_dest_id': dst.id,
+                    'company_id': inv.company_id.id,
+                })
+                move._action_confirm()
+                move.write({'quantity': abs(diff), 'picked': True})
+                move._action_done()
             inv.date_done = fields.Datetime.now()
             inv.state = 'done'
         return True
+
+    def _loss_location(self):
+        """盘盈盘亏虚拟库位（inventory loss）"""
+        self.ensure_one()
+        loc = self.env.ref('stock.stock_location_inventory', raise_if_not_found=False)
+        if not loc:
+            loc = self.env['stock.location'].search([
+                ('usage', '=', 'inventory'),
+                '|', ('company_id', '=', False),
+                     ('company_id', '=', self.env.company.id),
+            ], limit=1)
+        if not loc:
+            raise UserError(_('系统缺少盘盈盘亏虚拟库位'))
+        return loc
 
     def action_cancel(self):
         for inv in self:

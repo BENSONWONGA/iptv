@@ -215,14 +215,12 @@
         <field name="model">odk.dispatch.barcode</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">odk_dispatch.report_barcode_labels</field>
-        <field name="report_file">odk_dispatch.report_barcode_labels</field>
     </record>
     <record id="report_action_merge_labels" model="ir.actions.report">
         <field name="name">套码标签</field>
         <field name="model">odk.dispatch.barcode.merge</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">odk_dispatch.report_merge_labels</field>
-        <field name="report_file">odk_dispatch.report_merge_labels</field>
     </record>
 
     <!-- ================= 菜单：指令部件条码（H25/H27） ================= -->

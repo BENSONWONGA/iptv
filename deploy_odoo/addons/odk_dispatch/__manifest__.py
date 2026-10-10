@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "奥登科·现场派工",
-    "version": "20.0.2.0.1",
+    "version": "20.0.2.0.2",
     "category": "Manufacturing/Inventory",
     "summary": "现场管理应用：冲裁/手工/工艺派工单 + 派工领料 + 指令部件出入库 + 派工日报/件资产量 + 指令部件条码(H25/H27)扫码作业",
     "description": """对齐旧系统「现场管理」导航体系（H01-H43）：

@@ -83,8 +83,11 @@ raw = base64.b64decode(b64_in)
 tf = tarfile.open(fileobj=io.BytesIO(raw), mode="r:gz")
 manifest = tf.extractfile("odk_dispatch/__manifest__.py").read().decode()
 assert '"depends": ["odk_wms", "mrp", "web"]' in manifest, "manifest 依赖未修复!"
-assert '"version": "20.0.2.0.1"' in manifest, "版本号未更新!"
+assert '"version": "20.0.2.0.2"' in manifest, "版本号未更新!"
 assert '"report"' not in manifest, "report 依赖仍在!"
 names = tf.getnames()
 assert "odk_dispatch/report/barcode_report.xml" in names
-print("自检 OK：包内 manifest 依赖=odk_wms/mrp/web，版本=20.0.2.0.1，文件数=%d" % len(names))
+assert not any(
+    'report_file' in tf.extractfile(n).read().decode('utf-8', 'replace')
+    for n in names if 'barcode_views' in n), "barcode_views.xml 仍含 report_file!"
+print("自检 OK：包内 manifest 依赖=odk_wms/mrp/web，版本=20.0.2.0.2，文件数=%d" % len(names))

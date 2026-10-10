@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_odk_wms_order_user,odk.wms.order.user,odk.wms.order,base.group_user,crud,
+access_odk_wms_order_line_user,odk.wms.order.line.user,odk.wms.order.line,base.group_user,crud,
+access_odk_wms_inventory_user,odk.wms.inventory.user,odk.wms.inventory,base.group_user,crud,
+access_odk_wms_inventory_line_user,odk.wms.inventory.line.user,odk.wms.inventory.line,base.group_user,crud,

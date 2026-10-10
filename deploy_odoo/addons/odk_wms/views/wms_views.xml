@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================= 仓库业务单：列表 ================= -->
+    <record id="view_odk_wms_order_list" model="ir.ui.view">
+        <field name="name">odk.wms.order.list</field>
+        <field name="model">odk.wms.order</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-muted="state == 'cancel'"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="doc_type" widget="badge"
+                       decoration-info="direction == 'in'"
+                       decoration-warning="direction == 'transfer'"/>
+                <field name="partner_id" optional="show"/>
+                <field name="mo_id" optional="show"/>
+                <field name="warehouse_id" optional="hide"/>
+                <field name="date_order" optional="show"/>
+                <field name="date_done" optional="show"/>
+                <field name="line_count" string="行数"/>
+                <field name="picking_id" string="库存单据" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'confirmed'"
+                       decoration-info="state == 'draft'"/>
+                <field name="direction" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 仓库业务单：表单 ================= -->
+    <record id="view_odk_wms_order_form" model="ir.ui.view">
+        <field name="name">odk.wms.order.form</field>
+        <field name="model">odk.wms.order</field>
+        <field name="arch" type="xml">
+            <form string="仓库业务单">
+                <header>
+                    <button name="action_confirm" type="object" string="确认过账"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            confirm="确认后立即生成库存移动并过账（库存即变动），确认执行？"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state != 'draft'"
+                            confirm="确认取消该单据？"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_picking" type="object"
+                                class="oe_stat_button" icon="fa-exchange"
+                                invisible="not picking_id">
+                            <field name="picking_id"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="单据信息">
+                            <field name="doc_type"/>
+                            <field name="partner_id"
+                                   placeholder="采购入库/退货填供应商；客供/转卖填客户"/>
+                            <field name="warehouse_id"/>
+                            <field name="dest_warehouse_id"
+                                   invisible="doc_type != 'transfer'"/>
+                            <field name="date_order"/>
+                            <field name="date_done" readonly="1"/>
+                        </group>
+                        <group string="关联信息">
+                            <field name="mo_id"
+                                   invisible="doc_type not in ('out_mfg', 'out_supplement', 'out_trial', 'out_order', 'out_divert', 'in_mfg_return')"
+                                   placeholder="领料/退料可关联生产订单"/>
+                            <field name="direction" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="note" placeholder="事由、审批说明…"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="物料明细" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_qty" sum="数量合计"/>
+                                    <field name="uom_id" readonly="1"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="product_id"/>
+                                        <field name="product_qty"/>
+                                        <field name="uom_id" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 仓库业务单：搜索 ================= -->
+    <record id="view_odk_wms_order_search" model="ir.ui.view">
+        <field name="name">odk.wms.order.search</field>
+        <field name="model">odk.wms.order</field>
+        <field name="arch" type="xml">
+            <search string="仓库业务单">
+                <field name="name" string="单号"/>
+                <field name="partner_id" string="供应商/客户"/>
+                <field name="mo_id" string="生产订单"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="已过账" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="cancel" string="已取消" domain="[('state', '=', 'cancel')]"/>
+                <separator/>
+                <filter name="dir_in" string="入库类" domain="[('direction', '=', 'in')]"/>
+                <filter name="dir_out" string="出库类" domain="[('direction', '=', 'out')]"/>
+                <filter name="dir_transfer" string="调拨类" domain="[('direction', '=', 'transfer')]"/>
+                <group>
+                    <filter name="group_doc_type" string="单据类型" domain="[]"
+                            context="{'group_by': 'doc_type'}"/>
+                    <filter name="group_partner" string="供应商/客户" domain="[]"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_warehouse" string="仓库" domain="[]"
+                            context="{'group_by': 'warehouse_id'}"/>
+                    <filter name="group_state" string="状态" domain="[]"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 盘点调整单：列表 ================= -->
+    <record id="view_odk_wms_inventory_list" model="ir.ui.view">
+        <field name="name">odk.wms.inventory.list</field>
+        <field name="model">odk.wms.inventory</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="scan_type" widget="badge"/>
+                <field name="warehouse_id"/>
+                <field name="location_id" optional="show"/>
+                <field name="date_order" optional="show"/>
+                <field name="date_done" optional="show"/>
+                <field name="line_count" string="行数"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================= 盘点调整单：表单 ================= -->
+    <record id="view_odk_wms_inventory_form" model="ir.ui.view">
+        <field name="name">odk.wms.inventory.form</field>
+        <field name="model">odk.wms.inventory</field>
+        <field name="arch" type="xml">
+            <form string="盘点调整单">
+                <header>
+                    <button name="action_fill_current" type="object"
+                            string="带出当前库存" invisible="state != 'draft'"/>
+                    <button name="action_apply" type="object" string="执行盘点调整"
+                            class="oe_highlight" invisible="state != 'draft'"
+                            confirm="按实盘数量调整库存（生成盘盈盘亏移动），确认执行？"/>
+                    <button name="action_draft" type="object" string="退回草稿"
+                            invisible="state != 'cancel'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="盘点信息">
+                            <field name="scan_type"/>
+                            <field name="warehouse_id"/>
+                            <field name="location_id"/>
+                            <field name="date_order"/>
+                            <field name="date_done" readonly="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group string="备注">
+                            <field name="note" nolabel="1" colspan="2"
+                                   placeholder="盘点范围、原因、说明…"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="盘点明细" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="current_qty" string="账面数量"/>
+                                    <field name="counted_qty" string="实盘数量" sum="实盘合计"/>
+                                    <field name="diff_qty" string="盘差" sum="盘差合计"/>
+                                    <field name="uom_id" readonly="1"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="product_id"/>
+                                        <field name="current_qty"/>
+                                        <field name="counted_qty"/>
+                                        <field name="diff_qty"/>
+                                        <field name="uom_id" readonly="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================= 盘点调整单：搜索 ================= -->
+    <record id="view_odk_wms_inventory_search" model="ir.ui.view">
+        <field name="name">odk.wms.inventory.search</field>
+        <field name="model">odk.wms.inventory</field>
+        <field name="arch" type="xml">
+            <search string="盘点调整单">
+                <field name="name" string="单号"/>
+                <filter name="draft" string="草稿" domain="[('state', '=', 'draft')]"/>
+                <filter name="done" string="已调整" domain="[('state', '=', 'done')]"/>
+                <filter name="normal" string="普通盘点" domain="[('scan_type', '=', 'normal')]"/>
+                <filter name="instruction" string="指令盘点" domain="[('scan_type', '=', 'instruction')]"/>
+                <group>
+                    <filter name="group_scan_type" string="盘点类型" domain="[]"
+                            context="{'group_by': 'scan_type'}"/>
+                    <filter name="group_warehouse" string="仓库" domain="[]"
+                            context="{'group_by': 'warehouse_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 材料库存查询（产品库存列表） ================= -->
+    <record id="view_odk_wms_stock_list" model="ir.ui.view">
+        <field name="name">odk.wms.product.stock.list</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="default_code" string="料号" width="90"/>
+                <field name="name" string="材料名称"/>
+                <field name="categ_id" string="分类" optional="show"/>
+                <field name="uom_id" string="单位" optional="show"/>
+                <field name="qty_available" string="在手数量"/>
+                <field name="free_qty" string="可用数量"/>
+                <field name="incoming_qty" string="在途数量" optional="show"/>
+                <field name="outgoing_qty" string="待发数量" optional="show"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_odk_wms_stock_search" model="ir.ui.view">
+        <field name="name">odk.wms.product.stock.search</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <search string="材料库存查询">
+                <field name="default_code" string="料号"/>
+                <field name="name" string="名称"/>
+                <field name="categ_id" string="分类"/>
+                <group>
+                    <filter name="group_categ" string="分类" domain="[]"
+                            context="{'group_by': 'categ_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================= 动作 ================= -->
+    <record id="action_odk_wms_order" model="ir.actions.act_window">
+        <field name="name">仓库业务单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张仓库业务单</p>
+            <p>选择单据类型（采购入库/领料/退货/转卖/调拨…），录入物料明细，<br/>
+               点「确认过账」自动生成库存移动并更新库存账。</p>
+        </field>
+    </record>
+
+    <!-- 入库类动作 -->
+    <record id="action_wms_in_purchase" model="ir.actions.act_window">
+        <field name="name">采购入库单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_purchase')]</field>
+        <field name="context">{'default_doc_type': 'in_purchase'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_in_customer" model="ir.actions.act_window">
+        <field name="name">客供料入库</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_customer')]</field>
+        <field name="context">{'default_doc_type': 'in_customer'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_in_general" model="ir.actions.act_window">
+        <field name="name">综合入库单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_general')]</field>
+        <field name="context">{'default_doc_type': 'in_general'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_in_mfg_return" model="ir.actions.act_window">
+        <field name="name">生产退料入库</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_mfg_return')]</field>
+        <field name="context">{'default_doc_type': 'in_mfg_return'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_in_general_return" model="ir.actions.act_window">
+        <field name="name">综合退料入库</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'in_general_return')]</field>
+        <field name="context">{'default_doc_type': 'in_general_return'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+
+    <!-- 出库类动作 -->
+    <record id="action_wms_out_mfg" model="ir.actions.act_window">
+        <field name="name">加工领料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_mfg')]</field>
+        <field name="context">{'default_doc_type': 'out_mfg'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_supplement" model="ir.actions.act_window">
+        <field name="name">补料领料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_supplement')]</field>
+        <field name="context">{'default_doc_type': 'out_supplement'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_trial" model="ir.actions.act_window">
+        <field name="name">试做领料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_trial')]</field>
+        <field name="context">{'default_doc_type': 'out_trial'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_general" model="ir.actions.act_window">
+        <field name="name">综合领用单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_general')]</field>
+        <field name="context">{'default_doc_type': 'out_general'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_order" model="ir.actions.act_window">
+        <field name="name">指令领料单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_order')]</field>
+        <field name="context">{'default_doc_type': 'out_order'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_purchase_return" model="ir.actions.act_window">
+        <field name="name">采购退货单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_purchase_return')]</field>
+        <field name="context">{'default_doc_type': 'out_purchase_return'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_customer_return" model="ir.actions.act_window">
+        <field name="name">客供料退货</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_customer_return')]</field>
+        <field name="context">{'default_doc_type': 'out_customer_return'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_resale" model="ir.actions.act_window">
+        <field name="name">材料转卖单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_resale')]</field>
+        <field name="context">{'default_doc_type': 'out_resale'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_out_divert" model="ir.actions.act_window">
+        <field name="name">指令材料挪用单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'out_divert')]</field>
+        <field name="context">{'default_doc_type': 'out_divert'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+
+    <!-- 调拨 / 盘点动作 -->
+    <record id="action_wms_transfer" model="ir.actions.act_window">
+        <field name="name">物料转仓调拨单</field>
+        <field name="res_model">odk.wms.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('doc_type', '=', 'transfer')]</field>
+        <field name="context">{'default_doc_type': 'transfer'}</field>
+        <field name="search_view_id" ref="view_odk_wms_order_search"/>
+    </record>
+    <record id="action_wms_inventory" model="ir.actions.act_window">
+        <field name="name">盘点调整单</field>
+        <field name="res_model">odk.wms.inventory</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_scan_type': 'normal'}</field>
+        <field name="search_view_id" ref="view_odk_wms_inventory_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建盘点调整单</p>
+            <p>录入盘点明细 → 「带出当前库存」→ 填实盘数量 → 「执行盘点调整」。<br/>
+               系统按盘差自动生成盘盈盘亏库存移动。</p>
+        </field>
+    </record>
+    <record id="action_wms_inventory_instruction" model="ir.actions.act_window">
+        <field name="name">指令盘点调整单</field>
+        <field name="res_model">odk.wms.inventory</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('scan_type', '=', 'instruction')]</field>
+        <field name="context">{'default_scan_type': 'instruction'}</field>
+        <field name="search_view_id" ref="view_odk_wms_inventory_search"/>
+    </record>
+
+    <!-- 查询报表类动作 -->
+    <record id="action_wms_stock_query" model="ir.actions.act_window">
+        <field name="name">材料库存查询</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">list</field>
+        <field name="domain">[('is_storable', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_odk_wms_stock_list')})]"/>
+        <field name="search_view_id" ref="view_odk_wms_stock_search"/>
+    </record>
+    <record id="action_wms_purchase" model="ir.actions.act_window">
+        <field name="name">材料采购单</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_wms_iqc" model="ir.actions.act_window">
+        <field name="name">暂收待检单</field>
+        <field name="res_model">odk.quality.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('check_type', '=', 'iqc')]</field>
+        <field name="context">{'default_check_type': 'iqc'}</field>
+    </record>
+    <record id="action_wms_iqc_report" model="ir.actions.act_window">
+        <field name="name">待检记录报表</field>
+        <field name="res_model">odk.quality.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('check_type', '=', 'iqc')]</field>
+    </record>
+
+    <!-- ================= 菜单：独立「仓库管理」应用 ================= -->
+    <menuitem id="menu_odk_wms_root" name="仓库管理" sequence="46"/>
+
+    <menuitem id="menu_wms_in" name="入库管理" parent="menu_odk_wms_root" sequence="10"/>
+    <menuitem id="menu_wms_in_purchase" name="采购入库单" parent="menu_wms_in"
+              sequence="11" action="action_wms_in_purchase"/>
+    <menuitem id="menu_wms_purchase" name="材料采购单" parent="menu_wms_in"
+              sequence="12" action="action_wms_purchase"/>
+    <menuitem id="menu_wms_iqc" name="暂收待检单" parent="menu_wms_in"
+              sequence="13" action="action_wms_iqc"/>
+    <menuitem id="menu_wms_in_customer" name="客供料入库" parent="menu_wms_in"
+              sequence="14" action="action_wms_in_customer"/>
+    <menuitem id="menu_wms_in_general" name="综合入库单" parent="menu_wms_in"
+              sequence="15" action="action_wms_in_general"/>
+    <menuitem id="menu_wms_in_mfg_return" name="生产退料入库" parent="menu_wms_in"
+              sequence="16" action="action_wms_in_mfg_return"/>
+    <menuitem id="menu_wms_in_general_return" name="综合退料入库" parent="menu_wms_in"
+              sequence="17" action="action_wms_in_general_return"/>
+
+    <menuitem id="menu_wms_out" name="出库管理" parent="menu_odk_wms_root" sequence="20"/>
+    <menuitem id="menu_wms_out_mfg" name="加工领料单" parent="menu_wms_out"
+              sequence="21" action="action_wms_out_mfg"/>
+    <menuitem id="menu_wms_out_supplement" name="补料领料单" parent="menu_wms_out"
+              sequence="22" action="action_wms_out_supplement"/>
+    <menuitem id="menu_wms_out_trial" name="试做领料单" parent="menu_wms_out"
+              sequence="23" action="action_wms_out_trial"/>
+    <menuitem id="menu_wms_out_general" name="综合领用单" parent="menu_wms_out"
+              sequence="24" action="action_wms_out_general"/>
+    <menuitem id="menu_wms_out_order" name="指令领料单" parent="menu_wms_out"
+              sequence="25" action="action_wms_out_order"/>
+    <menuitem id="menu_wms_out_purchase_return" name="采购退货单" parent="menu_wms_out"
+              sequence="26" action="action_wms_out_purchase_return"/>
+    <menuitem id="menu_wms_out_customer_return" name="客供料退货" parent="menu_wms_out"
+              sequence="27" action="action_wms_out_customer_return"/>
+    <menuitem id="menu_wms_out_resale" name="材料转卖单" parent="menu_wms_out"
+              sequence="28" action="action_wms_out_resale"/>
+    <menuitem id="menu_wms_out_divert" name="指令材料挪用单" parent="menu_wms_out"
+              sequence="29" action="action_wms_out_divert"/>
+
+    <menuitem id="menu_wms_adjust" name="库存调整" parent="menu_odk_wms_root" sequence="30"/>
+    <menuitem id="menu_wms_transfer" name="物料转仓调拨单" parent="menu_wms_adjust"
+              sequence="31" action="action_wms_transfer"/>
+    <menuitem id="menu_wms_inventory" name="盘点调整单" parent="menu_wms_adjust"
+              sequence="32" action="action_wms_inventory"/>
+    <menuitem id="menu_wms_inventory_instruction" name="指令盘点调整单" parent="menu_wms_adjust"
+              sequence="33" action="action_wms_inventory_instruction"/>
+
+    <menuitem id="menu_wms_all" name="单据总览" parent="menu_odk_wms_root"
+              sequence="40" action="action_odk_wms_order"/>
+
+    <menuitem id="menu_wms_report" name="查询报表" parent="menu_odk_wms_root" sequence="50"/>
+    <menuitem id="menu_wms_stock_query" name="材料库存查询" parent="menu_wms_report"
+              sequence="51" action="action_wms_stock_query"/>
+    <menuitem id="menu_wms_iqc_report" name="待检记录报表" parent="menu_wms_report"
+              sequence="52" action="action_wms_iqc_report"/>
+
+</odoo>

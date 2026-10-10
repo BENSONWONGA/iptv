@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_odk_wms_order" model="ir.sequence">
+            <field name="name">仓库业务单</field>
+            <field name="code">odk.wms.order</field>
+            <field name="prefix">WMS-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record id="seq_odk_wms_inventory" model="ir.sequence">
+            <field name="name">盘点调整单</field>
+            <field name="code">odk.wms.inventory</field>
+            <field name="prefix">PD-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_qc_inspection_user,qc.inspection 质检员,qc.inspection,shoe_qms.group_qc_user,crud,
+access_qc_inspection_line_user,qc.inspection.line 质检员,qc.inspection.line,shoe_qms.group_qc_user,crud,
+access_qc_ncr_user,qc.ncr 质检员,qc.ncr,shoe_qms.group_qc_user,crud,
+access_qc_inspection_employee,qc.inspection 员工,qc.inspection,base.group_user,r,
+access_qc_inspection_line_employee,qc.inspection.line 员工,qc.inspection.line,base.group_user,r,
+access_qc_ncr_employee,qc.ncr 员工,qc.ncr,base.group_user,r,

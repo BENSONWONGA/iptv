@@ -1,0 +1,130 @@
+<odoo>
+    <!-- 工程变更单 列表视图 -->
+    <record id="plm_eco_view_list" model="ir.ui.view">
+        <field name="name">plm.eco.list</field>
+        <field name="model">plm.eco</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('draft', 'review')"
+                  decoration-warning="state == 'approved'"
+                  decoration-success="state == 'applied'"
+                  decoration-muted="state == 'cancelled'"
+                  sample="1">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="subject"/>
+                <field name="eco_type" widget="badge"
+                       decoration-info="eco_type == 'design'"
+                       decoration-warning="eco_type == 'material'"
+                       decoration-success="eco_type == 'process'"/>
+                <field name="product_tmpl_id"/>
+                <field name="bom_id" optional="hide"/>
+                <field name="requested_by" widget="many2one_avatar_user"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'review')"
+                       decoration-warning="state == 'approved'"
+                       decoration-success="state == 'applied'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 工程变更单 表单视图 -->
+    <record id="plm_eco_view_form" model="ir.ui.view">
+        <field name="name">plm.eco.form</field>
+        <field name="model">plm.eco</field>
+        <field name="arch" type="xml">
+            <form string="工程变更单">
+                <header>
+                    <button name="action_submit" type="object" string="提交评审" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="批准" class="oe_highlight"
+                            groups="shoe_plm.group_plm_manager"
+                            invisible="state != 'review'"/>
+                    <button name="action_apply" type="object" string="执行变更" class="oe_highlight"
+                            groups="shoe_plm.group_plm_manager"
+                            invisible="state != 'approved'"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state not in ('draft', 'review', 'approved')"/>
+                    <button name="action_reset_draft" type="object" string="退回草稿"
+                            invisible="state not in ('review', 'cancelled')"/>
+                    <button name="action_view_new_bom" type="object" string="查看新版本BOM"
+                            invisible="not new_bom_id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,review,approved,applied"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="变更信息">
+                            <field name="subject" placeholder="例：42码鞋楦调整导致帮面纸板更新"/>
+                            <field name="eco_type"/>
+                            <field name="date"/>
+                            <field name="requested_by" widget="many2one_avatar_user"/>
+                            <field name="expected_date"/>
+                        </group>
+                        <group string="影响范围">
+                            <field name="product_tmpl_id"/>
+                            <field name="bom_id" options="{'no_create': True}"/>
+                            <field name="new_bom_id" readonly="1" options="{'no_create': True}"/>
+                            <field name="approved_by" widget="many2one_avatar_user" readonly="1"/>
+                            <field name="applied_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="变更内容" name="page_content">
+                            <group>
+                                <field name="reason" placeholder="变更原因：客户要求/工艺改善/材料停产/成本优化..."/>
+                                <field name="description" placeholder="变更前后对比、影响工序、需同步更新的技术文件..."/>
+                            </group>
+                        </page>
+                        <page string="技术资料/图纸" name="page_attachments">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- 工程变更单 搜索视图 -->
+    <record id="plm_eco_view_search" model="ir.ui.view">
+        <field name="name">plm.eco.search</field>
+        <field name="model">plm.eco</field>
+        <field name="arch" type="xml">
+            <search string="工程变更单">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="product_tmpl_id"/>
+                <filter string="进行中" name="filter_open"
+                        domain="[('state', 'in', ('draft', 'review', 'approved'))]"/>
+                <separator/>
+                <filter string="设计变更" name="filter_design" domain="[('eco_type', '=', 'design')]"/>
+                <filter string="材料替代" name="filter_material" domain="[('eco_type', '=', 'material')]"/>
+                <group>
+                    <filter string="状态" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="变更类型" name="group_type" context="{'group_by': 'eco_type'}"/>
+                    <filter string="产品" name="group_product" context="{'group_by': 'product_tmpl_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 动作与菜单 -->
+    <record id="action_plm_eco" model="ir.actions.act_window">
+        <field name="name">工程变更单</field>
+        <field name="res_model">plm.eco</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张工程变更单</p>
+            <p>管理鞋型设计、工艺、材料变更：评审 → 批准 → 执行，执行时自动生成新版本 BOM。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_plm_root" name="研发管理" sequence="70" groups="shoe_plm.group_plm_user"
+              web_icon="shoe_plm,static/description/icon.png"/>
+    <menuitem id="menu_plm_eco" name="工程变更单" parent="menu_plm_root"
+              action="action_plm_eco" sequence="10"/>
+</odoo>

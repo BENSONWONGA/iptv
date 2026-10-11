@@ -1,0 +1,266 @@
+<odoo>
+    <!-- 检验单 列表视图 -->
+    <record id="qc_inspection_view_list" model="ir.ui.view">
+        <field name="name">qc.inspection.list</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state in ('draft', 'in_progress')"
+                  decoration-success="state == 'passed'"
+                  decoration-danger="state == 'failed'"
+                  decoration-muted="state == 'cancelled'"
+                  sample="1">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="inspection_type" widget="badge"
+                       decoration-info="inspection_type in ('iqc', 'ipqc')"
+                       decoration-success="inspection_type in ('fqc', 'oqc')"/>
+                <field name="product_id"/>
+                <field name="lot_id" optional="hide"/>
+                <field name="qty" optional="show"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="inspector_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('draft', 'in_progress')"
+                       decoration-success="state == 'passed'"
+                       decoration-danger="state == 'failed'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="ncr_count" string="处置单" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 检验单 表单视图 -->
+    <record id="qc_inspection_view_form" model="ir.ui.view">
+        <field name="name">qc.inspection.form</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <form string="质量检验单">
+                <header>
+                    <button name="action_start" type="object" string="开始检验" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_pass" type="object" string="判定合格" class="oe_highlight"
+                            invisible="state not in ('draft', 'in_progress')"/>
+                    <button name="action_fail" type="object" string="判定不合格"
+                            invisible="state not in ('draft', 'in_progress')"/>
+                    <button name="action_create_ncr" type="object" string="创建处置单"
+                            invisible="state not in ('failed', 'in_progress', 'draft')"/>
+                    <button name="action_cancel" type="object" string="取消"
+                            invisible="state not in ('draft', 'in_progress')"/>
+                    <button name="action_reset" type="object" string="重置为待检"
+                            invisible="state not in ('passed', 'failed', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,passed,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_ncrs" type="object" class="oe_stat_button" icon="fa-exclamation-triangle">
+                            <field name="ncr_count" widget="statinfo" string="处置单"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="检验信息">
+                            <field name="inspection_type"/>
+                            <field name="date"/>
+                            <field name="inspector_id" widget="many2one_avatar_user"/>
+                            <field name="partner_id" invisible="inspection_type != 'iqc'"/>
+                        </group>
+                        <group string="检验对象">
+                            <field name="product_id"/>
+                            <field name="lot_id" options="{'create': false}"/>
+                            <field name="qty"/>
+                            <field name="uom_id"/>
+                        </group>
+                    </group>
+                    <group string="关联单据">
+                        <group colspan="4">
+                            <field name="picking_id" options="{'no_create': True}"/>
+                            <field name="production_id" options="{'no_create': True}"/>
+                            <field name="workorder_id" options="{'no_create': True}"
+                                   domain="[('production_id', '=', production_id)]"
+                                   invisible="not production_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="检验项目" name="page_lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <control>
+                                        <create name="add_line_control" string="添加检验项"/>
+                                    </control>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="standard"/>
+                                    <field name="actual"/>
+                                    <field name="result" widget="badge"
+                                           decoration-success="result == 'pass'"
+                                           decoration-danger="result == 'fail'"/>
+                                    <field name="note" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="备注" name="page_notes">
+                            <field name="notes" placeholder="其他需要记录的情况..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- 检验单 搜索视图 -->
+    <record id="qc_inspection_view_search" model="ir.ui.view">
+        <field name="name">qc.inspection.search</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <search string="检验单">
+                <field name="name" string="单号"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="partner_id"/>
+                <filter string="待检" name="filter_todo" domain="[('state', 'in', ('draft', 'in_progress'))]"/>
+                <filter string="合格" name="filter_passed" domain="[('state', '=', 'passed')]"/>
+                <filter string="不合格" name="filter_failed" domain="[('state', '=', 'failed')]"/>
+                <separator/>
+                <filter string="来料检验" name="filter_iqc" domain="[('inspection_type', '=', 'iqc')]"/>
+                <filter string="制程检验" name="filter_ipqc" domain="[('inspection_type', '=', 'ipqc')]"/>
+                <filter string="成品检验" name="filter_fqc" domain="[('inspection_type', '=', 'fqc')]"/>
+                <filter string="出货检验" name="filter_oqc" domain="[('inspection_type', '=', 'oqc')]"/>
+                <separator/>
+                <filter string="本月" name="filter_this_month"
+                        domain="[('date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <group>
+                    <filter string="检验类型" name="group_type" context="{'group_by': 'inspection_type'}"/>
+                    <filter string="状态" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="产品" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="检验员" name="group_inspector" context="{'group_by': 'inspector_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 不合格品处置单 列表视图 -->
+    <record id="qc_ncr_view_list" model="ir.ui.view">
+        <field name="name">qc.ncr.list</field>
+        <field name="model">qc.ncr</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-warning="state == 'processing'"
+                  decoration-muted="state == 'closed'"
+                  sample="1">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="lot_id" optional="hide"/>
+                <field name="qty"/>
+                <field name="disposition" widget="badge"
+                       decoration-success="disposition in ('rework', 'sort', 'concession')"
+                       decoration-danger="disposition in ('scrap', 'return')"/>
+                <field name="responsible_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'processing'"
+                       decoration-muted="state == 'closed'"/>
+                <field name="date_closed" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 不合格品处置单 表单视图 -->
+    <record id="qc_ncr_view_form" model="ir.ui.view">
+        <field name="name">qc.ncr.form</field>
+        <field name="model">qc.ncr</field>
+        <field name="arch" type="xml">
+            <form string="不合格品处置单">
+                <header>
+                    <button name="action_process" type="object" string="开始处理" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close" type="object" string="关闭处置单" class="oe_highlight"
+                            invisible="state != 'processing'"/>
+                    <button name="action_reset" type="object" string="重置"
+                            invisible="state not in ('processing', 'closed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,processing,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="不合格品信息">
+                            <field name="inspection_id" options="{'no_create': True}"/>
+                            <field name="product_id"/>
+                            <field name="lot_id" options="{'create': false}"/>
+                            <field name="qty"/>
+                            <field name="uom_id"/>
+                        </group>
+                        <group string="处置信息">
+                            <field name="disposition"/>
+                            <field name="date"/>
+                            <field name="responsible_id" widget="many2one_avatar_user"/>
+                            <field name="date_closed" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="原因分析与纠正措施">
+                        <field name="root_cause" placeholder="不合格原因分析（人/机/料/法/环）..."/>
+                        <field name="corrective_action" placeholder="纠正/预防措施..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- 不合格品处置单 搜索视图 -->
+    <record id="qc_ncr_view_search" model="ir.ui.view">
+        <field name="name">qc.ncr.search</field>
+        <field name="model">qc.ncr</field>
+        <field name="arch" type="xml">
+            <search string="不合格品处置单">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="responsible_id"/>
+                <filter string="未关闭" name="filter_open" domain="[('state', '!=', 'closed')]"/>
+                <separator/>
+                <filter string="返工" name="filter_rework" domain="[('disposition', '=', 'rework')]"/>
+                <filter string="报废" name="filter_scrap" domain="[('disposition', '=', 'scrap')]"/>
+                <filter string="退货" name="filter_return" domain="[('disposition', '=', 'return')]"/>
+                <group>
+                    <filter string="处置方式" name="group_disposition" context="{'group_by': 'disposition'}"/>
+                    <filter string="状态" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="产品" name="group_product" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 动作与菜单 -->
+    <record id="action_qc_inspection" model="ir.actions.act_window">
+        <field name="name">检验单</field>
+        <field name="res_model">qc.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_todo': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一张质量检验单</p>
+            <p>支持来料(IQC)、制程(IPQC)、成品(FQC)、出货(OQC)四类检验，内置鞋业标准检验项目。</p>
+        </field>
+    </record>
+    <record id="action_qc_ncr" model="ir.actions.act_window">
+        <field name="name">不合格品处置</field>
+        <field name="res_model">qc.ncr</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">暂无不合格品处置单</p>
+            <p>检验不合格时创建处置单，跟踪返工、报废、退货等处置措施。</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_qms_root" name="质量管理" sequence="65" groups="shoe_qms.group_qc_user"
+              web_icon="shoe_qms,static/description/icon.png"/>
+    <menuitem id="menu_qc_inspection" name="检验单" parent="menu_qms_root"
+              action="action_qc_inspection" sequence="10"/>
+    <menuitem id="menu_qc_ncr" name="不合格品处置" parent="menu_qms_root"
+              action="action_qc_ncr" sequence="20"/>
+</odoo>

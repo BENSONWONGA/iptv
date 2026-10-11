@@ -1,0 +1,3 @@
+id,name,model_id,group_id/id,operation,domain
+access_plm_eco_user,plm.eco 研发工程师,plm.eco,shoe_plm.group_plm_user,crud,
+access_plm_eco_employee,plm.eco 员工,plm.eco,base.group_user,r,

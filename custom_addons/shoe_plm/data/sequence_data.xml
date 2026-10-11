@@ -1,0 +1,10 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_plm_eco" model="ir.sequence">
+            <field name="name">工程变更单</field>
+            <field name="code">plm.eco</field>
+            <field name="prefix">ECO/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

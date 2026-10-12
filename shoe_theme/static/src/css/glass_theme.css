@@ -1,0 +1,305 @@
+/* ============================================================
+   Odoo 20 全局玻璃拟态深色主题
+   ============================================================ */
+
+/* ---------- 全局渐变背景 ---------- */
+.o_web_client,
+.o_action_manager,
+.o_action,
+.o_content {
+    background: transparent !important;
+}
+
+body.o_web_client {
+    background:
+        radial-gradient(1100px 700px at 85% -10%, rgba(124, 58, 237, 0.30), transparent 60%),
+        radial-gradient(900px 600px at -10% 110%, rgba(219, 39, 119, 0.22), transparent 55%),
+        linear-gradient(160deg, #161233 0%, #1e1b4b 40%, #38104f 78%, #451741 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* ---------- 顶栏 ---------- */
+.o_main_navbar {
+    background: linear-gradient(90deg, rgba(30, 27, 75, 0.92), rgba(59, 16, 97, 0.92)) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.o_main_navbar .o_menu_sections .dropdown-toggle,
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_navbar_apps_menu .dropdown-toggle {
+    color: rgba(240, 236, 255, 0.9) !important;
+}
+
+/* ---------- 控制面板 ---------- */
+.o_control_panel,
+.o_control_panel .o_cp_top,
+.o_control_panel .o_cp_bottom,
+.o_control_panel .o_cp_top_left,
+.o_control_panel .o_cp_top_right,
+.o_control_panel .o_cp_bottom_left,
+.o_control_panel .o_cp_bottom_right,
+.o_control_panel .o_searchview_container,
+.o_action_manager .o_control_panel {
+    background: transparent !important;
+    color: #e9e4ff;
+}
+.o_control_panel .btn {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #f0ecff;
+    border-radius: 10px;
+}
+.o_control_panel .btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+.o_control_panel .btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border-color: transparent;
+    color: #fff;
+}
+.o_control_panel .o_searchview {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    color: #f0ecff !important;
+    border-radius: 10px !important;
+}
+.o_searchview .o_searchview_input,
+.o_searchview input,
+.o_searchview input::placeholder {
+    color: #f0ecff !important;
+}
+.o_searchview .o_searchview_facet .o_facet_values {
+    background: rgba(124, 58, 237, 0.35);
+    color: #fff;
+}
+.o_control_panel .breadcrumb-item a,
+.o_control_panel .breadcrumb-item.active {
+    color: #ded7ff;
+}
+.o_control_panel .o_cp_buttons .btn-light {
+    color: #f0ecff;
+}
+.o_control_panel .o_cp_top .o_cp_top_left .o_cp_pager,
+.o_control_panel .o_pager {
+    color: #ded7ff;
+}
+.o_control_panel .o_cp_bottom .btn-group .btn {
+    color: #f0ecff;
+}
+
+/* ---------- 视图容器（玻璃卡片） ---------- */
+.o_view_controller .o_list_view,
+.o_view_controller .o_form_view_container,
+.o_view_controller .o_kanban_view,
+.o_view_controller .o_calendar_view,
+.o_view_controller .o_gantt_view {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
+    margin: 0 12px 12px;
+    color: #f3f0ff;
+    box-shadow: 0 8px 32px rgba(10, 5, 30, 0.3);
+}
+
+/* ---------- 列表视图 ---------- */
+table.o_list_table {
+    color: #ece8ff !important;
+}
+table.o_list_table thead th {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ded7ff !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+table.o_list_table tbody tr {
+    background: transparent !important;
+}
+table.o_list_table tbody td {
+    color: #ece8ff !important;
+    border-color: rgba(255, 255, 255, 0.07) !important;
+}
+table.o_list_table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.07) !important;
+}
+.o_list_table .o_list_record_selector input,
+.o_list_table .o_list_record_selector input:checked {
+    accent-color: #a855f7;
+}
+.o_list_renderer .o_list_table tfoot td {
+    color: #ded7ff;
+}
+
+/* ---------- 表单视图 ---------- */
+.o_form_view .o_form_sheet_bg {
+    background: transparent;
+}
+.o_form_view .o_form_sheet {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    color: #f3f0ff;
+    box-shadow: 0 8px 32px rgba(10, 5, 30, 0.3);
+}
+.o_form_view label {
+    color: rgba(233, 227, 255, 0.72) !important;
+}
+.o_form_view .o_field_widget,
+.o_form_view .o_input,
+.o_form_view input,
+.o_form_view select,
+.o_form_view textarea,
+.o_form_view .o_field_date,
+.o_form_view .o_field_email {
+    color: #f5f2ff !important;
+}
+.o_form_view .o_input,
+.o_form_view input[type="text"],
+.o_form_view select,
+.o_form_view textarea {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-radius: 8px;
+}
+.o_form_view .o_field_widget .o_external_button {
+    color: #c4b5fd;
+}
+.o_form_view .o_form_statusbar {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.o_form_view .o_form_statusbar .o_statusbar_buttons .btn {
+    color: #f0ecff;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+.o_form_view .o_form_statusbar .o_statusbar_status .o_arrow_button {
+    color: rgba(233, 227, 255, 0.6);
+}
+.o_form_view .o_form_statusbar .o_statusbar_status .o_arrow_button.btn-primary {
+    color: #fff;
+}
+.o_form_view .oe_button_box .oe_stat_button {
+    color: #ded7ff;
+}
+.o_form_view .oe_button_box .oe_stat_button .o_stat_info .o_stat_value {
+    color: #fff;
+}
+.o_form_view .nav-tabs .nav-link {
+    color: rgba(233, 227, 255, 0.7);
+}
+.o_form_view .nav-tabs .nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+.o_form_view .o_notebook .tab-content {
+    color: #f3f0ff;
+}
+
+/* ---------- 看板 ---------- */
+.o_kanban_view .o_kanban_record {
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    color: #f3f0ff;
+}
+.o_kanban_view .o_kanban_group {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+}
+.o_kanban_view .o_kanban_header {
+    color: #ded7ff;
+}
+
+/* ---------- 通用组件 ---------- */
+.o_view_controller .badge,
+.o_view_controller .o_badge {
+    background: rgba(124, 58, 237, 0.3);
+    color: #e9d5ff;
+}
+.o_view_controller .o_field_badge {
+    background: rgba(255, 255, 255, 0.14);
+    color: #f0ecff;
+    border-radius: 10px;
+}
+.o_view_controller .btn-secondary,
+.o_view_controller .btn-light {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #f0ecff;
+}
+.o_view_controller .btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    border-color: transparent;
+}
+.o_view_controller .o_field_widget.o_field_many2one .o_input_dropdown,
+.o_view_controller .o_input_dropdown {
+    color: #f5f2ff;
+}
+
+/* 下拉菜单 / 弹层保持深色玻璃 */
+.dropdown-menu,
+.o_dropdown_menu,
+.o_popover,
+.o_modal_wrapper .modal-content {
+    background: rgba(30, 27, 75, 0.96) !important;
+    backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    color: #f0ecff;
+}
+.dropdown-menu .dropdown-item,
+.o_dropdown_menu .dropdown-item {
+    color: #ece8ff;
+}
+.dropdown-menu .dropdown-item:hover,
+.o_dropdown_menu .dropdown-item:hover {
+    background: rgba(124, 58, 237, 0.35);
+    color: #fff;
+}
+.modal .modal-header, .modal .modal-title, .modal .modal-body, .modal .modal-footer {
+    color: #f0ecff;
+}
+
+/* ---------- 侧边搜索面板 ---------- */
+.o_search_panel {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e9e4ff;
+}
+.o_search_panel .o_search_panel_category_value,
+.o_search_panel .list-group-item {
+    color: #ded7ff;
+}
+.o_search_panel .o_search_panel_label_title {
+    color: #ece8ff;
+}
+
+/* ---------- 消息/提示 ---------- */
+.o_view_controller .alert-info {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #bfdbfe;
+}
+
+/* ---------- 设置页 ---------- */
+.o_settings_container .o_setting_card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #f3f0ff;
+}
+
+/* 滚动条 */
+.o_web_client ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+.o_web_client ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+}
+.o_web_client ::-webkit-scrollbar-track {
+    background: transparent;
+}

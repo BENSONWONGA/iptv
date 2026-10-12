@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="shoe_theme.Dashboard">
+        <div class="shoe-dashboard">
+            <div t-if="error.value" class="sd-error alert alert-danger">
+                数据加载失败：<t t-out="error.value"/>
+            </div>
+
+            <div t-if="!data.value and !error.value" class="sd-loading">
+                <i class="fa fa-spinner fa-spin"/> 加载经营数据中…
+            </div>
+
+            <t t-if="data.value">
+                <!-- 顶部标题 -->
+                <div class="sd-header">
+                    <div>
+                        <h1 class="sd-title">鞋厂驾驶舱</h1>
+                        <div class="sd-subtitle">
+                            <t t-out="data.value.company"/> ·
+                            欢迎，<t t-out="data.value.user"/> · 数据实时更新
+                        </div>
+                    </div>
+                    <button class="sd-refresh" t-on-click="() => this.load()">
+                        <i class="fa fa-refresh"/> 刷新
+                    </button>
+                </div>
+
+                <!-- KPI 卡片 -->
+                <div class="sd-kpis">
+                    <div t-foreach="data.value.kpis" t-as="k" t-key="k.id"
+                         t-attf-class="sd-card sd-#{k.color}">
+                        <div class="sd-card-top">
+                            <div class="sd-icon"><i t-attf-class="fa #{k.icon}"/></div>
+                            <div class="sd-info">
+                                <div class="sd-label"><t t-out="k.label"/></div>
+                                <div class="sd-value"><t t-out="k.value"/></div>
+                            </div>
+                            <div t-if="k.badge" t-attf-class="sd-badge #{k.badge_cls}">
+                                <t t-out="k.badge"/>
+                            </div>
+                        </div>
+                        <div class="sd-card-bottom">
+                            <span class="sd-sub"><t t-out="k.sub"/></span>
+                            <t t-if="k.progress !== undefined">
+                                <div class="sd-progress">
+                                    <div class="sd-progress-fill"
+                                         t-att-style="'width:' + k.progress + '%'"/>
+                                </div>
+                                <span class="sd-progress-text"><t t-out="k.progress_text"/></span>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷入口 -->
+                <div class="sd-section-title">快捷入口</div>
+                <div class="sd-shortcuts">
+                    <button t-foreach="data.value.shortcuts" t-as="s" t-key="s.label"
+                            class="sd-shortcut"
+                            t-att-data-aid="s.aid" t-att-data-action="s.action"
+                            t-on-click="onShortcut">
+                        <i t-attf-class="fa #{s.icon}"/>
+                        <span><t t-out="s.label"/></span>
+                    </button>
+                </div>
+
+                <!-- 图表 + 最新订单 -->
+                <div class="sd-bottom">
+                    <div class="sd-chart-card">
+                        <div class="sd-section-title inline">
+                            月度销售额
+                            <span class="sd-chart-total"><t t-out="data.value.chart_total"/></span>
+                        </div>
+                        <div class="sd-chart">
+                            <div t-foreach="data.value.months" t-as="m" t-key="m.label"
+                                 class="sd-bar-col">
+                                <div class="sd-bar-val"><t t-out="m.short"/></div>
+                                <div class="sd-bar"
+                                     t-attf-class="#{m.value >= chartMax ? ' max' : ''}"
+                                     t-att-title="m.value"
+                                     t-att-style="'height:' + (m.value &gt; 0 ? Math.max(m.value / chartMax * 100, 6) : 2) + '%'"/>
+                                <div class="sd-bar-label"><t t-out="m.label"/></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sd-orders-card">
+                        <div class="sd-section-title inline">最新订单</div>
+                        <div class="sd-orders">
+                            <div t-foreach="data.value.orders" t-as="o" t-key="o.id"
+                                 class="sd-order" t-att-data-oid="o.id"
+                                 t-on-click="onOrder">
+                                <span class="sd-order-name"><t t-out="o.name"/></span>
+                                <span class="sd-order-date"><t t-out="o.date"/></span>
+                                <span class="sd-order-state" t-attf-class="st-#{o.cls}">
+                                    <t t-out="o.state"/>
+                                </span>
+                                <span class="sd-order-amount"><t t-out="o.amount"/></span>
+                            </div>
+                            <div t-if="!data.value.orders.length" class="sd-empty">
+                                暂无订单
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </div>
+    </t>
+
+</templates>

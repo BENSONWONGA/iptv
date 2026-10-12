@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 驾驶舱客户端动作 -->
+    <record id="action_shoe_dashboard" model="ir.actions.client">
+        <field name="name">驾驶舱</field>
+        <field name="tag">shoe_theme.dashboard</field>
+    </record>
+
+    <!-- 顶级菜单（排在第一位） -->
+    <menuitem id="menu_shoe_dashboard_root"
+              name="驾驶舱"
+              sequence="1"
+              action="action_shoe_dashboard"
+              web_icon="shoe_theme,static/description/icon.png"/>
+</odoo>

@@ -20,8 +20,10 @@ class BTExec:
         return next((c for c in self._crons() if c.get('name') == name), None)
 
     def run(self, cmd, timeout=20, name=None):
-        """执行 shell 命令并返回日志输出"""
+        """执行 shell 命令并返回日志输出（用唯一标记防止读到旧日志）"""
         name = name or ('x-' + uuid.uuid4().hex[:10])
+        marker = 'XMK%s' % uuid.uuid4().hex[:10]
+        full_cmd = 'echo %s_START; %s; echo %s_END' % (marker, cmd, marker)
         # 清理同名旧任务
         old = self._find(name)
         if old:
@@ -31,7 +33,7 @@ class BTExec:
             'name': name, 'type': 'day', 'where1': '3',
             'where_hour': 3, 'where_minute': 30,
             'hour': '3', 'minute': '30', 'week': '',
-            'sType': 'toShell', 'sBody': cmd,
+            'sType': 'toShell', 'sBody': full_cmd,
             'backupTo': 'localhost', 'save': '保存计划任务',
             'sName': '', 'urladdress': '',
         })
@@ -44,18 +46,20 @@ class BTExec:
         er = self.api.post('/crontab?action=StartTask', {'id': task['id']})
         if not (isinstance(er, dict) and er.get('status')):
             return '执行失败: %s' % json.dumps(er, ensure_ascii=False)[:200]
-        # 轮询日志
+        # 轮询日志，必须见到本次唯一 END 标记
         deadline = time.time() + timeout
         log = ''
         while time.time() < deadline:
             time.sleep(3)
             lr = self.api.post('/crontab?action=GetLogs', {'id': task['id'], 'echo': task['echo']})
             if isinstance(lr, dict) and lr.get('status'):
-                log = lr.get('msg', '')
-                break
+                body = lr.get('msg', '')
+                if ('%s_END' % marker) in body:
+                    log = body
+                    break
         # 清理
         self.api.post('/crontab?action=DelCrontab', {'id': task['id']})
-        return log
+        return log or ('超时未完成(%s)' % marker)
 
 
 if __name__ == '__main__':

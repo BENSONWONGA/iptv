@@ -1,0 +1,49 @@
+
+/* ===== Light theme patch: navbar entries & discuss sidebar active ===== */
+.o_main_navbar,
+.o_navbar,
+.o_menu_systray,
+.o_menu_sections {
+    --NavBar-entry-color: #2d3a4a !important;
+}
+
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .o_menu_toggle,
+.o_main_navbar .dropdown-toggle,
+.o_main_navbar .btn,
+.o_main_navbar button,
+.o_navbar .o_menu_brand,
+.o_navbar .o_nav_entry,
+.o_navbar .o_menu_toggle {
+    color: #2d3a4a !important;
+
+    &:hover, &:focus, &.show {
+        color: #06bea0 !important;
+    }
+}
+
+.o_main_navbar .oi,
+.o_navbar .oi {
+    color: #2d3a4a !important;
+}
+
+/* Discuss 左栏 tab：hover 浅灰、选中青绿药丸（还原深色版高亮交互） */
+.o-mail-MessagingMenu-tab {
+    &:hover {
+        background: rgba(15, 30, 50, 0.06) !important;
+    }
+
+    &.active {
+        background: rgba(6, 190, 160, 0.12) !important;
+
+        .o-mail-MessagingMenu-tabIcon {
+            background: #06bea0 !important;
+            color: #ffffff !important;
+        }
+
+        span {
+            color: #0a8f7a !important;
+        }
+    }
+}

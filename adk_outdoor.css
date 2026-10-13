@@ -1,0 +1,79 @@
+/* ============================================================
+   奥登科户外 AUDENKO OUTDOOR — 品牌样式
+   品牌主色：奥登科橙 #e67e22 / 深绿 #22332a
+   ============================================================ */
+
+/* 中文优先字体栈 */
+body,
+h1, h2, h3, h4, h5, h6,
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+        "Helvetica Neue", Arial, sans-serif !important;
+}
+
+/* 品牌主色：按钮（同时覆盖 Odoo 主题 --btn-* 与 Bootstrap --bs-btn-* 两套变量） */
+.btn-primary {
+    --btn-bg: #e67e22;
+    --btn-border-color: #e67e22;
+    --btn-hover-bg: #cf6e15;
+    --btn-hover-border-color: #cf6e15;
+    --bs-btn-bg: #e67e22;
+    --bs-btn-border-color: #e67e22;
+    --bs-btn-hover-bg: #cf6e15;
+    --bs-btn-hover-border-color: #cf6e15;
+    --bs-btn-active-bg: #cf6e15;
+    --bs-btn-active-border-color: #cf6e15;
+    --bs-btn-disabled-bg: #e67e22;
+    --bs-btn-disabled-border-color: #e67e22;
+    background-color: #e67e22 !important;
+    border-color: #e67e22 !important;
+    color: #fff;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background-color: #cf6e15 !important;
+    border-color: #cf6e15 !important;
+    color: #fff;
+}
+.btn-outline-primary {
+    --btn-bg: transparent;
+    --btn-border-color: #e67e22;
+    --btn-hover-bg: #e67e22;
+    --btn-hover-border-color: #e67e22;
+    --bs-btn-color: #cf6e15;
+    --bs-btn-border-color: #e67e22;
+    --bs-btn-hover-bg: #e67e22;
+    --bs-btn-hover-border-color: #e67e22;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-bg: #cf6e15;
+    --bs-btn-active-border-color: #cf6e15;
+    --bs-btn-active-color: #fff;
+    border-color: #e67e22 !important;
+    color: #cf6e15;
+}
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: #e67e22 !important;
+    border-color: #e67e22 !important;
+    color: #fff !important;
+}
+
+/* 文本与链接 */
+.text-primary { color: #cf6e15 !important; }
+.bg-primary { background-color: #e67e22 !important; }
+
+/* 产品卡片交互 */
+.adk-card .adk-card-img { transition: transform .35s ease; }
+.adk-card:hover .adk-card-img { transform: scale(1.05); }
+.adk-card .adk-card-body { transition: box-shadow .25s ease; }
+.adk-card:hover .adk-card-body {
+    box-shadow: 0 .5rem 1.2rem rgba(0, 0, 0, .12) !important;
+}
+
+/* 商城价格强调 */
+.o_wsale_product_price .oe_currency_value {
+    color: #cf6e15;
+    font-weight: 700;
+}
+
+/* 导航当前页高亮 */
+header li.active .nav-link { color: #cf6e15 !important; }

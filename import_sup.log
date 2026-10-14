@@ -1,0 +1,34 @@
+有效供应商: 846 条
+付款条款: {'对公转账': 12, '现金': 19, '汇款月结30天': 13, '汇款月结60天': 15, '汇款月结90天': 16, '汇款月结120天': 21, '款到发货现金': 18, '货到付款现金': 22}
+厂商类型标签: {'加工合成': 1, '包装类': 2, '布料': 3, '底料': 4, '模具类': 5, '消耗品': 6, '皮料': 7, '辅料': 8, '针辅': 9, '革料': 10}
+已有供应商: []
+===== 创建供应商 =====
+  待创建: 846 | 跳过同名: 0
+  进度: 200/846
+  进度: 400/846
+  进度: 600/846
+  进度: 800/846
+  创建完成: 846 家
+===== 创建子联系人 =====
+  子联系人: 745 个
+===== 验证 =====
+  供应商总数: 846（预期 864 + 3 原 = 867）
+  关联付款条款: 809 | 有地址: 742 | USD: 14 | 子联系人: 745
+  标签[加工合成]: 68 家
+  标签[包装类]: 70 家
+  标签[布料]: 25 家
+  标签[底料]: 51 家
+  标签[模具类]: 12 家
+  标签[消耗品]: 33 家
+  标签[皮料]: 11 家
+  标签[辅料]: 93 家
+  标签[针辅]: 8 家
+  标签[革料]: 19 家
+Traceback (most recent call last):
+  File "/workspace/import_suppliers.py", line 166, in <module>
+    samples = rpc('res.partner', 'search_read', [[['supplier_rank', '>', 0], ['name', 'like', '恒得利']],
+                                                 ['name', 'like', '中鼎']],
+                  {'fields': ['name', 'street', 'category_id', 'property_supplier_payment_term_id']})
+  File "/workspace/import_suppliers.py", line 27, in rpc
+    raise RuntimeError(json.dumps(d['error'], ensure_ascii=False)[:300])
+RuntimeError: {"code": 0, "message": "Odoo Server Error", "data": {"name": "builtins.TypeError", "message": "BaseModel.search_read() got multiple values for argument 'fields'", "arguments": ["BaseModel.search_read() got multiple values for argument 'fields'"], "timestamp": 1791956868, "context": {}, "debug": "Tra
